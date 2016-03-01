@@ -1,8 +1,10 @@
 ---
 title: 使用Github+Hexo+Next搭建个人博客
 date: 2016-01-28 21:40:00
-category: 技术
-tags: Github
+category: 
+- 技术
+tags: 
+- Github
 ---
 # 配置开发环境
 依次下载安装：

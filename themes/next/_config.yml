@@ -58,8 +58,8 @@ menu_icons:
 
 # Schemes
 #scheme: Muse
-scheme: Mist
-#scheme: Pisces
+#scheme: Mist
+scheme: Pisces
 
 
 
@@ -72,7 +72,7 @@ scheme: Mist
 social:
   #GitHub: https://github.com/cyliuu
   #Weibo: http://weibo.com/243339151
-  zhihu: http://www.zhihu.com/people/liu-chen-yi-83
+  zhihu: http://www.zhihu.com/people/cyliuu
   e-mail: mailto:lcy940903@gmail.com
   #Others:
 
@@ -106,9 +106,9 @@ toc:
 #creative_commons: by-nc-sa
 #creative_commons:
 
-sidebar: post
+sidebar:
   # Sidebar Position, available value: left | right
-  #position: left
+  position: left
   #position: right
 
   # Sidebar Display, available value:
@@ -116,7 +116,7 @@ sidebar: post
   #  - always  expand for all pages automatically
   #  - hide    expand only when click on the sidebar toggle icon.
   #  - remove  Totally remove sidebar including sidebar toggle icon.
-  #display: post
+  display: post
   #display: always
   #display: hide
   #display: remove
