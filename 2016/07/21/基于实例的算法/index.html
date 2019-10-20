@@ -50,21 +50,18 @@
   };
 </script>
 
-  <meta name="description" content="配置开发环境下载与安装 OpenCV2.4.11 CMake  配置环境变量 在系统属性-环境变量-用户变量中新建变量，名为opencv，值为自己解压opencv路径下的build路径，如“D:\opencv\build”（路径名尽量不含空格，方便以后Matlab与OpenCV混合编程） 在系统属性-环境变量-系统变量中编辑Path变量，在末尾添加“ %opencv%\x86\vc10\bin;%">
-<meta name="keywords" content="Visual Studio,CMake,OpenCV">
+  <meta name="description" content="模型说明KNN分类算法的思路是：如果一个样本在特征空间中的$K$个最相似(即特征空间中最邻近)的样本中的大多数属于某一个类别，则该样本也属于这个类别。KNN分类算法包括三个基本要素：（1）距离度量  \begin{equation} L_p(x_{i},x_{j})=\left(\sum_{l=1}^{n}\left|x_{i}^{(l)}-x_{j}^{(l)}\right|^{p}\right">
+<meta name="keywords" content="分类算法,KNN">
 <meta property="og:type" content="article">
-<meta property="og:title" content="利用VS2010和CMake编译OpenCV2.4.11">
-<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2016&#x2F;02&#x2F;29&#x2F;%E5%88%A9%E7%94%A8VS2010%E5%92%8CCMake%E7%BC%96%E8%AF%91OpenCV2.4.11&#x2F;index.html">
+<meta property="og:title" content="基于实例的算法--KNN分类器">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2016&#x2F;07&#x2F;21&#x2F;%E5%9F%BA%E4%BA%8E%E5%AE%9E%E4%BE%8B%E7%9A%84%E7%AE%97%E6%B3%95&#x2F;index.html">
 <meta property="og:site_name" content="Cyliuu&#39;s Learning Blog">
-<meta property="og:description" content="配置开发环境下载与安装 OpenCV2.4.11 CMake  配置环境变量 在系统属性-环境变量-用户变量中新建变量，名为opencv，值为自己解压opencv路径下的build路径，如“D:\opencv\build”（路径名尽量不含空格，方便以后Matlab与OpenCV混合编程） 在系统属性-环境变量-系统变量中编辑Path变量，在末尾添加“ %opencv%\x86\vc10\bin;%">
+<meta property="og:description" content="模型说明KNN分类算法的思路是：如果一个样本在特征空间中的$K$个最相似(即特征空间中最邻近)的样本中的大多数属于某一个类别，则该样本也属于这个类别。KNN分类算法包括三个基本要素：（1）距离度量  \begin{equation} L_p(x_{i},x_{j})=\left(\sum_{l=1}^{n}\left|x_{i}^{(l)}-x_{j}^{(l)}\right|^{p}\right">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2016&#x2F;02&#x2F;29&#x2F;%E5%88%A9%E7%94%A8VS2010%E5%92%8CCMake%E7%BC%96%E8%AF%91OpenCV2.4.11&#x2F;uploads&#x2F;cmake.png">
-<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2016&#x2F;02&#x2F;29&#x2F;%E5%88%A9%E7%94%A8VS2010%E5%92%8CCMake%E7%BC%96%E8%AF%91OpenCV2.4.11&#x2F;uploads&#x2F;cvut_test.png">
-<meta property="og:updated_time" content="2019-10-20T13:15:22.007Z">
+<meta property="og:updated_time" content="2019-10-20T13:17:39.069Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2016&#x2F;02&#x2F;29&#x2F;%E5%88%A9%E7%94%A8VS2010%E5%92%8CCMake%E7%BC%96%E8%AF%91OpenCV2.4.11&#x2F;uploads&#x2F;cmake.png">
 
-<link rel="canonical" href="http://yoursite.com/2016/02/29/%E5%88%A9%E7%94%A8VS2010%E5%92%8CCMake%E7%BC%96%E8%AF%91OpenCV2.4.11/">
+<link rel="canonical" href="http://yoursite.com/2016/07/21/%E5%9F%BA%E4%BA%8E%E5%AE%9E%E4%BE%8B%E7%9A%84%E7%AE%97%E6%B3%95/">
 
 
 <script id="page-configurations">
@@ -78,7 +75,7 @@
   };
 </script>
 
-  <title>利用VS2010和CMake编译OpenCV2.4.11 | Cyliuu's Learning Blog</title>
+  <title>基于实例的算法--KNN分类器 | Cyliuu's Learning Blog</title>
   
 
 
@@ -216,7 +213,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/02/29/%E5%88%A9%E7%94%A8VS2010%E5%92%8CCMake%E7%BC%96%E8%AF%91OpenCV2.4.11/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/07/21/%E5%9F%BA%E4%BA%8E%E5%AE%9E%E4%BE%8B%E7%9A%84%E7%AE%97%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -229,7 +226,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          利用VS2010和CMake编译OpenCV2.4.11
+          基于实例的算法--KNN分类器
         </h1>
 
         <div class="post-meta">
@@ -239,14 +236,14 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2016-02-29 20:42:00" itemprop="dateCreated datePublished" datetime="2016-02-29T20:42:00+08:00">2016-02-29</time>
+              <time title="创建时间：2016-07-21 21:00:00" itemprop="dateCreated datePublished" datetime="2016-07-21T21:00:00+08:00">2016-07-21</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-10-20 21:15:22" itemprop="dateModified" datetime="2019-10-20T21:15:22+08:00">2019-10-20</time>
+                <time title="修改时间：2019-10-20 21:17:39" itemprop="dateModified" datetime="2019-10-20T21:17:39+08:00">2019-10-20</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -254,8 +251,8 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%B7%A5%E7%A8%8B%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index">
-                    <span itemprop="name">工程技术</span>
+                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index">
+                    <span itemprop="name">机器学习</span>
                   </a>
                 </span>
             </span>
@@ -266,14 +263,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>2.7k</span>
+              <span>1.1k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>2 分钟</span>
+              <span>1 分钟</span>
             </span>
 
         </div>
@@ -285,31 +282,30 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="配置开发环境"><a href="#配置开发环境" class="headerlink" title="配置开发环境"></a>配置开发环境</h3><h4 id="下载与安装"><a href="#下载与安装" class="headerlink" title="下载与安装"></a>下载与安装</h4><ol>
-<li><a href="http://opencv.org/downloads.html" target="_blank" rel="noopener">OpenCV2.4.11</a></li>
-<li><a href="https://cmake.org/download/" target="_blank" rel="noopener">CMake</a></li>
-</ol>
-<h4 id="配置环境变量"><a href="#配置环境变量" class="headerlink" title="配置环境变量"></a>配置环境变量</h4><ol>
-<li>在系统属性-环境变量-用户变量中新建变量，名为opencv，值为自己解压opencv路径下的build路径，如“D:\opencv\build”（路径名尽量不含空格，方便以后Matlab与OpenCV混合编程）</li>
-<li>在系统属性-环境变量-系统变量中编辑Path变量，在末尾添加“ %opencv%\x86\vc10\bin;%opencv%\x64\vc10\bin”</li>
-<li>编写OpenCV的工程属性表：在D:\opencv下新建文件opencv2411.props，编辑内容为：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span><br><span class="line">&lt;Project ToolsVersion=&quot;4.0&quot; xmlns=&quot;http://schemas.microsoft.com/developer/msbuild/2003&quot;&gt;</span><br><span class="line">  &lt;ImportGroup Label=&quot;PropertySheets&quot; /&gt;</span><br><span class="line">  &lt;PropertyGroup Label=&quot;UserMacros&quot; /&gt;</span><br><span class="line">  &lt;PropertyGroup&gt;</span><br><span class="line">    &lt;IncludePath&gt;$(OPENCV)\include;$(IncludePath)&lt;/IncludePath&gt;</span><br><span class="line">    &lt;LibraryPath Condition=&quot;&apos;$(Platform)&apos;==&apos;Win32&apos;&quot;&gt;$(OPENCV)\x86\vc10\lib;$(LibraryPath)&lt;/LibraryPath&gt;</span><br><span class="line">    &lt;LibraryPath Condition=&quot;&apos;$(Platform)&apos;==&apos;X64&apos;&quot;&gt;$(OPENCV)\x64\vc10\lib;$(LibraryPath)&lt;/LibraryPath&gt;</span><br><span class="line">  &lt;/PropertyGroup&gt;</span><br><span class="line">  &lt;ItemDefinitionGroup&gt;</span><br><span class="line">    &lt;Link Condition=&quot;&apos;$(Configuration)&apos;==&apos;Debug&apos;&quot;&gt;</span><br><span class="line">      &lt;AdditionalDependencies&gt;</span><br><span class="line">        opencv_calib3d2411d.lib;opencv_contrib2411d.lib;opencv_core2411d.lib;</span><br><span class="line">        opencv_features2d2411d.lib;opencv_flann2411d.lib;opencv_gpu2411d.lib;opencv_highgui2411d.lib;</span><br><span class="line">        opencv_imgproc2411d.lib;opencv_legacy2411d.lib;opencv_ml2411d.lib;opencv_nonfree2411d.lib;</span><br><span class="line">        opencv_objdetect2411d.lib;opencv_ocl2411d.lib;opencv_photo2411d.lib;opencv_stitching2411d.lib;</span><br><span class="line">        opencv_superres2411d.lib;opencv_ts2411d.lib;opencv_video2411d.lib;opencv_videostab2411d.lib;</span><br><span class="line">        %(AdditionalDependencies)</span><br><span class="line">      &lt;/AdditionalDependencies&gt;</span><br><span class="line">    &lt;/Link&gt;</span><br><span class="line">    &lt;Link Condition=&quot;&apos;$(Configuration)&apos;==&apos;Release&apos;&quot;&gt;</span><br><span class="line">      &lt;AdditionalDependencies&gt;</span><br><span class="line">        opencv_calib3d2411.lib;opencv_contrib2411.lib;opencv_core2411.lib;opencv_features2d2411.lib;</span><br><span class="line">        opencv_flann2411.lib;opencv_gpu2411.lib;opencv_highgui2411.lib;opencv_imgproc2411.lib;opencv_legacy2411.lib;</span><br><span class="line">        opencv_ml2411.lib;opencv_nonfree2411.lib;opencv_objdetect2411.lib;opencv_ocl2411.lib;opencv_photo2411.lib;</span><br><span class="line">        opencv_stitching2411.lib;opencv_superres2411.lib;opencv_ts2411.lib;opencv_video2411.lib;opencv_videostab2411.lib;</span><br><span class="line">        %(AdditionalDependencies)</span><br><span class="line">      &lt;/AdditionalDependencies&gt;</span><br><span class="line">    &lt;/Link&gt;</span><br><span class="line">  &lt;/ItemDefinitionGroup&gt;</span><br><span class="line">  &lt;ItemGroup /&gt;</span><br><span class="line">&lt;/Project&gt;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h3 id="利用CMake编译OpenCV2-4-11"><a href="#利用CMake编译OpenCV2-4-11" class="headerlink" title="利用CMake编译OpenCV2.4.11"></a>利用CMake编译OpenCV2.4.11</h3><ol>
-<li>打开CMake软件，根据实际情况设置Where is the source code和Where to build为相应路径，如：<img src="./uploads/cmake.png" alt="Cmake编译OpenCV"></li>
-<li>依次点击Configure和Generate</li>
-</ol>
-<h3 id="载入OpenCV工程和添加测试项目"><a href="#载入OpenCV工程和添加测试项目" class="headerlink" title="载入OpenCV工程和添加测试项目"></a>载入OpenCV工程和添加测试项目</h3><ol>
-<li>点击OpenCV工程目录下的OpenCV.sln</li>
-<li>右键解决方案资源管理器中的解决方案，选择添加-现有项目，在目录中选择测试项目的工程文件如cvut_test下的cvut_test.vcxproj，然后将cvut_test项目设为启动项目<img src="./uploads/cvut_test.png" alt="添加cvut_test项目"></li>
-<li>右键属性管理器中的cvut_test，选择添加现有属性表，在目录中选择OpenCV的工程属性表如D:\opencv下的opencv2411.props</li>
-<li>之后就可以方便地执行测试项目和查看其调用的OpenCV源码了</li>
-</ol>
-<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ul>
-<li><a href="http://blog.csdn.net/hnyzwtf/article/details/46403619" target="_blank" rel="noopener">win7 64位下VS2010和opencv 2.4.11的配置</a></li>
-<li><a href="http://www.nmtree.net/2014/03/19/windows_build-opencv-with-cmake-and-vs2013.html" target="_blank" rel="noopener">Windows下利用CMake和VS2013编译OpenCV</a></li>
-<li><a href="http://blog.sina.com.cn/s/blog_8b6c17eb0101l7zd.html" target="_blank" rel="noopener">opencv + cmake + vs2010 配置过程</a></li>
-</ul>
+        <h3 id="模型说明"><a href="#模型说明" class="headerlink" title="模型说明"></a>模型说明</h3><p>KNN分类算法的思路是：如果一个样本在特征空间中的$K$个最相似(即特征空间中最邻近)的样本中的大多数属于某一个类别，则该样本也属于这个类别。<br>KNN分类算法包括三个基本要素：<br>（1）距离度量</p>
+<blockquote>
+<script type="math/tex; mode=display">\begin{equation}
+L_p(x_{i},x_{j})=\left(\sum_{l=1}^{n}\left|x_{i}^{(l)}-x_{j}^{(l)}\right|^{p}\right)^{\frac{1}{p}}
+\end{equation}</script></blockquote>
+<p>（2）$K$值的选择</p>
+<blockquote>
+<p>$K$值越小，整体模型越复杂，容易发生过拟合<br>$K$值越大，整体模型越简单，近似误差会增大（误分类）</p>
+</blockquote>
+<p>（3）测试对象类别的判定</p>
+<blockquote>
+<p>多数表决</p>
+<script type="math/tex; mode=display">\begin{equation}
+\widehat{\nu}=\arg \max_\nu \sum_{K} I(\nu=y_{i})
+\end{equation}</script><p>距离加权表决</p>
+<script type="math/tex; mode=display">\begin{equation}
+\widehat{\nu}=\arg \max_\nu \sum_{K} \omega_{i}\times I(\nu=y_{i})
+\end{equation}</script></blockquote>
+<h3 id="算法步骤"><a href="#算法步骤" class="headerlink" title="算法步骤"></a>算法步骤</h3><blockquote>
+<p>（1）给定测试对象，计算它与训练集中每个对象的距离<br>（2）圈定距离最近的$K$个对象，作为测试对象的近邻<br>（3）根据这k个近邻归属的主要类别，来对测试对象分类</p>
+</blockquote>
+<h3 id="算法优缺点"><a href="#算法优缺点" class="headerlink" title="算法优缺点"></a>算法优缺点</h3><h4 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h4><p>（1）简单、有效。<br>（2）重新训练的代价较低（类别体系的变化和训练集的变化，在Web环境和电子商务应用中是很常见的）。<br>（3）计算时间和空间线性于训练集的规模（在一些场合不算太大）。<br>（4）由于KNN方法主要靠周围有限的邻近的样本，而不是靠判别类域的方法来确定所属类别的，因此对于类域的交叉或重叠较多的待分样本集来说，KNN方法较其他方法更为适合。<br>（5）该算法比较适用于样本容量比较大的类域的自动分类，而那些样本容量较小的类域采用这种算法比较容易产生误分。</p>
+<h4 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h4><p>（1）KNN算法是懒散学习方法（基本上不学习），一些积极学习的算法要快很多。<br>（2）类别评分不是规格化的（不像概率评分）。<br>（3）输出的可解释性不强，例如决策树的可解释性较强。<br>（4）该算法在分类时有个主要的不足是，当样本不平衡时，如一个类的样本容量很大，而其他类样本容量很小时，有可能导致当输入一个新样本时，该样本的K个邻居中大容量类的样本占多数。该算法只计算“最近的”邻居样本，某一类的样本数量很大，那么或者这类样本并不接近目标样本，或者这类样本很靠近目标样本。无论怎样，数量并不能影响运行结果。可以采用权值的方法（和该样本距离小的邻居权值大）来改进。<br>（5）计算量较大。目前常用的解决方法是事先对已知样本点进行剪辑，事先去除对分类作用不大的样本。</p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p>互联网</p>
 
     </div>
 
@@ -319,25 +315,24 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Visual-Studio/" rel="tag"># Visual Studio</a>
-              <a href="/tags/CMake/" rel="tag"># CMake</a>
-              <a href="/tags/OpenCV/" rel="tag"># OpenCV</a>
+              <a href="/tags/%E5%88%86%E7%B1%BB%E7%AE%97%E6%B3%95/" rel="tag"># 分类算法</a>
+              <a href="/tags/KNN/" rel="tag"># KNN</a>
           </div>
 
         
 
           <div class="post-nav">
             <div class="post-nav-next post-nav-item">
-                <a href="/2016/01/28/%E4%BD%BF%E7%94%A8Github-Hexo-Next%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/" rel="next" title="使用Github+Hexo+Next搭建个人博客">
-                  <i class="fa fa-chevron-left"></i> 使用Github+Hexo+Next搭建个人博客
+                <a href="/2016/02/29/%E5%88%A9%E7%94%A8VS2010%E5%92%8CCMake%E7%BC%96%E8%AF%91OpenCV2.4.11/" rel="next" title="利用VS2010和CMake编译OpenCV2.4.11">
+                  <i class="fa fa-chevron-left"></i> 利用VS2010和CMake编译OpenCV2.4.11
                 </a>
             </div>
 
             <span class="post-nav-divider"></span>
 
             <div class="post-nav-prev post-nav-item">
-                <a href="/2016/07/21/%E5%9F%BA%E4%BA%8E%E5%AE%9E%E4%BE%8B%E7%9A%84%E7%AE%97%E6%B3%95/" rel="prev" title="基于实例的算法--KNN分类器">
-                  基于实例的算法--KNN分类器 <i class="fa fa-chevron-right"></i>
+                <a href="/2016/07/21/%E6%97%A0%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0%E4%B8%AD%E7%9A%84%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/" rel="prev" title="无监督学习中的聚类算法">
+                  无监督学习中的聚类算法 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
@@ -377,7 +372,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#配置开发环境"><span class="nav-number">1.</span> <span class="nav-text">配置开发环境</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#下载与安装"><span class="nav-number">1.1.</span> <span class="nav-text">下载与安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置环境变量"><span class="nav-number">1.2.</span> <span class="nav-text">配置环境变量</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#利用CMake编译OpenCV2-4-11"><span class="nav-number">2.</span> <span class="nav-text">利用CMake编译OpenCV2.4.11</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#载入OpenCV工程和添加测试项目"><span class="nav-number">3.</span> <span class="nav-text">载入OpenCV工程和添加测试项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考资料"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#模型说明"><span class="nav-number">1.</span> <span class="nav-text">模型说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算法步骤"><span class="nav-number">2.</span> <span class="nav-text">算法步骤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#算法优缺点"><span class="nav-number">3.</span> <span class="nav-text">算法优缺点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#优点"><span class="nav-number">3.1.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#缺点"><span class="nav-number">3.2.</span> <span class="nav-text">缺点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考资料"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -523,6 +518,54 @@
   
 
   
+      
+<script type="text/x-mathjax-config">
+
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [ ['$', '$'], ['\\(', '\\)'] ],
+      processEscapes: true,
+      skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+    },
+    TeX: {
+      equationNumbers: {
+        autoNumber: 'AMS'
+      }
+    }
+  });
+
+  MathJax.Hub.Register.StartupHook('TeX Jax Ready', function() {
+    MathJax.InputJax.TeX.prefilterHooks.Add(function(data) {
+      if (data.display) {
+        var next = data.script.nextSibling;
+        while (next && next.nodeName.toLowerCase() === '#text') {
+          next = next.nextSibling;
+        }
+        if (next && next.nodeName.toLowerCase() === 'br') {
+          next.parentNode.removeChild(next);
+        }
+      }
+    });
+  });
+
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for (i = 0; i < all.length; i += 1) {
+      element = document.getElementById(all[i].inputID + '-Frame').parentNode;
+      if (element.nodeName.toLowerCase() == 'li') {
+        element = element.parentNode;
+      }
+      element.classList.add('has-jax');
+    }
+  });
+</script>
+<script>
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML', () => {
+    MathJax.Hub.Typeset();
+  }, window.MathJax);
+</script>
+
+    
 
   
 
