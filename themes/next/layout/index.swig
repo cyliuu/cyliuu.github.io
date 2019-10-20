@@ -1,39 +1,18 @@
 {% extends '_layout.swig' %}
-{% import '_macro/post.swig' as post_template %}
-{% import '_macro/sidebar.swig' as sidebar_template %}
+{% import '_macro/sidebar.swig' as sidebar_template with context %}
 
-{% block title %} {{ config.title }} {% endblock %}
-
-{% block page_class %}
-  {% if is_home() %} page-home {% endif %}
-{% endblock %}
+{% block title %}{{ title }}{%- if theme.index_with_subtitle and subtitle %} - {{ subtitle }}{%- endif %}{% endblock %}
 
 {% block content %}
-  <section id="posts" class="posts-expand">
 
-    {% set posts_normal = page.posts %}
-
-    {# Compatible with Hexo 2.* #}
-    {% if page.posts.first().sticky >= 0 %}
-      {# Extract sticky posts. #}
-      {% if page.current === 1 %}
-        {% set posts_sticky = site.posts.find({sticky: { '$gt': 0 }}) %}
-        {% set posts_sticky = posts_sticky.sort('-sticky') %}
-        {% for post in posts_sticky %}
-          {{ post_template.render(post, true) }}
-        {% endfor %}
-      {% endif %}
-
-      {% set posts_normal = page.posts.find({sticky: 0}) %}
-    {% endif %}
-
-    {% for post in posts_normal %}
-      {{ post_template.render(post, true) }}
-    {% endfor %}
-
-  </section>
+  <div class="posts-expand">
+    {%- for post in page.posts.toArray() %}
+      {{ partial('_macro/post.swig', {post: post, is_index: true}) }}
+    {%- endfor %}
+  </div>
 
   {% include '_partials/pagination.swig' %}
+
 {% endblock %}
 
 {% block sidebar %}
