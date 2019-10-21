@@ -282,7 +282,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>机器学习的三大部分一般包括模型、策略和算法，模型是指所选的机器学习算法应该具有某种特性或表达形式，策略是指如何从模型中选择出需要优化的目标函数，而算法则是使用什么优化算法来求解。就我个人的理解，模型和算法通过策略（优化的目标函数）间接关联，其本身有一定的独立性。<br>本篇文章将结合模型、策略和算法介绍无监督学习问题中常用的一些聚类算法，包括但不限于机器学习十大经典算法中的EM算法和K-Means算法。</p>
+        <p>机器学习的三大部分一般包括模型、策略和算法，模型是指所选的机器学习算法应该具有某种特性或表达形式，策略是指如何从模型中选择出需要优化的目标函数，而算法则是使用什么优化算法来求解。就我个人的理解，模型和算法通过策略（优化的目标函数）间接关联，其本身有一定的独立性。<br>本篇文章将结合模型、策略和算法介绍无监督学习问题中常用的一些聚类算法，包括但不限于机器学习十大经典算法中的EM算法和K-Means算法。</p><a id="more"></a>
 <h2 id="EM算法"><a href="#EM算法" class="headerlink" title="EM算法"></a>EM算法</h2><h3 id="模型说明"><a href="#模型说明" class="headerlink" title="模型说明"></a>模型说明</h3><p>考虑一个参数估计问题，现有$n$个训练样本$\lbrace y_1,y_2,\ldots,y_n \rbrace \in Y$，需要用多个参数$\theta$去拟合数据，那么这个问题的似然函数为</p>
 <script type="math/tex; mode=display">\begin{equation}
 l(\theta)=\log P(Y\mid\theta)=\sum_{j=1}^n\log P(y_j\mid\theta)
@@ -584,6 +584,19 @@ m_{h}(x)=\frac{\sum_{i=1}^{n}x_{i}g(\left|\left| \frac{x-x_{i}}{h}\right|\right|
           <i class="fa fa-arrow-up"></i>
           <span>0%</span>
         </div>
+
+      
+      <script type="text/javascript" charset="utf-8" src="/js/tagcloud.js"></script>
+      <script type="text/javascript" charset="utf-8" src="/js/tagcanvas.js"></script>
+      <div class="widget-wrap">
+          <h3 class="widget-title"></h3>
+          <div id="myCanvasContainer" class="widget tagcloud">
+              <canvas width="250" height="250" id="resCanvas" style="width=100%">
+                  <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/CMake/" rel="tag">CMake</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/EM/" rel="tag">EM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GMM/" rel="tag">GMM</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Github/" rel="tag">Github</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/K-Means/" rel="tag">K-Means</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KNN/" rel="tag">KNN</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/OpenCV/" rel="tag">OpenCV</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Visual-Studio/" rel="tag">Visual Studio</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%88%86%E7%B1%BB%E7%AE%97%E6%B3%95/" rel="tag">分类算法</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%97%A0%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/" rel="tag">无监督学习</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E8%81%9A%E7%B1%BB%E7%AE%97%E6%B3%95/" rel="tag">聚类算法</a><span class="tag-list-count">1</span></li></ul>
+              </canvas>
+          </div>
+      </div>
+      
 
     </div>
   </aside>
