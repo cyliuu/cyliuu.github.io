@@ -1,0 +1,127 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>拓展案例 F2 · 设计GPS数据点内存池</title><style>:root{--bg:#f6f8fa;--text:#24292f;--muted:#57606a;--line:#d0d7de;--blue:#0969da;--green:#1a7f37;--red:#cf222e}*{box-sizing:border-box}body{margin:0;padding:40px 20px;background:var(--bg);color:var(--text);font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button{font:inherit;cursor:pointer}main{max-width:1200px;margin:auto}.eyebrow{font-size:12px;color:var(--blue);font-weight:700;text-align:center}h1{text-align:center;font-size:24px;font-weight:600;margin:2px 0 12px}h2{font-size:1.18rem;margin:0 0 12px}h3{font-size:1rem;margin:0 0 8px}p{margin:0 0 12px}.lead{max-width:900px;margin:auto;text-align:center;color:var(--muted);font-size:14px}nav{display:flex;justify-content:center;flex-wrap:wrap;gap:9px;margin:14px 0 20px;font-size:13px}a{color:var(--blue)}nav a{border:1px solid var(--line);background:#fff;padding:7px 11px;border-radius:8px;text-decoration:none}.panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px;box-shadow:0 8px 24px rgba(140,149,159,.15);margin-bottom:16px}.grid{display:grid;grid-template-columns:1.08fr 1fr;gap:22px}.code{border:1px solid var(--line);border-radius:8px;overflow:hidden}.codehead{padding:9px 14px;background:#f6f8fa;border-bottom:1px solid var(--line);color:var(--muted);font-size:13px}.code pre{margin:0;padding:10px 14px;overflow:auto;max-height:540px;font:14px/1.8 ui-monospace,SFMono-Regular,Consolas,monospace}.file{border-top:1px solid var(--line)}.file:first-child{border-top:0}.file summary{padding:8px 14px;cursor:pointer;font-size:13px;color:var(--blue);font-weight:600}.btn{padding:10px 20px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--text);font-size:14px;font-weight:600}.btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}.controls{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 18px}.choice{display:block;width:100%;text-align:left;margin:7px 0}.choice.correct{border-color:var(--green);background:#dafbe1}.choice.wrong{border-color:var(--red);background:#ffebe9}.note{border-left:4px solid var(--blue);background:#f6f8fa;padding:10px 13px;margin-top:13px}.note.good{border-color:var(--green)}.note.bad{border-color:var(--red)}.terminal{background:#24292f;color:#57ab5a;border-radius:8px;padding:16px;white-space:pre-wrap;font:13px/1.6 ui-monospace,Consolas,monospace;min-height:125px;margin-top:16px}.book-text{white-space:pre-line;font-size:14px;color:var(--muted)}.chips{display:flex;gap:6px;flex-wrap:wrap}.chip{display:inline-block;border:1px solid var(--line);background:#f6f8fa;border-radius:6px;padding:3px 7px;font-size:13px}.small{color:var(--muted);font-size:14px}button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--blue);outline-offset:2px}@media(max-width:760px){body{padding:16px 10px}.grid{grid-template-columns:1fr}.panel{padding:15px}}.experiment-controls{align-items:end}.experiment-controls label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}.experiment-controls input,.experiment-controls select{min-width:130px;max-width:210px;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--text);font:14px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.experiment-controls input:focus-visible,.experiment-controls select:focus-visible{outline:2px solid var(--blue);outline-offset:2px}</style><link rel="stylesheet" href="../../../案例统一样式.css"></head><body class="case-document"><main class="case-page">
+<div class="eyebrow">项目 F · 项目实战 · 拓展案例 F2</div><h1>设计GPS数据点内存池</h1><p class="lead">在固定容量的内存池中分配与回收数据点，比较空闲链表和普通动态分配的流程。</p><nav class="case-nav" aria-label="案例导航"><a href="../../../项目演示/项目F.html">返回项目 F</a><a href="../../../资源目录.html#case-F2">返回资源总目录</a></nav><section class="case-meta" aria-label="案例知识与相关资源"><div class="case-meta-group"><span class="case-meta-label">对应知识点</span><div class="case-meta-items"><span class="case-tag">知识点 96 · 内存池</span></div></div><div class="case-meta-group"><span class="case-meta-label">相关机制页</span><div class="case-meta-items"><span class="case-empty">暂无独立机制页</span></div></div></section>
+<section class="panel"><h2>案例任务与源码核对</h2><div class="grid"><div><h3>情境背景</h3><div class="book-text">在高性能的实时系统中，例如自动驾驶仿真、游戏引擎或高频交易系统，程序需要以极高的频率创建和销毁大量的小对象。以我们的仿真系统为例，GPS 接收器可能每秒都会产生数百个数据点（GPSDataPoint）。如果每次都使用标准的 new 和 delete 操作符在堆（Heap）上动态分配和释放内存，将会带来两个严重的性能问题：一是时间开销（new 和 delete 是相对较慢的操作，因为它们通常需要调用操作系统内核来进行内存管理，这涉及到加锁、查找合适的内存块等复杂步骤）；二是内存碎片（频繁地申请和释放大小不一的内存块，容易在堆上产生大量不连续的小空闲块，导致即使总的空闲内存足够，也可能无法分配出一个较大的连续内存块）。为了解决这个问题，一种高效的内存管理技术——内存池 (Memory Pool) 应运而生，其核心思想是在程序启动时一次性向操作系统申请一大块连续的内存，然后由程序自己来管理这块内存的分配和回收，避免频繁的系统调用并从根本上消除内存碎片问题。</div><div class="note"><strong>背景说明与实现边界：</strong>“每次 new/delete 通常调用操作系统”“内存池从根本上消除碎片”不宜当作普遍结论，实际行为取决于分配器和工作负载。当前 GPSDataPool 没有处理容量为 0 的输入；性能倍数的计算也没有防范毫秒计时结果为 0。本页只讲空闲链表的设计意图，不把该实现作为可直接复用的生产级模板。</div><h3 style="margin-top:18px">案例要求</h3><div class="book-text">设计并实现面向 GPSDataPoint 的简单内存池，与标准 new/delete 比较性能。GPSDataPoint 包含经度、纬度和时间戳；GPSDataPool 在构造时一次性预分配大量对象，用空闲链表管理未使用内存块，并提供 allocate() 与 deallocate()。在 main 中分别大量执行标准分配/释放和内存池分配/回收，通过输出比较两种方法的执行效率。</div></div><div><div class="note"><strong>源码核对重点：</strong>池化可能降低频繁 new/delete 的成本，但性能依赖工作负载；需要核查池容量、对齐、构造析构与线程安全。</div></div></div></section>
+<section class="panel"><h2>先预测，再验证</h2><div class="grid"><div><h3>内存池用空闲链表复用 GPS 点，最合理的结论是？</h3><div id="choices"><button class="btn choice" data-choice="0">任何机器都固定快 10 倍</button><button class="btn choice" data-choice="1">减少特定场景的分配开销，但要实测且管理生命周期</button><button class="btn choice" data-choice="2">对象可以无限复用且无需释放</button></div><div id="feedback" class="note" aria-live="polite">请选择一种判断，查看依据。</div><div class="controls"><button class="btn primary" id="next">推演下一步</button><button class="btn" id="reset">重新开始</button></div><div id="trace" class="terminal" aria-live="polite">等待推演。网页展示源码逻辑，不在浏览器执行 C++ 程序。</div></div><div class="code"><div class="codehead">工程原始文件 · 点击文件名展开</div><details class="file" open><summary>eee_F2/main.cpp</summary><pre>// 设计并实现一个简单的对象内存池
+
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+#include &lt;chrono&gt; // 用于计时
+
+// 需要频繁创建和销毁的对象
+struct GPSDataPoint {
+    double longitude;
+    double latitude;
+    long long timestamp;
+};
+
+// 为 GPSDataPoint 设计的内存池
+class GPSDataPool {
+public:
+    // 构造函数，指定池的大小
+    explicit GPSDataPool(size_t size) : pool_size_(size) {
+        // 一次性申请大块内存
+        pool_ = new GPSDataPoint[pool_size_];
+
+        // 将所有内存块串成一个空闲链表
+        // 这里用一种技巧：将下一个空闲块的地址存放在当前空闲块本身的空间里
+        for (size_t i = 0; i &lt; pool_size_ - 1; ++i) {
+            // reinterpret_cast 用于在指针类型间进行底层转换
+            *reinterpret_cast&lt;GPSDataPoint**&gt;(&amp;pool_[i]) = &amp;pool_[i + 1];
+        }
+        // 链表末尾指向 nullptr
+        *reinterpret_cast&lt;GPSDataPoint**&gt;(&amp;pool_[pool_size_ - 1]) = nullptr;
+
+        // free_list_ 指向第一个空闲块
+        free_list_ = &amp;pool_[0];
+    }
+
+    // 析构函数，释放整个池的内存
+    ~GPSDataPool() {
+        delete[] pool_;
+    }
+
+    // 分配一个对象
+    GPSDataPoint* allocate() {
+        if (free_list_ == nullptr) {
+            // 如果内存池耗尽，可以返回空指针或抛出异常
+            return nullptr; 
+        }
+        // 从空闲链表头部取下一个节点
+        GPSDataPoint* head = free_list_;
+        free_list_ = *reinterpret_cast&lt;GPSDataPoint**&gt;(head);
+        return head;
+    }
+
+    // 回收一个对象
+    void deallocate(GPSDataPoint* ptr) {
+        if (ptr == nullptr) return;
+        // 将回收的节点作为新的头节点，插入到空闲链表头部
+        *reinterpret_cast&lt;GPSDataPoint**&gt;(ptr) = free_list_;
+        free_list_ = ptr;
+    }
+
+private:
+    GPSDataPoint* pool_;      // 指向内存池的起始地址
+    GPSDataPoint* free_list_; // 指向空闲链表的头部
+    size_t pool_size_;
+
+    // 禁止拷贝和赋值
+    GPSDataPool(const GPSDataPool&amp;) = delete;
+    GPSDataPool&amp; operator=(const GPSDataPool&amp;) = delete;
+};
+
+int main() {
+    const int ALLOCATIONS = 100000;
+    const int LOOPS = 100;
+
+    std::cout &lt;&lt; &quot;--- 性能对比测试 ---&quot; &lt;&lt; std::endl;
+    std::cout &lt;&lt; &quot;每次循环分配和释放 &quot; &lt;&lt; ALLOCATIONS &lt;&lt; &quot; 个对象, 共循环 &quot; &lt;&lt; LOOPS &lt;&lt; &quot; 次。\n&quot; &lt;&lt; std::endl;
+
+    // 测试用例 A：使用 new / delete
+    auto start_time = std::chrono::high_resolution_clock::now();
+    for (int i = 0; i &lt; LOOPS; ++i) {
+        std::vector&lt;GPSDataPoint*&gt; ptrs;
+        ptrs.reserve(ALLOCATIONS);
+        for (int j = 0; j &lt; ALLOCATIONS; ++j) {
+            ptrs.push_back(new GPSDataPoint());
+        }
+        for (GPSDataPoint* ptr : ptrs) {
+            delete ptr;
+        }
+    }
+    auto end_time = std::chrono::high_resolution_clock::now();
+    auto duration_new_delete = std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;(end_time - start_time).count();
+    std::cout &lt;&lt; &quot;方法 A (new/delete) 总耗时: &quot; &lt;&lt; duration_new_delete &lt;&lt; &quot; 毫秒&quot; &lt;&lt; std::endl;
+
+    // 测试用例 B：使用内存池
+    GPSDataPool pool(ALLOCATIONS); // 创建一个足够大的内存池
+    start_time = std::chrono::high_resolution_clock::now();
+    for (int i = 0; i &lt; LOOPS; ++i) {
+        std::vector&lt;GPSDataPoint*&gt; ptrs;
+        ptrs.reserve(ALLOCATIONS);
+        for (int j = 0; j &lt; ALLOCATIONS; ++j) {
+            ptrs.push_back(pool.allocate());
+        }
+        for (GPSDataPoint* ptr : ptrs) {
+            pool.deallocate(ptr);
+        }
+    }
+    end_time = std::chrono::high_resolution_clock::now();
+    auto duration_pool = std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;(end_time - start_time).count();
+    std::cout &lt;&lt; &quot;方法 B (Memory Pool) 总耗时: &quot; &lt;&lt; duration_pool &lt;&lt; &quot; 毫秒&quot; &lt;&lt; std::endl;
+
+    std::cout &lt;&lt; &quot;\n性能提升倍数: &quot; &lt;&lt; static_cast&lt;double&gt;(duration_new_delete) / duration_pool &lt;&lt; &quot; 倍&quot; &lt;&lt; std::endl;
+
+    return 0;
+}
+</pre></details><details class="file"><summary>eee_F2/CMakeLists.txt</summary><pre>cmake_minimum_required(VERSION 3.16)
+project(eee_F2 LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+add_executable(eee_F2 main.cpp)
+</pre></details></div></div></section>
+<section class="panel"><h2>条件变更实验</h2><p><strong>先预测：</strong>同一空闲块被归还池后又分配给下一次 GPS 点请求。</p><div class="controls"><button class="btn primary" id="revealVariant">核对变式结果</button><button class="btn" id="resetVariant">重新预测</button></div><div class="terminal" id="variantResult" aria-live="polite">先根据源码与条件判断，再揭示结果。</div></section><section class="panel"><h2>改条件，再推演 · 推演池容量与空闲链表</h2><p class="small">修改当前案例的条件，先预测输出，再核对源码规则。属于浏览器教学模型，不会修改或执行原 C++ 工程。</p><div class="controls experiment-controls"><label>池容量<input id="exp-capacity" type="number" min="1" max="12" step="1" value="3"></label><label>连续申请数<input id="exp-requests" type="number" min="0" max="15" step="1" value="4"></label><button class="btn primary" id="runExperiment" type="button">按新条件推演</button><button class="btn" id="resetExperiment" type="button">恢复初始条件</button></div><div id="experimentResult" class="terminal" aria-live="polite">先预测，再点击“按新条件推演”核对。</div></section><p class="small">教学说明：选择题与步骤推演是依据源码编写的浏览器交互，不等于实际编译、链接、运行图形库或 Shell 脚本。涉及本机文件、设备、第三方库或浮点舍入时，以源码和实际运行环境为准。</p>
+</main><script>const lesson={"correct":1,"explanation":"池化可能降低频繁 new/delete 的成本，但性能依赖工作负载；需要核查池容量、对齐、构造析构与线程安全。","steps":["预先准备可复用存储块。","分配时取空闲块，释放时归还。","与基线在相同负载下测量，不宣称固定加速。"]};(()=>{'use strict';const $=id=>document.getElementById(id);let step=0;function reset(){step=0;$('feedback').textContent='请选择一种判断，查看依据。';$('feedback').className='note';$('trace').textContent='等待推演。网页展示源码逻辑，不在浏览器执行 C++ 程序。';document.querySelectorAll('[data-choice]').forEach(b=>{b.classList.remove('correct','wrong');b.disabled=false});$('next').disabled=false}document.querySelectorAll('[data-choice]').forEach(b=>b.onclick=()=>{const i=Number(b.dataset.choice),ok=i===lesson.correct;$('feedback').textContent=(ok?'判断正确。':'需要修正。')+lesson.explanation;$('feedback').className='note '+(ok?'good':'bad');document.querySelectorAll('[data-choice]').forEach(x=>{x.disabled=true;x.classList.toggle('correct',Number(x.dataset.choice)===lesson.correct);x.classList.toggle('wrong',x===b&&!ok)})});$('next').onclick=()=>{step=Math.min(step+1,lesson.steps.length);$('trace').textContent=lesson.steps.slice(0,step).map((x,i)=>String(i+1)+'. '+x).join('\n');$('next').disabled=step===lesson.steps.length};$('reset').onclick=reset;})();</script><script>(()=>{"use strict";const v=["同一空闲块被归还池后又分配给下一次 GPS 点请求。","内存位置可被复用；不能据此承诺固定加速倍数或忽略对象生命周期。","池化管理空闲链表，性能须实测且要保证构造/析构语义。"];const result=document.getElementById("variantResult");document.getElementById("revealVariant").onclick=()=>{result.textContent="推演结果："+v[1]+"\n依据："+v[2]};document.getElementById("resetVariant").onclick=()=>{result.textContent="先根据源码与条件判断，再揭示结果。"}})();</script><script>(()=>{"use strict";const fields=[{"label":"池容量","id":"capacity","kind":"number","value":3,"min":1,"max":12,"step":1},{"label":"连续申请数","id":"requests","kind":"number","value":4,"min":0,"max":15,"step":1}];const calculate=v=>`容量 ${v.capacity}、未归还前申请 ${v.requests} 次：成功 ${Math.min(v.capacity,v.requests)} 次，返回 nullptr ${Math.max(0,v.requests-v.capacity)} 次。源码池构造与空闲链表写入有实现层面风险；此处只推演其设计意图，不宣称运行安全或固定性能收益。`;const result=document.getElementById("experimentResult");for(const field of fields){document.getElementById("exp-"+field.id).oninput=()=>{result.textContent="条件已变化，请先预测，再点击按钮核对。"}}document.getElementById("runExperiment").onclick=()=>{const values={};for(const field of fields){const input=document.getElementById("exp-"+field.id);if(field.kind==="number"){const value=Number(input.value);const offset=(value-field.min)/field.step;if(input.value.trim()===""||!Number.isFinite(value)||value<field.min||value>field.max||Math.abs(offset-Math.round(offset))>1e-8){result.textContent="请填写范围和步长内的有效数值："+field.label;return}values[field.id]=value}else{if(!field.options.some(option=>option[0]===input.value)){result.textContent="请选择有效选项："+field.label;return}values[field.id]=input.value}}result.textContent=calculate(values)};document.getElementById("resetExperiment").onclick=()=>{for(const field of fields){document.getElementById("exp-"+field.id).value=String(field.kind==="number"?field.value:field.options[0][0])}result.textContent="先预测，再点击“按新条件推演”核对。"}})();</script></body></html>

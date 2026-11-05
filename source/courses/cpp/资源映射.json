@@ -1,0 +1,2093 @@
+{
+  "title": "C++课程门户网站资源映射",
+  "version": "V1.01",
+  "note": "AIGC 案例 A～H 分属八个项目；80 个普通与拓展案例单独编号。9 个任务讲解知识点列在项目/任务知识点中；E2 的案例补充机制不误标为知识点 81。26 个机制页均可从相关案例访问。",
+  "projects": [
+    {
+      "letter": "A",
+      "page": "项目演示/项目A.html",
+      "knowledge": [
+        {
+          "id": 1,
+          "name": "C++就业岗位"
+        },
+        {
+          "id": 2,
+          "name": "C++应用领域"
+        },
+        {
+          "id": 9,
+          "name": "汇编体系"
+        },
+        {
+          "id": 16,
+          "name": "Makefile"
+        }
+      ]
+    },
+    {
+      "letter": "B",
+      "page": "项目演示/项目B.html",
+      "knowledge": [
+        {
+          "id": 26,
+          "name": "定长整型数据"
+        },
+        {
+          "id": 30,
+          "name": "位运算符"
+        },
+        {
+          "id": 32,
+          "name": "类型运算符"
+        }
+      ]
+    },
+    {
+      "letter": "C",
+      "page": "项目演示/项目C.html",
+      "knowledge": []
+    },
+    {
+      "letter": "D",
+      "page": "项目演示/项目D.html",
+      "knowledge": [
+        {
+          "id": 61,
+          "name": "类型别名"
+        }
+      ]
+    },
+    {
+      "letter": "E",
+      "page": "项目演示/项目E.html",
+      "knowledge": [
+        {
+          "id": 81,
+          "name": "Python/C/C++混合编程"
+        }
+      ]
+    },
+    {
+      "letter": "F",
+      "page": "项目演示/项目F.html",
+      "knowledge": []
+    },
+    {
+      "letter": "G",
+      "page": "项目演示/项目G.html",
+      "knowledge": []
+    },
+    {
+      "letter": "H",
+      "page": "项目演示/项目H.html",
+      "knowledge": []
+    }
+  ],
+  "cases": [
+    {
+      "key": "1",
+      "title": "解析氛围灯颜色",
+      "project": "A",
+      "task": "任务 01 · 通信数据解析-进制转换",
+      "source": "simulation_examples/ee_1/",
+      "knowledge": [
+        {
+          "id": 4,
+          "name": "计算机系统原理"
+        },
+        {
+          "id": 5,
+          "name": "计算机数据存储"
+        },
+        {
+          "id": 6,
+          "name": "进制转换与运算"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [],
+      "page": "案例演示/项目A_开发环境搭建/任务01_通信数据解析/案例01_解析氛围灯颜色.html"
+    },
+    {
+      "key": "2",
+      "title": "解码行车状态码",
+      "project": "A",
+      "task": "任务 01 · 通信数据解析-进制转换",
+      "source": "simulation_examples/ee_2/",
+      "knowledge": [
+        {
+          "id": 6,
+          "name": "进制转换与运算"
+        },
+        {
+          "id": 7,
+          "name": "信息表示与编码"
+        },
+        {
+          "id": 8,
+          "name": "非数值信息表示"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "位运算与状态掩码",
+          "page": "计算机系统/位运算与状态掩码.html"
+        },
+        {
+          "name": "补码全能实验室",
+          "page": "计算机系统/补码全能实验室.html"
+        }
+      ],
+      "page": "案例演示/项目A_开发环境搭建/任务01_通信数据解析/案例02_解码行车状态码.html"
+    },
+    {
+      "key": "3",
+      "title": "车载终端欢迎横幅",
+      "project": "A",
+      "task": "任务 02 · “您好，自动驾驶”应用构建-项目构建",
+      "source": "simulation_examples/ee_3/",
+      "knowledge": [
+        {
+          "id": 10,
+          "name": "简单项目构建方法"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "源文件编译与链接",
+          "page": "工程构建/源文件编译与链接.html"
+        }
+      ],
+      "page": "案例演示/项目A_开发环境搭建/任务02_应用构建/案例03_车载终端欢迎横幅.html"
+    },
+    {
+      "key": "4",
+      "title": "模块化欢迎信息",
+      "project": "A",
+      "task": "任务 02 · “您好，自动驾驶”应用构建-项目构建",
+      "source": "simulation_examples/ee_4/",
+      "knowledge": [
+        {
+          "id": 11,
+          "name": "复杂项目构建方法"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "源文件编译与链接",
+          "page": "工程构建/源文件编译与链接.html"
+        }
+      ],
+      "page": "案例演示/项目A_开发环境搭建/任务02_应用构建/案例04_模块化欢迎信息.html"
+    },
+    {
+      "key": "A1",
+      "title": "构建跨平台项目",
+      "project": "A",
+      "task": "项目实战 · 车载启动画面定制-项目管理",
+      "source": "simulation_examples/eee_A1/",
+      "knowledge": [
+        {
+          "id": 12,
+          "name": "开发平台"
+        },
+        {
+          "id": 13,
+          "name": "IDE配置"
+        },
+        {
+          "id": 14,
+          "name": "项目结构"
+        },
+        {
+          "id": 15,
+          "name": "项目管理"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "源文件编译与链接",
+          "page": "工程构建/源文件编译与链接.html"
+        }
+      ],
+      "page": "案例演示/项目A_开发环境搭建/项目实战/拓展案例A1_构建跨平台项目.html"
+    },
+    {
+      "key": "A2",
+      "title": "使用CMake注入版本信息",
+      "project": "A",
+      "task": "项目实战 · 车载启动画面定制-项目管理",
+      "source": "simulation_examples/eee_A2/",
+      "knowledge": [
+        {
+          "id": 17,
+          "name": "CMake"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "源文件编译与链接",
+          "page": "工程构建/源文件编译与链接.html"
+        }
+      ],
+      "page": "案例演示/项目A_开发环境搭建/项目实战/拓展案例A2_使用CMake注入版本信息.html"
+    },
+    {
+      "key": "5",
+      "title": "实现基础人机交互",
+      "project": "B",
+      "task": "任务 03 · 人机交互实现-输入与输出",
+      "source": "simulation_examples/ee_5/",
+      "knowledge": [
+        {
+          "id": 19,
+          "name": "标准命名空间"
+        },
+        {
+          "id": 20,
+          "name": "标准输入输出"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [],
+      "page": "案例演示/项目B_信息交互设计/任务03_人机交互/案例05_实现基础人机交互.html"
+    },
+    {
+      "key": "6",
+      "title": "格式化输出仪表盘信息",
+      "project": "B",
+      "task": "任务 03 · 人机交互实现-输入与输出",
+      "source": "simulation_examples/ee_6/",
+      "knowledge": [
+        {
+          "id": 20,
+          "name": "标准输入输出"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [],
+      "page": "案例演示/项目B_信息交互设计/任务03_人机交互/案例06_格式化输出仪表盘信息.html"
+    },
+    {
+      "key": "7",
+      "title": "接收程序启动参数",
+      "project": "B",
+      "task": "任务 03 · 人机交互实现-输入与输出",
+      "source": "simulation_examples/ee_7/",
+      "knowledge": [
+        {
+          "id": 21,
+          "name": "命令行参数"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [],
+      "page": "案例演示/项目B_信息交互设计/任务03_人机交互/案例07_接收程序启动参数.html"
+    },
+    {
+      "key": "8",
+      "title": "计算累计里程",
+      "project": "B",
+      "task": "任务 04 · 车辆状态展示-基本数据类型",
+      "source": "simulation_examples/ee_8/",
+      "knowledge": [
+        {
+          "id": 22,
+          "name": "变量"
+        },
+        {
+          "id": 23,
+          "name": "整型数据"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "整型边界与溢出",
+          "page": "计算机系统/整型边界与溢出.html"
+        }
+      ],
+      "page": "案例演示/项目B_信息交互设计/任务04_车辆状态展示/案例08_计算累计里程.html"
+    },
+    {
+      "key": "9",
+      "title": "加密车门解锁信号",
+      "project": "B",
+      "task": "任务 04 · 车辆状态展示-基本数据类型",
+      "source": "simulation_examples/ee_9/",
+      "knowledge": [
+        {
+          "id": 24,
+          "name": "字符型数据"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "整型边界与溢出",
+          "page": "计算机系统/整型边界与溢出.html"
+        }
+      ],
+      "page": "案例演示/项目B_信息交互设计/任务04_车辆状态展示/案例09_加密车门解锁信号.html"
+    },
+    {
+      "key": "10",
+      "title": "预警驾驶安全信息",
+      "project": "B",
+      "task": "任务 04 · 车辆状态展示-基本数据类型",
+      "source": "simulation_examples/ee_10/",
+      "knowledge": [
+        {
+          "id": 25,
+          "name": "布尔型数据"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [],
+      "page": "案例演示/项目B_信息交互设计/任务04_车辆状态展示/案例10_预警驾驶安全信息.html"
+    },
+    {
+      "key": "11",
+      "title": "模拟电池电量衰减",
+      "project": "B",
+      "task": "任务 04 · 车辆状态展示-基本数据类型",
+      "source": "simulation_examples/ee_11/",
+      "knowledge": [
+        {
+          "id": 27,
+          "name": "实型数据"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "浮点数精度实验",
+          "page": "计算机系统/浮点数精度实验.html"
+        }
+      ],
+      "page": "案例演示/项目B_信息交互设计/任务04_车辆状态展示/案例11_模拟电池电量衰减.html"
+    },
+    {
+      "key": "12",
+      "title": "油耗计算器",
+      "project": "B",
+      "task": "任务 05 · 车辆数据计算-算术运算",
+      "source": "simulation_examples/ee_12/",
+      "knowledge": [
+        {
+          "id": 28,
+          "name": "常量"
+        },
+        {
+          "id": 29,
+          "name": "算术运算符"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [],
+      "page": "案例演示/项目B_信息交互设计/任务05_车辆数据计算/案例12_油耗计算器.html"
+    },
+    {
+      "key": "13",
+      "title": "同时更新坐标",
+      "project": "B",
+      "task": "任务 05 · 车辆数据计算-算术运算",
+      "source": "simulation_examples/ee_13/",
+      "knowledge": [
+        {
+          "id": 31,
+          "name": "其他运算符"
+        },
+        {
+          "id": 33,
+          "name": "运算符优先级"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [],
+      "page": "案例演示/项目B_信息交互设计/任务05_车辆数据计算/案例13_同时更新坐标.html"
+    },
+    {
+      "key": "14",
+      "title": "计算平均处理时间",
+      "project": "B",
+      "task": "任务 05 · 车辆数据计算-算术运算",
+      "source": "simulation_examples/ee_14/",
+      "knowledge": [
+        {
+          "id": 34,
+          "name": "类型转换"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "浮点数精度实验",
+          "page": "计算机系统/浮点数精度实验.html"
+        }
+      ],
+      "page": "案例演示/项目B_信息交互设计/任务05_车辆数据计算/案例14_计算平均处理时间.html"
+    },
+    {
+      "key": "B1",
+      "title": "编写批处理脚本",
+      "project": "B",
+      "task": "项目实战 · 信息交互模块测试-自动化测试",
+      "source": "simulation_examples/eee_B1/",
+      "knowledge": [
+        {
+          "id": 35,
+          "name": "Bash"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [],
+      "page": "案例演示/项目B_信息交互设计/项目实战/拓展案例B1_编写批处理脚本.html"
+    },
+    {
+      "key": "B2",
+      "title": "批量文件处理脚本",
+      "project": "B",
+      "task": "项目实战 · 信息交互模块测试-自动化测试",
+      "source": "simulation_examples/eee_B2/",
+      "knowledge": [
+        {
+          "id": 36,
+          "name": "Shell"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [],
+      "page": "案例演示/项目B_信息交互设计/项目实战/拓展案例B2_批量文件处理脚本.html"
+    },
+    {
+      "key": "15",
+      "title": "车辆启动自检",
+      "project": "C",
+      "task": "任务 06 · 启动流程设计-顺序结构",
+      "source": "simulation_examples/ee_15/",
+      "knowledge": [
+        {
+          "id": 38,
+          "name": "分隔符"
+        },
+        {
+          "id": 39,
+          "name": "语句嵌套"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [],
+      "page": "案例演示/项目C_控制逻辑模拟/任务06_启动流程/案例15_车辆启动自检.html"
+    },
+    {
+      "key": "16",
+      "title": "理解变量作用域",
+      "project": "C",
+      "task": "任务 06 · 启动流程设计-顺序结构",
+      "source": "simulation_examples/ee_16/",
+      "knowledge": [
+        {
+          "id": 40,
+          "name": "变量作用域"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "变量作用域与栈帧",
+          "page": "函数/变量作用域与栈帧.html"
+        }
+      ],
+      "page": "案例演示/项目C_控制逻辑模拟/任务06_启动流程/案例16_理解变量作用域.html"
+    },
+    {
+      "key": "17",
+      "title": "记录CAN总线消息数量",
+      "project": "C",
+      "task": "任务 06 · 启动流程设计-顺序结构",
+      "source": "simulation_examples/ee_17/",
+      "knowledge": [
+        {
+          "id": 41,
+          "name": "存储类型说明符"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [],
+      "page": "案例演示/项目C_控制逻辑模拟/任务06_启动流程/案例17_记录CAN总线消息数量.html"
+    },
+    {
+      "key": "18",
+      "title": "共享车辆配置",
+      "project": "C",
+      "task": "任务 06 · 启动流程设计-顺序结构",
+      "source": "simulation_examples/ee_18/",
+      "knowledge": [
+        {
+          "id": 41,
+          "name": "存储类型说明符"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [],
+      "page": "案例演示/项目C_控制逻辑模拟/任务06_启动流程/案例18_共享车辆配置.html"
+    },
+    {
+      "key": "19",
+      "title": "触发自动紧急制动",
+      "project": "C",
+      "task": "任务 07 · 驾驶行为选择-选择结构",
+      "source": "simulation_examples/ee_19/",
+      "knowledge": [
+        {
+          "id": 42,
+          "name": "条件"
+        },
+        {
+          "id": 43,
+          "name": "条件语句"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [],
+      "page": "案例演示/项目C_控制逻辑模拟/任务07_驾驶行为选择/案例19_触发自动紧急制动.html"
+    },
+    {
+      "key": "20",
+      "title": "根据车速推荐驾驶模式",
+      "project": "C",
+      "task": "任务 07 · 驾驶行为选择-选择结构",
+      "source": "simulation_examples/ee_20/",
+      "knowledge": [
+        {
+          "id": 44,
+          "name": "选择嵌套"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [],
+      "page": "案例演示/项目C_控制逻辑模拟/任务07_驾驶行为选择/案例20_根据车速推荐驾驶模式.html"
+    },
+    {
+      "key": "21",
+      "title": "车载多媒体控制台",
+      "project": "C",
+      "task": "任务 07 · 驾驶行为选择-选择结构",
+      "source": "simulation_examples/ee_21/",
+      "knowledge": [
+        {
+          "id": 45,
+          "name": "开关语句"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [],
+      "page": "案例演示/项目C_控制逻辑模拟/任务07_驾驶行为选择/案例21_车载多媒体控制台.html"
+    },
+    {
+      "key": "22",
+      "title": "模拟电池充电",
+      "project": "C",
+      "task": "任务 08 · 驾驶状态监控-循环结构",
+      "source": "simulation_examples/ee_22/",
+      "knowledge": [
+        {
+          "id": 46,
+          "name": "循环语句"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [],
+      "page": "案例演示/项目C_控制逻辑模拟/任务08_驾驶状态监控/案例22_模拟电池充电.html"
+    },
+    {
+      "key": "23",
+      "title": "打印车辆传感器矩阵",
+      "project": "C",
+      "task": "任务 08 · 驾驶状态监控-循环结构",
+      "source": "simulation_examples/ee_23/",
+      "knowledge": [
+        {
+          "id": 47,
+          "name": "循环嵌套"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [],
+      "page": "案例演示/项目C_控制逻辑模拟/任务08_驾驶状态监控/案例23_打印车辆传感器矩阵.html"
+    },
+    {
+      "key": "24",
+      "title": "剔除数据流处理中的坏点",
+      "project": "C",
+      "task": "任务 08 · 驾驶状态监控-循环结构",
+      "source": "simulation_examples/ee_24/",
+      "knowledge": [
+        {
+          "id": 48,
+          "name": "跳转语句"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [],
+      "page": "案例演示/项目C_控制逻辑模拟/任务08_驾驶状态监控/案例24_剔除数据流处理中的坏点.html"
+    },
+    {
+      "key": "C1",
+      "title": "诊断死循环",
+      "project": "C",
+      "task": "项目实战 · 控制执行模块调试-程序调试",
+      "source": "simulation_examples/eee_C1/",
+      "knowledge": [
+        {
+          "id": 50,
+          "name": "程序调试方法"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [],
+      "page": "案例演示/项目C_控制逻辑模拟/项目实战/拓展案例C1_诊断死循环.html"
+    },
+    {
+      "key": "C2",
+      "title": "使用断言进行前提条件检查",
+      "project": "C",
+      "task": "项目实战 · 控制执行模块调试-程序调试",
+      "source": "simulation_examples/eee_C2/",
+      "knowledge": [
+        {
+          "id": 49,
+          "name": "可执行文件"
+        },
+        {
+          "id": 50,
+          "name": "程序调试方法"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [],
+      "page": "案例演示/项目C_控制逻辑模拟/项目实战/拓展案例C2_使用断言进行前提条件检查.html"
+    },
+    {
+      "key": "25",
+      "title": "通过指针校准传感器",
+      "project": "D",
+      "task": "任务 09 · 传感器数据采集-指针与引用",
+      "source": "simulation_examples/ee_25/",
+      "knowledge": [
+        {
+          "id": 52,
+          "name": "指针与地址"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "指针与地址",
+          "page": "指针与引用/指针与地址.html"
+        }
+      ],
+      "page": "案例演示/项目D_环境感知开发/任务09_传感器数据采集/案例25_通过指针校准传感器.html"
+    },
+    {
+      "key": "26",
+      "title": "用指针遍历雷达点云",
+      "project": "D",
+      "task": "任务 09 · 传感器数据采集-指针与引用",
+      "source": "simulation_examples/ee_26/",
+      "knowledge": [
+        {
+          "id": 52,
+          "name": "指针与地址"
+        },
+        {
+          "id": 56,
+          "name": "指针与数组"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "指针与地址",
+          "page": "指针与引用/指针与地址.html"
+        }
+      ],
+      "page": "案例演示/项目D_环境感知开发/任务09_传感器数据采集/案例26_用指针遍历雷达点云.html"
+    },
+    {
+      "key": "27",
+      "title": "安全传递车辆识别码",
+      "project": "D",
+      "task": "任务 09 · 传感器数据采集-指针与引用",
+      "source": "simulation_examples/ee_27/",
+      "knowledge": [
+        {
+          "id": 53,
+          "name": "引用与传值"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "引用与传值",
+          "page": "指针与引用/引用与传值.html"
+        }
+      ],
+      "page": "案例演示/项目D_环境感知开发/任务09_传感器数据采集/案例27_安全传递车辆识别码.html"
+    },
+    {
+      "key": "28",
+      "title": "动态分配行车路线",
+      "project": "D",
+      "task": "任务 09 · 传感器数据采集-指针与引用",
+      "source": "simulation_examples/ee_28/",
+      "knowledge": [
+        {
+          "id": 54,
+          "name": "动态内存管理"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "new[] 与 delete[] 数组内存管理",
+          "page": "指针与引用/数组分配与释放.html"
+        },
+        {
+          "name": "C 风格动态内存与 C++ 数组分配对照",
+          "page": "指针与引用/C风格动态内存与C++数组分配对照.html"
+        }
+      ],
+      "page": "案例演示/项目D_环境感知开发/任务09_传感器数据采集/案例28_动态分配行车路线.html"
+    },
+    {
+      "key": "29",
+      "title": "存储摄像头标定系数",
+      "project": "D",
+      "task": "任务 10 · 传感器数据管理-数组与容器",
+      "source": "simulation_examples/ee_29/",
+      "knowledge": [
+        {
+          "id": 55,
+          "name": "数组"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "二维数组线性存储",
+          "page": "数组与容器/二维数组线性存储.html"
+        }
+      ],
+      "page": "案例演示/项目D_环境感知开发/任务10_传感器数据管理/案例29_存储摄像头标定系数.html"
+    },
+    {
+      "key": "30",
+      "title": "定义红外传感器网格",
+      "project": "D",
+      "task": "任务 10 · 传感器数据管理-数组与容器",
+      "source": "simulation_examples/ee_30/",
+      "knowledge": [
+        {
+          "id": 55,
+          "name": "数组"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "二维数组线性存储",
+          "page": "数组与容器/二维数组线性存储.html"
+        }
+      ],
+      "page": "案例演示/项目D_环境感知开发/任务10_传感器数据管理/案例30_定义红外传感器网格.html"
+    },
+    {
+      "key": "31",
+      "title": "获取传感器地址与指针",
+      "project": "D",
+      "task": "任务 10 · 传感器数据管理-数组与容器",
+      "source": "simulation_examples/ee_31/",
+      "knowledge": [
+        {
+          "id": 56,
+          "name": "指针与数组"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "指针与地址",
+          "page": "指针与引用/指针与地址.html"
+        },
+        {
+          "name": "二维数组线性存储",
+          "page": "数组与容器/二维数组线性存储.html"
+        }
+      ],
+      "page": "案例演示/项目D_环境感知开发/任务10_传感器数据管理/案例31_获取传感器地址与指针.html"
+    },
+    {
+      "key": "32",
+      "title": "处理C风格的传感器指令",
+      "project": "D",
+      "task": "任务 10 · 传感器数据管理-数组与容器",
+      "source": "simulation_examples/ee_32/",
+      "knowledge": [
+        {
+          "id": 57,
+          "name": "字符串"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "字符数组与结束符",
+          "page": "字符串/字符数组与结束符.html"
+        }
+      ],
+      "page": "案例演示/项目D_环境感知开发/任务10_传感器数据管理/案例32_处理C风格的传感器指令.html"
+    },
+    {
+      "key": "33",
+      "title": "解析更复杂的传感器参数",
+      "project": "D",
+      "task": "任务 10 · 传感器数据管理-数组与容器",
+      "source": "simulation_examples/ee_33/",
+      "knowledge": [
+        {
+          "id": 57,
+          "name": "字符串"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "字符数组与结束符",
+          "page": "字符串/字符数组与结束符.html"
+        }
+      ],
+      "page": "案例演示/项目D_环境感知开发/任务10_传感器数据管理/案例33_解析更复杂的传感器参数.html"
+    },
+    {
+      "key": "34",
+      "title": "管理动态故障码列表",
+      "project": "D",
+      "task": "任务 10 · 传感器数据管理-数组与容器",
+      "source": "simulation_examples/ee_34/",
+      "knowledge": [
+        {
+          "id": 58,
+          "name": "向量"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "Vector 容量与扩容",
+          "page": "数组与容器/Vector容量与扩容.html"
+        },
+        {
+          "name": "简单排序算法（故障码列表延伸）",
+          "page": "数组与容器/简单排序算法.html"
+        }
+      ],
+      "page": "案例演示/项目D_环境感知开发/任务10_传感器数据管理/案例34_管理动态故障码列表.html"
+    },
+    {
+      "key": "35",
+      "title": "定义雷达目标",
+      "project": "D",
+      "task": "任务 11 · 场景对象建模-自定义数据类型",
+      "source": "simulation_examples/ee_35/",
+      "knowledge": [
+        {
+          "id": 59,
+          "name": "结构体"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [],
+      "page": "案例演示/项目D_环境感知开发/任务11_场景对象建模/案例35_定义雷达目标.html"
+    },
+    {
+      "key": "36",
+      "title": "建模不同类型的交通参与者",
+      "project": "D",
+      "task": "任务 11 · 场景对象建模-自定义数据类型",
+      "source": "simulation_examples/ee_36/",
+      "knowledge": [
+        {
+          "id": 60,
+          "name": "联合与枚举"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [],
+      "page": "案例演示/项目D_环境感知开发/任务11_场景对象建模/案例36_建模不同类型的交通参与者.html"
+    },
+    {
+      "key": "37",
+      "title": "读取障碍物日志文件",
+      "project": "D",
+      "task": "任务 12 · 障碍物数据解析-文件",
+      "source": "simulation_examples/ee_37/",
+      "knowledge": [
+        {
+          "id": 62,
+          "name": "文件与流"
+        },
+        {
+          "id": 63,
+          "name": "文件路径"
+        },
+        {
+          "id": 64,
+          "name": "文件操作"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "场景数据读写与持久化",
+          "page": "文件与流/场景数据读写与持久化.html"
+        }
+      ],
+      "page": "案例演示/项目D_环境感知开发/任务12_障碍物数据解析/案例37_读取障碍物日志文件.html"
+    },
+    {
+      "key": "38",
+      "title": "保存检测到的障碍物信息",
+      "project": "D",
+      "task": "任务 12 · 障碍物数据解析-文件",
+      "source": "simulation_examples/ee_38/",
+      "knowledge": [
+        {
+          "id": 62,
+          "name": "文件与流"
+        },
+        {
+          "id": 64,
+          "name": "文件操作"
+        },
+        {
+          "id": 65,
+          "name": "数据持久化"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "场景数据读写与持久化",
+          "page": "文件与流/场景数据读写与持久化.html"
+        }
+      ],
+      "page": "案例演示/项目D_环境感知开发/任务12_障碍物数据解析/案例38_保存检测到的障碍物信息.html"
+    },
+    {
+      "key": "D1",
+      "title": "使用Eigen库进行3D坐标变换",
+      "project": "D",
+      "task": "项目实战 · 感知融合模块设计-第三方库配置",
+      "source": "simulation_examples/eee_D1/",
+      "knowledge": [
+        {
+          "id": 66,
+          "name": "Eigen库"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [],
+      "page": "案例演示/项目D_环境感知开发/项目实战/拓展案例D1_使用Eigen库进行3D坐标变换.html"
+    },
+    {
+      "key": "D2",
+      "title": "使用OpenCV加载并显示摄像头图像",
+      "project": "D",
+      "task": "项目实战 · 感知融合模块设计-第三方库配置",
+      "source": "simulation_examples/eee_D2/",
+      "knowledge": [
+        {
+          "id": 67,
+          "name": "OpenCV库"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [],
+      "page": "案例演示/项目D_环境感知开发/项目实战/拓展案例D2_使用OpenCV加载并显示摄像头图像.html"
+    },
+    {
+      "key": "39",
+      "title": "模块化刹车距离计算",
+      "project": "E",
+      "task": "任务 13 · 自适应巡航模块实现-函数与参数",
+      "source": "simulation_examples/ee_39/",
+      "knowledge": [
+        {
+          "id": 69,
+          "name": "函数定义与声明"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "函数调用机制",
+          "page": "函数/函数调用机制.html"
+        }
+      ],
+      "page": "案例演示/项目E_驾驶决策开发/任务13_自适应巡航实现/案例39_模块化刹车距离计算.html"
+    },
+    {
+      "key": "40",
+      "title": "递归预测车辆轨迹",
+      "project": "E",
+      "task": "任务 13 · 自适应巡航模块实现-函数与参数",
+      "source": "simulation_examples/ee_40/",
+      "knowledge": [
+        {
+          "id": 70,
+          "name": "函数嵌套与递归"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "函数递归调用",
+          "page": "函数/函数递归调用.html"
+        },
+        {
+          "name": "变量作用域与栈帧",
+          "page": "函数/变量作用域与栈帧.html"
+        }
+      ],
+      "page": "案例演示/项目E_驾驶决策开发/任务13_自适应巡航实现/案例40_递归预测车辆轨迹.html"
+    },
+    {
+      "key": "41",
+      "title": "通过引用归一化数据",
+      "project": "E",
+      "task": "任务 13 · 自适应巡航模块实现-函数与参数",
+      "source": "simulation_examples/ee_41/",
+      "knowledge": [
+        {
+          "id": 71,
+          "name": "函数参数"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "引用与传值",
+          "page": "指针与引用/引用与传值.html"
+        },
+        {
+          "name": "函数调用机制",
+          "page": "函数/函数调用机制.html"
+        }
+      ],
+      "page": "案例演示/项目E_驾驶决策开发/任务13_自适应巡航实现/案例41_通过引用归一化数据.html"
+    },
+    {
+      "key": "42",
+      "title": "自定义日志打印",
+      "project": "E",
+      "task": "任务 13 · 自适应巡航模块实现-函数与参数",
+      "source": "simulation_examples/ee_42/",
+      "knowledge": [
+        {
+          "id": 72,
+          "name": "默认实参"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [],
+      "page": "案例演示/项目E_驾驶决策开发/任务13_自适应巡航实现/案例42_自定义日志打印.html"
+    },
+    {
+      "key": "43",
+      "title": "获取速度限制",
+      "project": "E",
+      "task": "任务 13 · 自适应巡航模块实现-函数与参数",
+      "source": "simulation_examples/ee_43/",
+      "knowledge": [
+        {
+          "id": 73,
+          "name": "返回类型"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "函数调用机制",
+          "page": "函数/函数调用机制.html"
+        }
+      ],
+      "page": "案例演示/项目E_驾驶决策开发/任务13_自适应巡航实现/案例43_获取速度限制.html"
+    },
+    {
+      "key": "44",
+      "title": "内联的角度转换",
+      "project": "E",
+      "task": "任务 14 · 自适应巡航模块优化-函数优化与指针",
+      "source": "simulation_examples/ee_44/",
+      "knowledge": [
+        {
+          "id": 74,
+          "name": "内联函数"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [],
+      "page": "案例演示/项目E_驾驶决策开发/任务14_自适应巡航优化/案例44_内联的角度转换.html"
+    },
+    {
+      "key": "45",
+      "title": "内部辅助函数",
+      "project": "E",
+      "task": "任务 14 · 自适应巡航模块优化-函数优化与指针",
+      "source": "simulation_examples/ee_45/",
+      "knowledge": [
+        {
+          "id": 75,
+          "name": "特殊函数"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [],
+      "page": "案例演示/项目E_驾驶决策开发/任务14_自适应巡航优化/案例45_内部辅助函数.html"
+    },
+    {
+      "key": "46",
+      "title": "动态决策回调",
+      "project": "E",
+      "task": "任务 14 · 自适应巡航模块优化-函数优化与指针",
+      "source": "simulation_examples/ee_46/",
+      "knowledge": [
+        {
+          "id": 76,
+          "name": "函数指针与引用"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "函数调用机制",
+          "page": "函数/函数调用机制.html"
+        }
+      ],
+      "page": "案例演示/项目E_驾驶决策开发/任务14_自适应巡航优化/案例46_动态决策回调.html"
+    },
+    {
+      "key": "47",
+      "title": "重载的日志函数",
+      "project": "E",
+      "task": "任务 15 · 自适应巡航模块扩展-函数重载与模板",
+      "source": "simulation_examples/ee_47/",
+      "knowledge": [
+        {
+          "id": 77,
+          "name": "函数重载"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "函数重载匹配规则",
+          "page": "函数/函数重载匹配规则.html"
+        }
+      ],
+      "page": "案例演示/项目E_驾驶决策开发/任务15_自适应巡航扩展/案例47_重载的日志函数.html"
+    },
+    {
+      "key": "48",
+      "title": "通用的最小距离查找",
+      "project": "E",
+      "task": "任务 15 · 自适应巡航模块扩展-函数重载与模板",
+      "source": "simulation_examples/ee_48/",
+      "knowledge": [
+        {
+          "id": 78,
+          "name": "函数模板"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "模板实例化",
+          "page": "函数/模板实例化.html"
+        }
+      ],
+      "page": "案例演示/项目E_驾驶决策开发/任务15_自适应巡航扩展/案例48_通用的最小距离查找.html"
+    },
+    {
+      "key": "E1",
+      "title": "创建数学工具静态库",
+      "project": "E",
+      "task": "项目实战 · 规划决策模块设计-库文件开发",
+      "source": "simulation_examples/eee_E1/",
+      "knowledge": [
+        {
+          "id": 79,
+          "name": "静态库与动态库"
+        },
+        {
+          "id": 80,
+          "name": "库文件开发方法"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "源文件编译与链接",
+          "page": "工程构建/源文件编译与链接.html"
+        }
+      ],
+      "page": "案例演示/项目E_驾驶决策开发/项目实战/拓展案例E1_创建数学工具静态库.html"
+    },
+    {
+      "key": "E2",
+      "title": "使用外部库解析配置文件",
+      "project": "E",
+      "task": "项目实战 · 规划决策模块设计-库文件开发",
+      "source": "simulation_examples/eee_E2/",
+      "knowledge": [],
+      "supplementalKnowledge": [
+        "第三方库集成与 INI 配置读取"
+      ],
+      "mechanisms": [],
+      "page": "案例演示/项目E_驾驶决策开发/项目实战/拓展案例E2_使用外部库解析配置文件.html"
+    },
+    {
+      "key": "49",
+      "title": "设计“车辆”类",
+      "project": "F",
+      "task": "任务 16 · 车辆对象设计-类与对象",
+      "source": "simulation_examples/ee_49/",
+      "knowledge": [
+        {
+          "id": 83,
+          "name": "类与对象"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "类与对象生命周期",
+          "page": "面向对象/类与对象生命周期.html"
+        }
+      ],
+      "page": "案例演示/项目F_车辆对象管理/任务16_车辆对象设计/案例49_设计“车辆”类.html"
+    },
+    {
+      "key": "50",
+      "title": "车辆的生命周期",
+      "project": "F",
+      "task": "任务 16 · 车辆对象设计-类与对象",
+      "source": "simulation_examples/ee_50/",
+      "knowledge": [
+        {
+          "id": 84,
+          "name": "对象构造与析构"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "类与对象生命周期",
+          "page": "面向对象/类与对象生命周期.html"
+        }
+      ],
+      "page": "案例演示/项目F_车辆对象管理/任务16_车辆对象设计/案例50_车辆的生命周期.html"
+    },
+    {
+      "key": "51",
+      "title": "克隆车辆",
+      "project": "F",
+      "task": "任务 16 · 车辆对象设计-类与对象",
+      "source": "simulation_examples/ee_51/",
+      "knowledge": [
+        {
+          "id": 85,
+          "name": "对象拷贝与赋值"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "深拷贝与浅拷贝",
+          "page": "面向对象/深拷贝与浅拷贝.html"
+        },
+        {
+          "name": "类与对象生命周期",
+          "page": "面向对象/类与对象生命周期.html"
+        },
+        {
+          "name": "new[] 与 delete[] 数组内存管理",
+          "page": "指针与引用/数组分配与释放.html"
+        }
+      ],
+      "page": "案例演示/项目F_车辆对象管理/任务16_车辆对象设计/案例51_克隆车辆.html"
+    },
+    {
+      "key": "52",
+      "title": "封装车辆核心数据",
+      "project": "F",
+      "task": "任务 17 · 功能重载优化-封装与重载",
+      "source": "simulation_examples/ee_52/",
+      "knowledge": [
+        {
+          "id": 86,
+          "name": "访问说明符"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [],
+      "page": "案例演示/项目F_车辆对象管理/任务17_功能重载优化/案例52_封装车辆核心数据.html"
+    },
+    {
+      "key": "53",
+      "title": "返回自身引用的链式操作",
+      "project": "F",
+      "task": "任务 17 · 功能重载优化-封装与重载",
+      "source": "simulation_examples/ee_53/",
+      "knowledge": [
+        {
+          "id": 87,
+          "name": "类与指针"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [],
+      "page": "案例演示/项目F_车辆对象管理/任务17_功能重载优化/案例53_返回自身引用的链式操作.html"
+    },
+    {
+      "key": "54",
+      "title": "车辆的唯一ID和常量方法",
+      "project": "F",
+      "task": "任务 17 · 功能重载优化-封装与重载",
+      "source": "simulation_examples/ee_54/",
+      "knowledge": [
+        {
+          "id": 88,
+          "name": "特殊成员"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [],
+      "page": "案例演示/项目F_车辆对象管理/任务17_功能重载优化/案例54_车辆的唯一ID和常量方法.html"
+    },
+    {
+      "key": "55",
+      "title": "诊断工具的“后门”",
+      "project": "F",
+      "task": "任务 17 · 功能重载优化-封装与重载",
+      "source": "simulation_examples/ee_55/",
+      "knowledge": [
+        {
+          "id": 89,
+          "name": "友元函数"
+        },
+        {
+          "id": 90,
+          "name": "友元类"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [],
+      "page": "案例演示/项目F_车辆对象管理/任务17_功能重载优化/案例55_诊断工具的“后门”.html"
+    },
+    {
+      "key": "56",
+      "title": "优雅地定义车辆操作",
+      "project": "F",
+      "task": "任务 17 · 功能重载优化-封装与重载",
+      "source": "simulation_examples/ee_56/",
+      "knowledge": [
+        {
+          "id": 91,
+          "name": "成员函数重载"
+        },
+        {
+          "id": 92,
+          "name": "运算符重载"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "函数重载匹配规则",
+          "page": "函数/函数重载匹配规则.html"
+        }
+      ],
+      "page": "案例演示/项目F_车辆对象管理/任务17_功能重载优化/案例56_优雅地定义车辆操作.html"
+    },
+    {
+      "key": "F1",
+      "title": "智能指针管理动态车辆对象",
+      "project": "F",
+      "task": "项目实战 · 车辆对象模块设计-内存优化",
+      "source": "simulation_examples/eee_F1/",
+      "knowledge": [
+        {
+          "id": 93,
+          "name": "内存分析"
+        },
+        {
+          "id": 94,
+          "name": "深浅拷贝"
+        },
+        {
+          "id": 95,
+          "name": "智能指针"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "智能指针与所有权",
+          "page": "面向对象/智能指针与所有权.html"
+        },
+        {
+          "name": "深拷贝与浅拷贝",
+          "page": "面向对象/深拷贝与浅拷贝.html"
+        }
+      ],
+      "page": "案例演示/项目F_车辆对象管理/项目实战/拓展案例F1_智能指针管理动态车辆对象.html"
+    },
+    {
+      "key": "F2",
+      "title": "设计GPS数据点内存池",
+      "project": "F",
+      "task": "项目实战 · 车辆对象模块设计-内存优化",
+      "source": "simulation_examples/eee_F2/",
+      "knowledge": [
+        {
+          "id": 96,
+          "name": "内存池"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [],
+      "page": "案例演示/项目F_车辆对象管理/项目实战/拓展案例F2_设计GPS数据点内存池.html"
+    },
+    {
+      "key": "57",
+      "title": "构建障碍物基类",
+      "project": "G",
+      "task": "任务 18 · 障碍物体系构建-继承与派生",
+      "source": "simulation_examples/ee_57/",
+      "knowledge": [
+        {
+          "id": 98,
+          "name": "单继承类"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [],
+      "page": "案例演示/项目G_感知融合优化/任务18_障碍物体系构建/案例57_构建障碍物基类.html"
+    },
+    {
+      "key": "58",
+      "title": "受保护的障碍物属性",
+      "project": "G",
+      "task": "任务 18 · 障碍物体系构建-继承与派生",
+      "source": "simulation_examples/ee_58/",
+      "knowledge": [
+        {
+          "id": 99,
+          "name": "访问控制"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [],
+      "page": "案例演示/项目G_感知融合优化/任务18_障碍物体系构建/案例58_受保护的障碍物属性.html"
+    },
+    {
+      "key": "59",
+      "title": "带信号的特殊车辆",
+      "project": "G",
+      "task": "任务 18 · 障碍物体系构建-继承与派生",
+      "source": "simulation_examples/ee_59/",
+      "knowledge": [
+        {
+          "id": 100,
+          "name": "多继承类"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [],
+      "page": "案例演示/项目G_感知融合优化/任务18_障碍物体系构建/案例59_带信号的特殊车辆.html"
+    },
+    {
+      "key": "60",
+      "title": "解决摩托车的“菱形”归属",
+      "project": "G",
+      "task": "任务 18 · 障碍物体系构建-继承与派生",
+      "source": "simulation_examples/ee_60/",
+      "knowledge": [
+        {
+          "id": 101,
+          "name": "虚基类"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "菱形继承与虚基类",
+          "page": "面向对象/菱形继承与虚基类.html"
+        }
+      ],
+      "page": "案例演示/项目G_感知融合优化/任务18_障碍物体系构建/案例60_解决摩托车的菱形归属.html"
+    },
+    {
+      "key": "61",
+      "title": "通用的传感器处理接口",
+      "project": "G",
+      "task": "任务 19 · 传感器代码复用-多态与虚函数",
+      "source": "simulation_examples/ee_61/",
+      "knowledge": [
+        {
+          "id": 102,
+          "name": "虚函数"
+        },
+        {
+          "id": 103,
+          "name": "抽象类"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "虚函数与动态绑定",
+          "page": "面向对象/虚函数与动态绑定.html"
+        }
+      ],
+      "page": "案例演示/项目G_感知融合优化/任务19_传感器代码复用/案例61_通用的传感器处理接口.html"
+    },
+    {
+      "key": "62",
+      "title": "通用的传感器数据缓存",
+      "project": "G",
+      "task": "任务 19 · 传感器代码复用-多态与虚函数",
+      "source": "simulation_examples/ee_62/",
+      "knowledge": [
+        {
+          "id": 104,
+          "name": "类模板"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "模板实例化",
+          "page": "函数/模板实例化.html"
+        }
+      ],
+      "page": "案例演示/项目G_感知融合优化/任务19_传感器代码复用/案例62_通用的传感器数据缓存.html"
+    },
+    {
+      "key": "G1",
+      "title": "使用SIMD优化点云数据处理",
+      "project": "G",
+      "task": "项目实战 · 感知融合模块重构-性能优化",
+      "source": "simulation_examples/eee_G1/",
+      "knowledge": [
+        {
+          "id": 105,
+          "name": "性能分析"
+        },
+        {
+          "id": 106,
+          "name": "指令集"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "SIMD 标量与向量计算",
+          "page": "并发与性能/SIMD标量与向量计算.html"
+        }
+      ],
+      "page": "案例演示/项目G_感知融合优化/项目实战/拓展案例G1_使用SIMD优化点云数据处理.html"
+    },
+    {
+      "key": "G2",
+      "title": "多线程实现传感器数据采集与处理",
+      "project": "G",
+      "task": "项目实战 · 感知融合模块重构-性能优化",
+      "source": "simulation_examples/eee_G2/",
+      "knowledge": [
+        {
+          "id": 107,
+          "name": "多线程"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [
+        {
+          "name": "多线程数据竞争与同步",
+          "page": "并发与性能/多线程数据竞争与同步.html"
+        }
+      ],
+      "page": "案例演示/项目G_感知融合优化/项目实战/拓展案例G2_多线程采集与处理.html"
+    },
+    {
+      "key": "63",
+      "title": "车辆与地图的简单交互",
+      "project": "H",
+      "task": "任务 20 · 自动驾驶仿真系统后端实现-系统集成",
+      "source": "simulation_examples/ee_63/",
+      "knowledge": [
+        {
+          "id": 109,
+          "name": "需求分析"
+        },
+        {
+          "id": 110,
+          "name": "算法设计"
+        },
+        {
+          "id": 111,
+          "name": "程序编码"
+        },
+        {
+          "id": 112,
+          "name": "功能测试"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [],
+      "page": "案例演示/项目H_自动驾驶仿真系统实现/任务20_系统后端实现/案例63_车辆与地图的简单交互.html"
+    },
+    {
+      "key": "64",
+      "title": "动态的命令行进度条",
+      "project": "H",
+      "task": "任务 21 · 自动驾驶仿真系统前端实现-CLI可视化",
+      "source": "simulation_examples/ee_64/",
+      "knowledge": [
+        {
+          "id": 113,
+          "name": "需求分析（CLI）"
+        },
+        {
+          "id": 114,
+          "name": "算法设计（CLI）"
+        },
+        {
+          "id": 115,
+          "name": "程序编码（CLI）"
+        },
+        {
+          "id": 116,
+          "name": "功能测试（CLI）"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [],
+      "page": "案例演示/项目H_自动驾驶仿真系统实现/任务21_系统前端实现/案例64_动态的命令行进度条.html"
+    },
+    {
+      "key": "H1",
+      "title": "使用SFML绘制静态仿真场景",
+      "project": "H",
+      "task": "项目实战 · 基于SFML库的自动驾驶仿真系统设计-GUI可视化",
+      "source": "simulation_examples/eee_H1/",
+      "knowledge": [
+        {
+          "id": 117,
+          "name": "需求分析（GUI）"
+        },
+        {
+          "id": 118,
+          "name": "算法设计（GUI）"
+        },
+        {
+          "id": 119,
+          "name": "程序编码（GUI）"
+        },
+        {
+          "id": 120,
+          "name": "功能测试（GUI）"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [],
+      "page": "案例演示/项目H_自动驾驶仿真系统实现/项目实战/拓展案例H1_使用SFML绘制静态仿真场景.html"
+    },
+    {
+      "key": "H2",
+      "title": "使用SFML实现车辆转向灯动画",
+      "project": "H",
+      "task": "项目实战 · 基于SFML库的自动驾驶仿真系统设计-GUI可视化",
+      "source": "simulation_examples/eee_H2/",
+      "knowledge": [
+        {
+          "id": 117,
+          "name": "需求分析（GUI）"
+        },
+        {
+          "id": 118,
+          "name": "算法设计（GUI）"
+        },
+        {
+          "id": 119,
+          "name": "程序编码（GUI）"
+        },
+        {
+          "id": 120,
+          "name": "功能测试（GUI）"
+        }
+      ],
+      "supplementalKnowledge": [],
+      "mechanisms": [],
+      "page": "案例演示/项目H_自动驾驶仿真系统实现/项目实战/拓展案例H2_车辆转向灯动画.html"
+    }
+  ],
+  "mechanismPages": [
+    {
+      "name": "函数调用机制",
+      "page": "函数/函数调用机制.html",
+      "cases": [
+        "39",
+        "41",
+        "43",
+        "46",
+        "E"
+      ]
+    },
+    {
+      "name": "函数递归调用",
+      "page": "函数/函数递归调用.html",
+      "cases": [
+        "40"
+      ]
+    },
+    {
+      "name": "函数重载匹配规则",
+      "page": "函数/函数重载匹配规则.html",
+      "cases": [
+        "47",
+        "56"
+      ]
+    },
+    {
+      "name": "变量作用域与栈帧",
+      "page": "函数/变量作用域与栈帧.html",
+      "cases": [
+        "16",
+        "40"
+      ]
+    },
+    {
+      "name": "模板实例化",
+      "page": "函数/模板实例化.html",
+      "cases": [
+        "48",
+        "62"
+      ]
+    },
+    {
+      "name": "字符数组与结束符",
+      "page": "字符串/字符数组与结束符.html",
+      "cases": [
+        "32",
+        "33"
+      ]
+    },
+    {
+      "name": "源文件编译与链接",
+      "page": "工程构建/源文件编译与链接.html",
+      "cases": [
+        "3",
+        "4",
+        "A1",
+        "A2",
+        "E1"
+      ]
+    },
+    {
+      "name": "SIMD标量与向量计算",
+      "page": "并发与性能/SIMD标量与向量计算.html",
+      "cases": [
+        "G1"
+      ]
+    },
+    {
+      "name": "多线程数据竞争与同步",
+      "page": "并发与性能/多线程数据竞争与同步.html",
+      "cases": [
+        "G2"
+      ]
+    },
+    {
+      "name": "C风格动态内存与C++数组分配对照",
+      "page": "指针与引用/C风格动态内存与C++数组分配对照.html",
+      "cases": [
+        "28"
+      ]
+    },
+    {
+      "name": "引用与传值",
+      "page": "指针与引用/引用与传值.html",
+      "cases": [
+        "27",
+        "41"
+      ]
+    },
+    {
+      "name": "指针与地址",
+      "page": "指针与引用/指针与地址.html",
+      "cases": [
+        "25",
+        "26",
+        "31"
+      ]
+    },
+    {
+      "name": "数组分配与释放",
+      "page": "指针与引用/数组分配与释放.html",
+      "cases": [
+        "28",
+        "51"
+      ]
+    },
+    {
+      "name": "Vector容量与扩容",
+      "page": "数组与容器/Vector容量与扩容.html",
+      "cases": [
+        "34"
+      ]
+    },
+    {
+      "name": "二维数组线性存储",
+      "page": "数组与容器/二维数组线性存储.html",
+      "cases": [
+        "29",
+        "30",
+        "31"
+      ]
+    },
+    {
+      "name": "简单排序算法",
+      "page": "数组与容器/简单排序算法.html",
+      "cases": [
+        "34"
+      ]
+    },
+    {
+      "name": "场景数据读写与持久化",
+      "page": "文件与流/场景数据读写与持久化.html",
+      "cases": [
+        "37",
+        "38"
+      ]
+    },
+    {
+      "name": "位运算与状态掩码",
+      "page": "计算机系统/位运算与状态掩码.html",
+      "cases": [
+        "2"
+      ]
+    },
+    {
+      "name": "整型边界与溢出",
+      "page": "计算机系统/整型边界与溢出.html",
+      "cases": [
+        "8",
+        "9"
+      ]
+    },
+    {
+      "name": "浮点数精度实验",
+      "page": "计算机系统/浮点数精度实验.html",
+      "cases": [
+        "11",
+        "14"
+      ]
+    },
+    {
+      "name": "补码全能实验室",
+      "page": "计算机系统/补码全能实验室.html",
+      "cases": [
+        "2"
+      ]
+    },
+    {
+      "name": "智能指针与所有权",
+      "page": "面向对象/智能指针与所有权.html",
+      "cases": [
+        "F1"
+      ]
+    },
+    {
+      "name": "深拷贝与浅拷贝",
+      "page": "面向对象/深拷贝与浅拷贝.html",
+      "cases": [
+        "51",
+        "F1"
+      ]
+    },
+    {
+      "name": "类与对象生命周期",
+      "page": "面向对象/类与对象生命周期.html",
+      "cases": [
+        "49",
+        "50",
+        "51",
+        "F"
+      ]
+    },
+    {
+      "name": "菱形继承与虚基类",
+      "page": "面向对象/菱形继承与虚基类.html",
+      "cases": [
+        "60"
+      ]
+    },
+    {
+      "name": "虚函数与动态绑定",
+      "page": "面向对象/虚函数与动态绑定.html",
+      "cases": [
+        "61",
+        "G"
+      ]
+    }
+  ],
+  "aiCases": [
+    {
+      "key": "A",
+      "title": "AIGC开源项目探索官",
+      "project": "A",
+      "knowledge": [
+        {
+          "id": 3,
+          "name": "程序设计语言"
+        }
+      ],
+      "mechanisms": [],
+      "source": "simulation_examples/e_A/",
+      "page": "案例演示/项目A_开发环境搭建/项目导入/案例A_AIGC开源项目探索官.html"
+    },
+    {
+      "key": "B",
+      "title": "AIGC代码注释官",
+      "project": "B",
+      "knowledge": [
+        {
+          "id": 18,
+          "name": "关键字与标识符"
+        }
+      ],
+      "mechanisms": [],
+      "source": "simulation_examples/e_B/",
+      "page": "案例演示/项目B_信息交互设计/项目导入/案例B_AIGC代码注释官.html"
+    },
+    {
+      "key": "C",
+      "title": "AIGC算法流程规划师",
+      "project": "C",
+      "knowledge": [
+        {
+          "id": 37,
+          "name": "程序流程图"
+        }
+      ],
+      "mechanisms": [],
+      "source": "simulation_examples/e_C/",
+      "page": "案例演示/项目C_控制逻辑模拟/项目导入/案例C_AIGC算法流程规划师.html"
+    },
+    {
+      "key": "D",
+      "title": "AIGC数据结构优化师",
+      "project": "D",
+      "knowledge": [
+        {
+          "id": 51,
+          "name": "数据类型"
+        }
+      ],
+      "mechanisms": [],
+      "source": "simulation_examples/e_D/",
+      "page": "案例演示/项目D_环境感知开发/项目导入/案例D_AIGC数据结构优化师.html"
+    },
+    {
+      "key": "E",
+      "title": "AIGC核心功能实现师",
+      "project": "E",
+      "knowledge": [
+        {
+          "id": 68,
+          "name": "面向过程设计"
+        }
+      ],
+      "mechanisms": [
+        {
+          "name": "函数调用机制",
+          "page": "函数/函数调用机制.html"
+        }
+      ],
+      "source": "simulation_examples/e_E/",
+      "page": "案例演示/项目E_驾驶决策开发/项目导入/案例E_AIGC核心功能实现师.html"
+    },
+    {
+      "key": "F",
+      "title": "AIGC代码逻辑医生",
+      "project": "F",
+      "knowledge": [
+        {
+          "id": 82,
+          "name": "面向对象设计"
+        }
+      ],
+      "mechanisms": [
+        {
+          "name": "类与对象生命周期",
+          "page": "面向对象/类与对象生命周期.html"
+        }
+      ],
+      "source": "simulation_examples/e_F/",
+      "page": "案例演示/项目F_车辆对象管理/项目导入/案例F_AIGC代码逻辑医生.html"
+    },
+    {
+      "key": "G",
+      "title": "AIGC代码重构师",
+      "project": "G",
+      "knowledge": [
+        {
+          "id": 97,
+          "name": "面向对象特性"
+        }
+      ],
+      "mechanisms": [
+        {
+          "name": "虚函数与动态绑定",
+          "page": "面向对象/虚函数与动态绑定.html"
+        }
+      ],
+      "source": "simulation_examples/e_G/",
+      "page": "案例演示/项目G_感知融合优化/项目导入/案例G_AIGC代码重构师.html"
+    },
+    {
+      "key": "H",
+      "title": "AIGC系统架构师",
+      "project": "H",
+      "knowledge": [
+        {
+          "id": 108,
+          "name": "软件设计模式"
+        }
+      ],
+      "mechanisms": [],
+      "source": "simulation_examples/e_H/",
+      "page": "案例演示/项目H_自动驾驶仿真系统实现/项目导入/案例H_AIGC系统架构师.html"
+    }
+  ]
+}

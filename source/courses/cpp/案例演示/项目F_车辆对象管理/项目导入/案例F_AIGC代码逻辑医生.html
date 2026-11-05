@@ -1,0 +1,161 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>案例 F · AIGC代码逻辑医生</title>
+<link rel="stylesheet" href="../../../机制通用样式.css"><link rel="stylesheet" href="../../../AI协作案例/AI案例样式.css"><link rel="stylesheet" href="../../../案例统一样式.css"></head><body class="case-document"><main class="case-page">
+<div class="eyebrow">项目 F · 项目导入 · AIGC 案例 F</div>
+<h1>AIGC代码逻辑医生</h1>
+<p class="lead">定位速度单位不匹配的问题，比较修正前后的位移计算结果。</p>
+<nav class="case-nav" aria-label="案例导航"><a href="../../../项目演示/项目F.html">返回项目 F</a><a href="../../../资源目录.html#ai-F">返回资源总目录</a></nav><section class="case-meta" aria-label="案例知识与相关资源"><div class="case-meta-group"><span class="case-meta-label">对应知识点</span><div class="case-meta-items"><span class="case-tag">知识点 82 · 面向对象设计</span></div></div><div class="case-meta-group"><span class="case-meta-label">相关机制页</span><div class="case-meta-items"><a class="case-mechanism" href="../../../面向对象/类与对象生命周期.html">类与对象生命周期</a></div></div></section>
+<section class="panel"><h2>案例任务与源码核对</h2><h3>案例背景</h3><p>在软件开发过程中，最令人困扰的往往不是编译错误，而是“逻辑错误”——程序能够顺利运行，但产生的结果却不符合预期。这种错误隐藏在代码的逻辑深处，可能源于一个错误的假设、一个被忽略的边界条件，或是一个不匹配的单位。在复杂的系统中，例如我们的车辆对象，其内部的方法（如 <code>update_position</code>）可能包含精密的计算，任何一个微小的逻辑瑕疵都可能导致仿真结果的巨大偏差。传统上，寻找这类逻辑 bug 需要耗费大量时间进行代码审查和单步调试；而 AIGC 不仅能生成代码，更能深入理解代码的意图和上下文，扮演“代码逻辑医生”的角色，帮助我们快速定位并修复逻辑错误。</p><h3>任务要求</h3><p>使用 AIGC 工具诊断并修复一段因单位不匹配而错误更新车辆位置的 C++ 成员函数。向工具说明函数目标，提供有问题的代码、测试输入和预期正确输出，要求其定位并解释逻辑错误、给出修正代码，再对比修复前后的代码与运行结果。</p><div class="notice"><blockquote>[提示] 本案例使用了尚未系统学习的类和成员函数。此时重点比较修复前后的代码与结果，观察对象状态、成员命名和更新行为如何帮助定位逻辑错误。</blockquote></div></section>
+<section class="panel"><h2>逐步推演</h2><div class="ai-step-box"><h3 id="aiStepTitle"></h3><p id="aiStepText"></p><div class="ai-step-evidence" id="aiStepEvidence"></div><span id="aiStepCount" class="small"></span></div><div class="toolbar"><button class="btn" id="aiPrev">上一步</button><button class="btn primary" id="aiNext">下一步</button><button class="btn" id="aiReset">重置</button></div></section>
+<section class="panel"><h2>先判断</h2><p>修正后，36 km/h 行驶 10 秒的位移是多少？</p><div class="quiz"><button class="btn" data-ai-choice="0">36 米</button><button class="btn" data-ai-choice="1">100 米</button><button class="btn" data-ai-choice="2">360 米</button></div><div class="ai-result" id="aiFeedback" aria-live="polite"></div></section>
+<section class="panel ai-book"><h2>案例原始资料</h2><p class="small">以下为案例的提示、代码与运行分析；其中展示的 AIGC 输出不是本网页实时生成。</p><details><summary>案例代码、提示与输入</summary><p>本案例的“代码”是我们输入给 AIGC 的<strong>提示（Prompt）</strong>。我们将下面这段存在逻辑错误的 <code>Vehicle</code> 类代码，连同测试场景和预期结果一起提交给 AIGC，请它扮演“代码逻辑医生”诊断并修复：</p>
+<pre><code>#include &lt;iostream&gt;
+
+class Vehicle {
+public:
+    Vehicle(double initial_pos, double initial_speed)
+        : position_m_(initial_pos), speed_kmh_(initial_speed) {}
+
+    // 根据给定的时间（秒）更新车辆的位置
+    void update_position(double time_seconds) {
+        // 该计算直接用 km/h 的速度乘以秒，单位不匹配
+        double distance_traveled = speed_kmh_ * time_seconds;
+        position_m_ += distance_traveled;
+    }
+
+    void print_status() const {
+        std::cout &lt;&lt; &quot;当前位置: &quot; &lt;&lt; position_m_ &lt;&lt; &quot; 米, 当前速度: &quot; &lt;&lt; speed_kmh_ &lt;&lt; &quot; km/h&quot; &lt;&lt; std::endl;
+    }
+
+private:
+    double position_m_;  // 位置，单位：米
+    double speed_kmh_;   // 速度，单位：公里/小时
+};</code></pre>
+<p>同时向 AIGC 说明测试场景：创建一辆初始位置 0 米、速度 36 km/h 的车，让它行驶 10 秒，预期距离是 <code>36 km/h * 10 s = 10 m/s * 10 s = 100 米</code>，但程序输出的最终位置却是 360 米，是错误的。</p></details><details><summary>运行效果与分析</summary><p>AIGC 精准定位了问题所在：<code>speed_kmh_</code>（km/h）与 <code>time_seconds</code>（s）的单位不匹配。修复后的代码在计算距离前，先将速度从 km/h 转换为 m/s（<code>1 km/h = 1000 m / 3600 s = 1/3.6 m/s</code>）：</p>
+<pre><code>#include &lt;iostream&gt;
+
+class Vehicle {
+public:
+    Vehicle(double initial_pos, double initial_speed)
+        : position_m_(initial_pos), speed_kmh_(initial_speed) {}
+
+    // 根据给定的时间（秒）更新车辆的位置
+    void update_position(double time_seconds) {
+        // 修正点
+        // 将速度从 km/h 转换为 m/s
+        const double KPH_TO_MPS_FACTOR = 1.0 / 3.6;
+        double speed_mps = speed_kmh_ * KPH_TO_MPS_FACTOR;
+
+        // 使用 m/s 的速度乘以秒，得到米的距离
+        double distance_traveled_m = speed_mps * time_seconds;
+
+        position_m_ += distance_traveled_m;
+    }
+
+    void print_status() const {
+        std::cout &lt;&lt; &quot;当前位置: &quot; &lt;&lt; position_m_ &lt;&lt; &quot; 米, 当前速度: &quot; &lt;&lt; speed_kmh_ &lt;&lt; &quot; km/h&quot; &lt;&lt; std::endl;
+    }
+
+private:
+    double position_m_;  // 位置，单位：米
+    double speed_kmh_;   // 速度，单位：公里/小时
+};
+
+// 用于测试的 main 函数
+int main() {
+    Vehicle my_car(0.0, 36.0); // 初始位置0米, 速度36km/h
+
+    std::cout &lt;&lt; &quot;更新前: &quot;;
+    my_car.print_status();
+
+    my_car.update_position(10.0); // 行驶10秒
+
+    std::cout &lt;&lt; &quot;更新后: &quot;;
+    my_car.print_status();
+
+    return 0;
+}</code></pre>
+<p>程序运行输出“更新前： 当前位置： 0 米， 当前速度： 36 km/h”和“更新后： 当前位置： 100 米， 当前速度： 36 km/h”，修复后结果与预期完全一致。这个案例证明，AIGC 不仅能写代码，更能“读懂”代码背后的逻辑和物理含义，使其成为一个强大的调试伙伴。</p>
+<blockquote>[提示] 可以用这个案例体会规范命名与封装的价值：AIGC 正是通过 <code>position_m_</code>、<code>speed_kmh_</code> 这些望文生义的标识符，才准确判断出单位不匹配的逻辑错误。</blockquote></details></section>
+<section class="panel ai-source"><h2>代码工程对照</h2><p class="ai-source-path">cpp_simulation/simulation_examples/e_F/</p><p class="small">e_F 分为错误版与修正版两个独立目标。36 km/h 行驶 10 秒：错误版得到 360，修正版换成 10 m/s 后得到 100 米。</p><details><summary>variant_1/main.cpp</summary><pre>// 错误版本：速度单位 km/h 被直接与秒相乘
+
+#include &lt;iostream&gt;
+
+class Vehicle {
+public:
+    Vehicle(double initial_pos, double initial_speed)
+        : position_m_(initial_pos), speed_kmh_(initial_speed) {}
+
+    void update_position(double time_seconds) {
+        const double distance_traveled = speed_kmh_ * time_seconds;
+        position_m_ += distance_traveled;
+    }
+
+    void print_status() const {
+        std::cout &lt;&lt; &quot;当前位置: &quot; &lt;&lt; position_m_ &lt;&lt; &quot; 米, 当前速度: &quot;
+                  &lt;&lt; speed_kmh_ &lt;&lt; &quot; km/h&quot; &lt;&lt; std::endl;
+    }
+
+private:
+    double position_m_;
+    double speed_kmh_;
+};
+
+int main() {
+    Vehicle my_car(0.0, 36.0);
+    my_car.update_position(10.0);
+    my_car.print_status(); // 错误地输出 360 米
+    return 0;
+}
+</pre></details>
+<details><summary>variant_2/main.cpp</summary><pre>// 修正版本：先把 km/h 转换为 m/s
+
+#include &lt;iostream&gt;
+
+class Vehicle {
+public:
+    Vehicle(double initial_pos, double initial_speed)
+        : position_m_(initial_pos), speed_kmh_(initial_speed) {}
+
+    void update_position(double time_seconds) {
+        const double kKphToMpsFactor = 1.0 / 3.6;
+        const double speed_mps = speed_kmh_ * kKphToMpsFactor;
+        const double distance_traveled_m = speed_mps * time_seconds;
+        position_m_ += distance_traveled_m;
+    }
+
+    void print_status() const {
+        std::cout &lt;&lt; &quot;当前位置: &quot; &lt;&lt; position_m_ &lt;&lt; &quot; 米, 当前速度: &quot;
+                  &lt;&lt; speed_kmh_ &lt;&lt; &quot; km/h&quot; &lt;&lt; std::endl;
+    }
+
+private:
+    double position_m_;
+    double speed_kmh_;
+};
+
+int main() {
+    Vehicle my_car(0.0, 36.0);
+    my_car.update_position(10.0);
+    my_car.print_status(); // 正确输出 100 米
+    return 0;
+}
+</pre></details>
+<details><summary>README.md</summary><pre># e_F：AIGC代码逻辑医生
+
+- 案例编号：案例F
+- 归属：项目6 车辆对象管理
+- 覆盖知识点：知识点82
+
+## 工程化补全
+
+`e_F_buggy` 保留案例中的单位错误版本，36 km/h 行驶 10 秒输出 360 m；`e_F_fixed` 提供案例运行效果中要求的修正版本，输出 100 m。两个目标各自使用独立源文件，便于直接对比。
+
+## 实施步骤
+
+1. 检查本目录的源码、输入文件、外部资源和工程补全说明。
+2. 若存在 `CMakeLists.txt`，先独立配置本目录，再构建对应目标。
+3. 运行生成的程序并核对输出；阅读、推导或操作类案例直接按目录说明完成。
+
+</pre></details></section>
+</main><script>window.aiCaseData={"steps": [{"title": "定位错误", "text": "错误版直接用 km/h 数值乘秒，单位不匹配。", "evidence": "speed_kmh_ * time_seconds  // 数值 36×10=360"}, {"title": "换算单位", "text": "修正版先除以 3.6，把 36 km/h 转成 10 m/s。", "evidence": "speed_mps = speed_kmh_ * (1.0 / 3.6);"}, {"title": "核对结果", "text": "再用 10 m/s 乘 10 秒，位移是 100 米。", "evidence": "distance_traveled_m = speed_mps * time_seconds;"}], "quiz": {"correct": 1, "right": "正确。36÷3.6=10 m/s，再乘 10 秒。", "wrong": "360 是错误版的数值结果，单位计算不成立。"}};</script><script src="../../../AI协作案例/AI案例交互.js"></script></body></html>

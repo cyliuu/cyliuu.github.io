@@ -1,0 +1,58 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>拓展案例 D1 · 使用Eigen库进行3D坐标变换</title><style>:root{--bg:#f6f8fa;--text:#24292f;--muted:#57606a;--line:#d0d7de;--blue:#0969da;--green:#1a7f37;--red:#cf222e}*{box-sizing:border-box}body{margin:0;padding:40px 20px;background:var(--bg);color:var(--text);font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button{font:inherit;cursor:pointer}main{max-width:1200px;margin:auto}.eyebrow{font-size:12px;color:var(--blue);font-weight:700;text-align:center}h1{text-align:center;font-size:24px;font-weight:600;margin:2px 0 12px}h2{font-size:1.18rem;margin:0 0 12px}h3{font-size:1rem;margin:0 0 8px}p{margin:0 0 12px}.lead{max-width:900px;margin:auto;text-align:center;color:var(--muted);font-size:14px}nav{display:flex;justify-content:center;flex-wrap:wrap;gap:9px;margin:14px 0 20px;font-size:13px}a{color:var(--blue)}nav a{border:1px solid var(--line);background:#fff;padding:7px 11px;border-radius:8px;text-decoration:none}.panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px;box-shadow:0 8px 24px rgba(140,149,159,.15);margin-bottom:16px}.grid{display:grid;grid-template-columns:1.08fr 1fr;gap:22px}.code{border:1px solid var(--line);border-radius:8px;overflow:hidden}.codehead{padding:9px 14px;background:#f6f8fa;border-bottom:1px solid var(--line);color:var(--muted);font-size:13px}.code pre{margin:0;padding:10px 14px;overflow:auto;max-height:540px;font:14px/1.8 ui-monospace,SFMono-Regular,Consolas,monospace}.file{border-top:1px solid var(--line)}.file:first-child{border-top:0}.file summary{padding:8px 14px;cursor:pointer;font-size:13px;color:var(--blue);font-weight:600}.btn{padding:10px 20px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--text);font-size:14px;font-weight:600}.btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}.controls{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 18px}.choice{display:block;width:100%;text-align:left;margin:7px 0}.choice.correct{border-color:var(--green);background:#dafbe1}.choice.wrong{border-color:var(--red);background:#ffebe9}.note{border-left:4px solid var(--blue);background:#f6f8fa;padding:10px 13px;margin-top:13px}.note.good{border-color:var(--green)}.note.bad{border-color:var(--red)}.terminal{background:#24292f;color:#57ab5a;border-radius:8px;padding:16px;white-space:pre-wrap;font:13px/1.6 ui-monospace,Consolas,monospace;min-height:125px;margin-top:16px}.book-text{white-space:pre-line;font-size:14px;color:var(--muted)}.chips{display:flex;gap:6px;flex-wrap:wrap}.chip{display:inline-block;border:1px solid var(--line);background:#f6f8fa;border-radius:6px;padding:3px 7px;font-size:13px}.small{color:var(--muted);font-size:14px}button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--blue);outline-offset:2px}@media(max-width:760px){body{padding:16px 10px}.grid{grid-template-columns:1fr}.panel{padding:15px}}.experiment-controls{align-items:end}.experiment-controls label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}.experiment-controls input,.experiment-controls select{min-width:130px;max-width:210px;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--text);font:14px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.experiment-controls input:focus-visible,.experiment-controls select:focus-visible{outline:2px solid var(--blue);outline-offset:2px}</style><link rel="stylesheet" href="../../../案例统一样式.css"></head><body class="case-document"><main class="case-page">
+<div class="eyebrow">项目 D · 项目实战 · 拓展案例 D1</div><h1>使用Eigen库进行3D坐标变换</h1><p class="lead">设置三维点和旋转角度，观察矩阵运算后坐标如何变化。</p><nav class="case-nav" aria-label="案例导航"><a href="../../../项目演示/项目D.html">返回项目 D</a><a href="../../../资源目录.html#case-D1">返回资源总目录</a></nav><section class="case-meta" aria-label="案例知识与相关资源"><div class="case-meta-group"><span class="case-meta-label">对应知识点</span><div class="case-meta-items"><span class="case-tag">知识点 66 · Eigen库</span></div></div><div class="case-meta-group"><span class="case-meta-label">相关机制页</span><div class="case-meta-items"><span class="case-empty">暂无独立机制页</span></div></div></section>
+<section class="panel"><h2>案例任务与源码核对</h2><div class="grid"><div><h3>情境背景</h3><div class="book-text">在高级感知系统中，融合来自不同传感器（如激光雷达、摄像头）的数据是核心任务之一。然而，每个传感器都有自己独立的坐标系。例如，一个安装在车顶的激光雷达，它检测到的障碍物坐标是相对于它自身的，为了让车辆的决策模块能够统一处理，必须将这个坐标变换到车辆的基准坐标系下。这个变换过程涉及复杂的矩阵和向量运算，从零开始手写这些数学运算不仅繁琐且容易出错，因此工程师们广泛使用专业的线性代数库来完成任务。Eigen 就是其中最流行、最高效的 C++ 数学库之一。本案例将带你初次体验如何利用这个强大的第三方库，轻松解决一个典型的 3D 坐标变换问题。</div><h3 style="margin-top:18px">案例要求</h3><div class="book-text">配置并使用 Eigen 库，将一个三维空间中的点绕 Z 轴旋转 90 度。配置环境：下载 Eigen 库并在 IDE 中正确配置头文件包含路径。表示点：在 main 函数中使用 Eigen::Vector3d 定义一个三维点 P，其坐标为 (1.0, 0.0, 0.0)。创建旋转矩阵：创建一个 Eigen::Matrix3d 对象，作为绕 Z 轴旋转 90 度的旋转矩阵。执行变换：通过矩阵与向量的乘法计算出旋转后的新点 P&#39; 的坐标。打印结果：在控制台清晰地打印出旋转前和旋转后的点坐标，以验证计算的正确性。绕 Z 轴旋转 θ 度的旋转矩阵第一行为 [cosθ, -sinθ, 0]、第二行为 [sinθ, cosθ, 0]、第三行为 [0, 0, 1]。</div></div><div><div class="note"><strong>源码核对重点：</strong>Eigen 构建旋转并作用于向量；浮点计算中应允许接近 0 的微小残差。</div></div></div></section>
+<section class="panel"><h2>先预测，再验证</h2><div class="grid"><div><h3>把 (1,0,0) 绕 Z 轴旋转 90°，几何结果约为？</h3><div id="choices"><button class="btn choice" data-choice="0">(0,1,0)</button><button class="btn choice" data-choice="1">(1,0,1)</button><button class="btn choice" data-choice="2">(−1,0,0)</button></div><div id="feedback" class="note" aria-live="polite">请选择一种判断，查看依据。</div><div class="controls"><button class="btn primary" id="next">推演下一步</button><button class="btn" id="reset">重新开始</button></div><div id="trace" class="terminal" aria-live="polite">等待推演。网页展示源码逻辑，不在浏览器执行 C++ 程序。</div></div><div class="code"><div class="codehead">工程原始文件 · 点击文件名展开</div><details class="file" open><summary>eee_D1/main.cpp</summary><pre>// 使用Eigen库进行3D坐标变换
+
+#include &lt;iostream&gt;
+#include &lt;cmath&gt; // 用于 M_PI (圆周率) 和三角函数
+
+// 引入 Eigen 的主头文件
+#include &lt;Eigen/Dense&gt;
+
+int main() {
+    // 定义一个三维点向量
+    //    Vector3d 是 Eigen::Matrix&lt;double, 3, 1&gt; 的别名
+    Eigen::Vector3d point(1.0, 0.0, 0.0);
+
+    // 定义旋转角度 (90度) 并转换为弧度
+    double angle_degrees = 90.0;
+    double angle_radians = angle_degrees * M_PI / 180.0;
+
+    // 创建绕Z轴的旋转矩阵
+    //    Matrix3d 是 Eigen::Matrix&lt;double, 3, 3&gt; 的别名
+    Eigen::Matrix3d rotation_matrix;
+    // 使用逗号初始化器，按行优先顺序填充矩阵
+    rotation_matrix &lt;&lt; cos(angle_radians), -sin(angle_radians), 0,
+                       sin(angle_radians),  cos(angle_radians), 0,
+                       0,                   0,                  1;
+
+    // 执行坐标变换：旋转后的点 = 旋转矩阵 * 原始点
+    Eigen::Vector3d rotated_point = rotation_matrix * point;
+
+    // 打印结果
+    std::cout &lt;&lt; &quot;--- 3D坐标变换 (绕Z轴旋转90度) ---&quot; &lt;&lt; std::endl;
+    std::cout &lt;&lt; &quot;原始点坐标 P:\n&quot; &lt;&lt; point &lt;&lt; std::endl;
+    std::cout &lt;&lt; &quot;\n旋转矩阵 Rz(90):\n&quot; &lt;&lt; rotation_matrix &lt;&lt; std::endl;
+    std::cout &lt;&lt; &quot;\n旋转后点坐标 P&#39; = Rz * P:\n&quot; &lt;&lt; rotated_point &lt;&lt; std::endl;
+
+    return 0;
+}
+</pre></details><details class="file"><summary>eee_D1/CMakeLists.txt</summary><pre>cmake_minimum_required(VERSION 3.16)
+project(eee_D1 LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+find_package(Eigen3 3.3 QUIET NO_MODULE)
+
+if(NOT Eigen3_FOUND)
+    message(STATUS &quot;Eigen3 unavailable: skipping optional eee_D1 target&quot;)
+    return()
+endif()
+
+add_executable(eee_D1 main.cpp)
+target_link_libraries(eee_D1 PRIVATE Eigen3::Eigen)
+</pre></details></div></div></section>
+<section class="panel"><h2>条件变更实验</h2><p><strong>先预测：</strong>把旋转角度从绕 Z 轴 90° 改成 180°，仍作用于 (1,0,0)。</p><div class="controls"><button class="btn primary" id="revealVariant">核对变式结果</button><button class="btn" id="resetVariant">重新预测</button></div><div class="terminal" id="variantResult" aria-live="polite">先根据源码与条件判断，再揭示结果。</div></section><section class="panel"><h2>改条件，再推演 · 改变绕 Z 轴的角度</h2><p class="small">修改当前案例的条件，先预测输出，再核对源码规则。属于浏览器教学模型，不会修改或执行原 C++ 工程。</p><div class="controls experiment-controls"><label>旋转角<select id="exp-angle"><option value="0">0°</option><option value="90">90°</option><option value="180">180°</option><option value="270">270°</option></select></label><button class="btn primary" id="runExperiment" type="button">按新条件推演</button><button class="btn" id="resetExperiment" type="button">恢复初始条件</button></div><div id="experimentResult" class="terminal" aria-live="polite">先预测，再点击“按新条件推演”核对。</div></section><p class="small">教学说明：选择题与步骤推演是依据源码编写的浏览器交互，不等于实际编译、链接、运行图形库或 Shell 脚本。涉及本机文件、设备、第三方库或浮点舍入时，以源码和实际运行环境为准。</p>
+</main><script>const lesson={"correct":0,"explanation":"Eigen 构建旋转并作用于向量；浮点计算中应允许接近 0 的微小残差。","steps":["建立绕 Z 轴的 90° 旋转。","将矩阵作用于单位 X 向量。","得到约 (0,1,0)。"]};(()=>{'use strict';const $=id=>document.getElementById(id);let step=0;function reset(){step=0;$('feedback').textContent='请选择一种判断，查看依据。';$('feedback').className='note';$('trace').textContent='等待推演。网页展示源码逻辑，不在浏览器执行 C++ 程序。';document.querySelectorAll('[data-choice]').forEach(b=>{b.classList.remove('correct','wrong');b.disabled=false});$('next').disabled=false}document.querySelectorAll('[data-choice]').forEach(b=>b.onclick=()=>{const i=Number(b.dataset.choice),ok=i===lesson.correct;$('feedback').textContent=(ok?'判断正确。':'需要修正。')+lesson.explanation;$('feedback').className='note '+(ok?'good':'bad');document.querySelectorAll('[data-choice]').forEach(x=>{x.disabled=true;x.classList.toggle('correct',Number(x.dataset.choice)===lesson.correct);x.classList.toggle('wrong',x===b&&!ok)})});$('next').onclick=()=>{step=Math.min(step+1,lesson.steps.length);$('trace').textContent=lesson.steps.slice(0,step).map((x,i)=>String(i+1)+'. '+x).join('\n');$('next').disabled=step===lesson.steps.length};$('reset').onclick=reset;})();</script><script>(()=>{"use strict";const v=["把旋转角度从绕 Z 轴 90° 改成 180°，仍作用于 (1,0,0)。","几何结果约为 (-1,0,0)，浮点小残差可视作数值近似。","旋转矩阵改变方向，不改变原向量长度。"];const result=document.getElementById("variantResult");document.getElementById("revealVariant").onclick=()=>{result.textContent="推演结果："+v[1]+"\n依据："+v[2]};document.getElementById("resetVariant").onclick=()=>{result.textContent="先根据源码与条件判断，再揭示结果。"}})();</script><script>(()=>{"use strict";const fields=[{"label":"旋转角","id":"angle","kind":"select","options":[["0","0°"],["90","90°"],["180","180°"],["270","270°"]]}];const calculate=v=>{const points={0:'(1,0,0)',90:'(0,1,0)',180:'(-1,0,0)',270:'(0,-1,0)'};return `(1,0,0) 绕 Z 轴转 ${v.angle}° 后约为 ${points[v.angle]}；浮点实现可能有接近零的小残差。`};const result=document.getElementById("experimentResult");for(const field of fields){document.getElementById("exp-"+field.id).oninput=()=>{result.textContent="条件已变化，请先预测，再点击按钮核对。"}}document.getElementById("runExperiment").onclick=()=>{const values={};for(const field of fields){const input=document.getElementById("exp-"+field.id);if(field.kind==="number"){const value=Number(input.value);const offset=(value-field.min)/field.step;if(input.value.trim()===""||!Number.isFinite(value)||value<field.min||value>field.max||Math.abs(offset-Math.round(offset))>1e-8){result.textContent="请填写范围和步长内的有效数值："+field.label;return}values[field.id]=value}else{if(!field.options.some(option=>option[0]===input.value)){result.textContent="请选择有效选项："+field.label;return}values[field.id]=input.value}}result.textContent=calculate(values)};document.getElementById("resetExperiment").onclick=()=>{for(const field of fields){document.getElementById("exp-"+field.id).value=String(field.kind==="number"?field.value:field.options[0][0])}result.textContent="先预测，再点击“按新条件推演”核对。"}})();</script></body></html>

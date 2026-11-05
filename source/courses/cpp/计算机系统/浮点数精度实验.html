@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>浮点数精度实验</title><link rel="stylesheet" href="../机制通用样式.css"></head><body><main>
+<div class="eyebrow">计算机系统 · 数字资源 · 浮点表示</div><h1>浮点数精度：十进制为何不总是精确</h1>
+<p class="lead">用 binary64 与 float32 舍入模型观察十进制小数的存储、加法和显示，并区分浮点近似与整数除法截断。</p>
+<nav><a href="../资源目录.html">返回资源目录</a></nav>
+<section class="panel"><h2>输入两个十进制数并比较表示</h2>
+<div class="toolbar"><label>数 A<input id="a" type="text" value="0.1" inputmode="decimal"></label><label>数 B<input id="b" type="text" value="0.2" inputmode="decimal"></label><button class="btn primary" id="run">分析 A + B</button><button class="btn" id="sample">恢复 0.1 + 0.2</button></div>
+<div class="grid"><div><div class="code"><div class="codehead">概念对照 · 与示例 区分</div><pre>double a = 0.1, b = 0.2;
+double sum = a + b;
+// 有限位二进制表示可能近似十进制小数
+// 3 / 1000 丢小数是整数除法，原因不同
+static_cast&lt;double&gt;(3) / 1000;</pre></div>
+<div class="notice">输入限制为普通有限十进制数（最多六位整数、九位小数）。本页显示 JavaScript Number 的 IEEE 754 binary64 位模式。常见 C++ double/float 采用相同格式，但标准不保证每个平台的浮点实现完全一致。</div></div>
+<div><div class="display"><h3>精度观察</h3><div id="summary" style="white-space:pre-line"></div></div><div id="trace" class="terminal" aria-live="polite"></div></div></div></section>
+<section class="panel"><h2>判断题</h2><p>示例 中先算 <code>3 / 1000</code> 得到 0，与 <code>0.1 + 0.2</code> 的微小表示差异是否同一种原因？</p><div class="quiz"><button class="btn" data-answer="wrong">是，都是浮点误差</button><button class="btn" data-answer="right">不是，前者是整数除法截断</button></div><div id="feedback" class="feedback" aria-live="polite"></div></section>
+<p class="small">网页计算只是数值表示实验，不调用 C++ 编译器；具体业务代码仍应检查输入类型、舍入规则与容差。</p>
+</main><script>
+(()=>{'use strict';const $=id=>document.getElementById(id);
+function rational(s){const negative=s[0]==='-';if(negative)s=s.slice(1);const parts=s.split('.'),scale=10n**BigInt((parts[1]||'').length);return {n:BigInt(parts.join(''))*(negative?-1n:1n),d:scale}}
+function exactSum(a,b){const x=rational(a),y=rational(b),d=x.d>y.d?x.d:y.d,n=x.n*(d/x.d)+y.n*(d/y.d),negative=n<0n,places=d.toString().length-1,raw=(negative?-n:n).toString().padStart(places+1,'0');return (negative?'-':'')+(places?raw.slice(0,-places)+'.'+raw.slice(-places):raw)}
+function hex64(x){const b=new ArrayBuffer(8),v=new DataView(b);v.setFloat64(0,x,false);return v.getUint32(0,false).toString(16).padStart(8,'0')+v.getUint32(4,false).toString(16).padStart(8,'0')}
+function run(){const a=$('a').value.trim(),b=$('b').value.trim(),valid=s=>/^-?(?:0|[1-9]\d{0,5})(?:\.\d{1,9})?$/.test(s);if(!valid(a)||!valid(b)){$('summary').textContent='请输入最多六位整数、九位小数的有限十进制数。';$('trace').textContent='输入未参与计算。';return}
+const x=Number(a),y=Number(b),sum=x+y,exact=exactSum(a,b),f32=Math.fround(Math.fround(x)+Math.fround(y));
+$('summary').textContent='数学上的十进制和：'+exact+'\nNumber 直接显示：'+String(sum)+'\nbinary64 以 17 位有效数字显示：'+sum.toPrecision(17)+'\nfloat32 输入先舍入后相加：'+String(f32);
+$('trace').textContent='A binary64 位模式：0x'+hex64(x)+'\nB binary64 位模式：0x'+hex64(y)+'\n和 binary64 位模式：0x'+hex64(sum)+'\n显示舍入可能掩盖内部近似；比较浮点结果时须结合容差和量纲。'}
+$('run').onclick=run;$('sample').onclick=()=>{$('a').value='0.1';$('b').value='0.2';run()};
+document.querySelectorAll('[data-answer]').forEach(b=>b.onclick=()=>{const ok=b.dataset.answer==='right';$('feedback').textContent=ok?'正确：整数运算先截断；浮点近似来自有限位二进制表示。':'3 和 1000 都是 int，除法先按整数规则执行。';$('feedback').className='feedback '+(ok?'good':'bad')});run()})();
+</script></body></html>

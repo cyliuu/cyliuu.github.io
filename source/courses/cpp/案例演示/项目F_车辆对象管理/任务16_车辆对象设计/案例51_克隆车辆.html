@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>案例 51 · 克隆车辆</title>
+  <style>
+    :root{--bg:#f6f8fa;--card:#fff;--text:#24292f;--muted:#57606a;--line:#d0d7de;--blue:#0969da;--green:#1a7f37;--red:#cf222e;--code:#0d1117}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button{font:inherit;cursor:pointer}main{width:min(1190px,calc(100% - 28px));margin:28px auto 52px}.eyebrow{font-size:.87rem;font-weight:700;color:var(--blue);letter-spacing:.05em}h1{font-size:clamp(1.65rem,3vw,2.3rem);line-height:1.25;margin:4px 0 11px}h2{font-size:1.18rem;margin:0 0 11px}h3{font-size:1rem;margin:0 0 7px}p{margin:0 0 12px}.lead,.small{color:var(--muted)}.small{font-size:.88rem}a{color:var(--blue)}nav{display:flex;gap:9px;flex-wrap:wrap;margin:18px 0 22px}nav a{text-decoration:none;padding:7px 11px;border:1px solid var(--line);border-radius:8px;background:#fff}nav a:hover{text-decoration:underline}
+    .panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;box-shadow:0 3px 12px #1b1f240a}.tools{display:flex;gap:8px;flex-wrap:wrap;margin:13px 0}.btn{border:1px solid var(--line);border-radius:7px;background:#fff;color:var(--text);padding:8px 13px;font-weight:600}.btn:hover:not(:disabled){border-color:var(--blue);color:var(--blue)}.btn.primary{color:#fff;background:var(--blue);border-color:var(--blue)}.btn:disabled{opacity:.5;cursor:not-allowed}.stepbar{display:flex;flex-wrap:wrap;gap:6px;margin:13px 0 18px}.stepbar span{border:1px solid var(--line);border-radius:999px;padding:4px 8px;font-size:.82rem;color:var(--muted)}.stepbar .active{border-color:var(--blue);background:#ddf4ff;color:#0550ae;font-weight:700}
+    .grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:16px}.code{background:var(--code);color:#c9d1d9;border-radius:9px;overflow:hidden}.codehead{padding:9px 13px;border-bottom:1px solid #30363d;color:#8b949e;font-size:.82rem}.code pre{margin:0;padding:9px 0;overflow-x:auto;line-height:1.75;font-size:.83rem}.line{display:block;white-space:pre;padding:0 13px}.line.active{background:#1f3a55;border-left:3px solid #58a6ff;padding-left:10px;color:#fff}.n{display:inline-block;width:2em;color:#8b949e;user-select:none}
+    .memory{display:grid;gap:10px}.object{padding:10px 12px;border:1px solid var(--line);border-radius:8px}.object strong{display:block;color:var(--blue)}.object code{font-size:.85rem}.heap{padding:12px;border:1px solid var(--line);border-radius:8px;background:#f6f8fa}.cell{display:inline-block;margin:3px 5px 3px 0;padding:6px 9px;border:2px solid #54aeff;border-radius:6px;background:#ddf4ff;font: .81rem/1.4 ui-monospace,Consolas,monospace}.cell.old{border-style:dashed;background:#fff;color:var(--muted)}.cell small{display:block;color:var(--muted)}.arrow{color:var(--blue);font-weight:700}.notice{border-left:4px solid var(--blue);border-radius:5px;padding:10px 13px;margin-top:14px;background:#f6f8fa}.terminal{margin-top:16px;white-space:pre-wrap;min-height:185px;max-height:360px;overflow-y:auto;border-radius:8px;padding:13px 16px;background:#24292f;color:#d1d9e0;font:.84rem/1.62 ui-monospace,Consolas,monospace}.below{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}.feedback{min-height:1.5em;margin-top:8px;font-weight:600}.feedback.good{color:var(--green)}.feedback.bad{color:var(--red)}
+    /* 参照原有《动态内存管理》实验页，而非新增一套深色文章模板。 */
+    body{padding:40px 20px}main{width:min(1200px,100%);margin:0 auto}.eyebrow{text-align:center;font-size:12px;letter-spacing:0}
+    h1{text-align:center;font-size:24px;font-weight:600;margin:2px 0 12px}.lead{max-width:900px;margin:0 auto;text-align:center;font-size:14px}
+    nav{justify-content:center;margin:14px 0 20px;font-size:13px}.panel{padding:24px;box-shadow:0 8px 24px rgba(140,149,159,.15)}
+    .code{background:#fff;color:#24292f;border:1px solid var(--line)}.codehead{background:#f6f8fa;border-bottom:1px solid var(--line);color:var(--muted)}
+    .code pre{font-size:14px;line-height:1.8}.line.active{background:#f6f8fa;border-left-color:var(--blue);color:var(--text);font-weight:700}.n{color:#8c959f}
+    .object{border:2px dashed var(--line);min-height:95px}.heap{border:2px dashed #d4a72c;background:#fafbfc;min-height:145px}
+    .btn{padding:10px 20px;font-size:14px;border-radius:6px}.terminal{color:#57ab5a;font-size:13px;min-height:120px}.below{font-size:14px}
+    @media(max-width:800px){body{padding:16px 10px}.grid,.below{grid-template-columns:1fr}.panel{padding:15px}main{width:100%}}
+  </style>
+<link rel="stylesheet" href="../../../案例统一样式.css"></head>
+<body class="case-document"><main class="case-page">
+  <div class="eyebrow">项目 F · 任务 16 · 案例 51</div>
+  <h1>克隆车辆</h1>
+  <p class="lead">复制车辆对象后修改原车识别码，观察副本是否持有独立的字符数组。</p>
+  <nav class="case-nav" aria-label="案例导航"><a href="../../../项目演示/项目F.html">返回项目 F</a><a href="../../../资源目录.html#case-51">返回资源总目录</a></nav><section class="case-meta" aria-label="案例知识与相关资源"><div class="case-meta-group"><span class="case-meta-label">对应知识点</span><div class="case-meta-items"><span class="case-tag">知识点 85 · 对象拷贝与赋值</span></div></div><div class="case-meta-group"><span class="case-meta-label">相关机制页</span><div class="case-meta-items"><a class="case-mechanism" href="../../../面向对象/深拷贝与浅拷贝.html">深拷贝与浅拷贝</a><a class="case-mechanism" href="../../../面向对象/类与对象生命周期.html">类与对象生命周期</a><a class="case-mechanism" href="../../../指针与引用/数组分配与释放.html">new[] 与 delete[] 数组内存管理</a></div></div></section>
+  <section class="panel">
+    <h2>按源码逐步执行</h2>
+    <div class="tools"><button class="btn" id="resetBtn">重置</button><button class="btn" id="prevBtn">上一步</button><button class="btn primary" id="nextBtn">下一步</button></div>
+    <div class="stepbar" id="stepbar"></div>
+    <div class="grid">
+      <div class="code"><div class="codehead">ee_51/main.cpp · 按源文件顺序摘录的关键语句</div><pre id="source"></pre></div>
+      <div class="memory"><div class="object"><strong>prototype_car</strong><div id="prototype"></div></div><div class="object"><strong>cloned_car</strong><div id="clone"></div></div><div class="heap"><h3>堆中的字符数组</h3><div id="heap"></div></div></div>
+    </div>
+    <div class="notice" id="explain" aria-live="polite"></div>
+    <div class="terminal" id="terminal" aria-label="控制台输出示意"></div>
+  </section>
+  <div class="below">
+    <section class="panel"><h2>在揭晓前预测</h2><p>原车执行 <code>set_vin("VIN-MODIFIED-999")</code> 后，<code>cloned_car.display()</code> 会输出什么？</p><button class="btn" data-answer="right">VIN-PROTOTYPE-001</button><button class="btn" data-answer="wrong">VIN-MODIFIED-999</button><div id="feedback" class="feedback" aria-live="polite"></div></section>
+    <section class="panel"><h2>源码对照与适用范围</h2><p>拷贝构造使用 <code>const Vehicle&amp;</code> 接收源对象，并为副本的 <code>vin</code> 申请新数组，再复制字符。<code>set_vin</code> 先释放原车旧数组，后申请新数组；副本不受影响。两个局部对象退出 <code>main</code> 时逆序析构。</p><p class="small">网页摘录关键语句与输出，不在浏览器编译运行 C++。关于错误浅拷贝的对照只在关联机制页做安全模拟。</p></section>
+  </div>
+</main>
+<script>
+(() => {
+  'use strict';
+  const $=id=>document.getElementById(id);
+  const labels=['创建原型车','显示原车','克隆新车','修改原车 VIN','验证副本','离开 main，析构'];
+  const lines=[
+    'Vehicle prototype_car("VIN-PROTOTYPE-001");',
+    'prototype_car.display();',
+    'Vehicle cloned_car = prototype_car;',
+    'vin = new char[strlen(other.vin) + 1];',
+    'strcpy(vin, other.vin);',
+    'cloned_car.display();',
+    'prototype_car.set_vin("VIN-MODIFIED-999");',
+    'delete[] vin; // set_vin 先释放原车旧数组',
+    'vin = new char[strlen(new_id) + 1];',
+    'strcpy(vin, new_id);',
+    'prototype_car.display();',
+    'cloned_car.display();',
+    'return 0; // 局部对象逆序析构'
+  ];
+  const active=[[0],[1],[2,3,4,5],[6,7,8,9,10],[11],[12]];
+  let step=0;
+  function cell(address,value,old=false){const e=document.createElement('span');e.className='cell'+(old?' old':'');const s=document.createElement('small');s.textContent=`区块 ${address}（示意）`;e.append(s,document.createTextNode(value));return e}
+  function render(){
+    $('prevBtn').disabled=step===0;$('nextBtn').disabled=step===labels.length-1;
+    $('stepbar').replaceChildren(...labels.map((v,i)=>{const e=document.createElement('span');e.textContent=`${i+1}. ${v}`;if(i===step)e.className='active';return e}));
+    $('source').replaceChildren(...lines.map((v,i)=>{const row=document.createElement('span');row.className='line'+(active[step].includes(i)?' active':'');const n=document.createElement('span');n.className='n';n.textContent=String(i+1);row.append(n,document.createTextNode(v));return row}));
+    $('prototype').textContent=step===5?'已析构；数组 C 已释放':step>=3?'vin → C；VIN-MODIFIED-999':'vin → A；VIN-PROTOTYPE-001';
+    $('clone').textContent=step<2?'尚未创建':step===5?'已析构；数组 B 已释放':'vin → B；VIN-PROTOTYPE-001';
+    const heap=$('heap');heap.replaceChildren();
+    if(step<=1)heap.append(cell('A','VIN-PROTOTYPE-001'));
+    if(step===2)heap.append(cell('A','VIN-PROTOTYPE-001'),cell('B','VIN-PROTOTYPE-001'));
+    if(step>=3&&step<5)heap.append(cell('A','已释放',true),cell('B','VIN-PROTOTYPE-001'),cell('C','VIN-MODIFIED-999'));
+    if(step===5)heap.append(cell('A','已释放',true),cell('B','已释放',true),cell('C','已释放',true));
+    const explains=[
+      '普通构造先为原车 vin 分配字符数组 A，再写入 VIN-PROTOTYPE-001。',
+      'display() 读取原车的 vin；这里只显示原车，尚无副本。',
+      'Vehicle cloned_car = prototype_car 调用拷贝构造；副本分配独立数组 B 并复制字符，所以 A 与 B 内容相同、所有权不同。',
+      'set_vin 先 delete[] 原车的 A，再为原车分配 C 并写入新 VIN。数组 B 未改变。',
+      '副本的 display() 仍输出 VIN-PROTOTYPE-001。这是深拷贝成功的可观察证据。',
+      'main 结束：后构造的 cloned_car 先析构并释放 B；prototype_car 后析构并释放 C。'
+    ];$('explain').textContent=explains[step];
+    const output=[
+      '--- 创建原型车 ---\n[普通构造]: 正在创建车辆, ID: VIN-PROTOTYPE-001',
+      '  -> 当前车辆VIN: VIN-PROTOTYPE-001',
+      '\n--- 克隆新车 ---\n[拷贝构造]: 正在克隆车辆, 源ID: VIN-PROTOTYPE-001\n  -> 当前车辆VIN: VIN-PROTOTYPE-001',
+      '\n--- 修改原型车的VIN ---\n原型车修改后:\n  -> 当前车辆VIN: VIN-MODIFIED-999',
+      '\n--- 验证克隆车是否受影响 ---\n克隆车(未修改):\n  -> 当前车辆VIN: VIN-PROTOTYPE-001',
+      '\n--- main函数结束, 对象将被销毁 ---\n[析构函数]: 正在销毁车辆, ID: VIN-PROTOTYPE-001\n[析构函数]: 正在销毁车辆, ID: VIN-MODIFIED-999'
+    ];$('terminal').textContent=output.slice(0,step+1).join('\n');
+  }
+  $('resetBtn').onclick=()=>{step=0;$('feedback').textContent='';render()};$('prevBtn').onclick=()=>{if(step>0){step--;render()}};$('nextBtn').onclick=()=>{if(step<labels.length-1){step++;render()}};
+  document.querySelectorAll('[data-answer]').forEach(button=>button.onclick=()=>{const correct=button.dataset.answer==='right';$('feedback').className='feedback '+(correct?'good':'bad');$('feedback').textContent=correct?'正确。副本持有自己的数组 B，原车改用数组 C 不影响它。':'再看拷贝构造：它为副本另开数组 B，没有与原车共用指针。'});
+  render();
+})();
+</script>
+</body>
+</html>

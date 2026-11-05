@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>自动驾驶仿真系统 - 项目F：车辆对象管理</title>
+  <style>
+    :root{--bg:#0f172a;--card:rgba(30,41,59,.88);--primary:#38bdf8;--accent:#818cf8;--text:#f1f5f9;--muted:#cbd5e1;--code:#020617;--good:#4ade80;--bad:#fb7185}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font:16px/1.6 "Segoe UI",system-ui,sans-serif}button{font:inherit;cursor:pointer}a{color:#7dd3fc}
+    .nav{position:sticky;top:0;z-index:20;display:flex;justify-content:center;flex-wrap:wrap;gap:8px;padding:12px;background:rgba(15,23,42,.96);border-bottom:1px solid #ffffff1a}.nav button{border:1px solid var(--primary);border-radius:20px;color:var(--primary);background:transparent;padding:7px 14px;font-weight:600}.nav button.active,.nav button:hover{color:var(--bg);background:var(--primary)}
+    main{width:min(1070px,calc(100% - 32px));margin:30px auto 60px}.kicker{color:var(--primary);font-size:.88rem;font-weight:700;letter-spacing:.08em}h1{font-size:clamp(1.6rem,3vw,2.3rem);line-height:1.25;margin:4px 0 8px}header p,.desc{color:var(--muted)}header{margin-bottom:20px}h2{font-size:1.48rem;color:var(--primary);margin:0 0 10px}h3{font-size:1rem;margin:0 0 8px}p{margin:0 0 12px}.small{font-size:.85rem;color:#94a3b8}
+    .panel{display:none;border:1px solid #ffffff1c;border-radius:24px;background:var(--card);padding:28px;box-shadow:0 18px 45px #0003}.panel.active{display:block}.box{background:var(--code);border:1px solid #475569;border-radius:15px;padding:18px;margin:15px 0}.split{display:grid;grid-template-columns:1fr 1fr;gap:15px}.control{display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin:12px 0}label{display:grid;gap:3px;color:var(--muted);font-size:.9rem;font-weight:600}select,input{background:#1e293b;color:#fff;border:1px solid #64748b;border-radius:8px;padding:8px 10px;font:inherit;max-width:100%}input[type=number]{width:115px}.btn{border:0;border-radius:9px;background:var(--accent);color:#fff;padding:9px 14px;font-weight:700}.btn.alt{background:#334155;border:1px solid #64748b}.btn:hover{filter:brightness(1.13)}.term{white-space:pre-wrap;font:.9rem/1.58 ui-monospace,SFMono-Regular,Consolas,monospace;color:#e2e8f0;min-height:100px}.note{border-left:3px solid var(--primary);border-radius:4px;background:#0c2942;color:#dbeafe;padding:8px 11px;margin:12px 0}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin:13px 0}.card-btn{border:1px solid #475569;border-radius:11px;background:#17223a;color:#e2e8f0;min-height:108px;text-align:left;padding:12px}.card-btn strong{display:block;color:var(--primary)}.card-btn small{color:var(--muted)}.card-btn.selected{border-color:var(--good);box-shadow:0 0 0 2px #4ade8055 inset}.timeline{display:flex;flex-wrap:wrap;gap:7px}.timeline span{border:1px solid #64748b;border-radius:999px;padding:5px 9px;color:var(--muted);font-size:.82rem}.timeline .active{border-color:var(--primary);background:#0c2942;color:#fff}.code{color:#dbeafe;white-space:pre-wrap;font:.85rem/1.65 ui-monospace,Consolas,monospace}.good{color:var(--good)}.bad{color:var(--bad)}.qa{border-top:1px solid #475569;margin-top:16px;padding-top:12px}.feedback{min-height:1.5em;margin-top:7px;font-weight:700}
+    /* 与已使用的项目 A–C 保持相同的任务卡片、字号和终端比例。 */
+    :root{--card:rgba(30,41,59,.7);--code:#000}
+    .nav{padding:1rem;background:rgba(15,23,42,.9)}.nav button{font-weight:400;padding:.5rem 1.2rem;transition:.3s}
+    main{width:90%;max-width:1000px;margin:2rem auto 60px}header{display:none}
+    .panel{padding:2rem;border-radius:1.5rem;backdrop-filter:blur(10px);box-shadow:none}
+    h2{font-size:1.8rem;margin-bottom:12px}.desc{font-size:.95rem;line-height:1.6;margin-bottom:20px}
+    .box{background:#000;border:1px solid var(--accent);border-radius:1rem;padding:1.5rem;margin:1rem 0}
+    .btn{padding:.8rem 1.5rem;border-radius:.5rem}.term{font:1.05rem/1.5 Consolas,Monaco,"Courier New",monospace;color:#4ade80}
+    .note{border-color:#475569;background:#1e293b;color:#cbd5e1;font-size:.88rem}.card-btn{border-style:dashed;border-color:var(--primary);border-radius:.5rem}
+    @media(max-width:730px){.split{grid-template-columns:1fr}.panel{padding:17px}.nav{justify-content:flex-start;overflow-x:auto;flex-wrap:nowrap}.nav button{white-space:nowrap;font-size:.84rem}main{width:calc(100% - 18px);margin-top:16px}}
+  </style>
+</head>
+<body>
+<nav class="nav" aria-label="项目 F 任务导航"><button class="active" data-tab="0">任务F: 车辆类设计</button><button data-tab="1">任务16: 对象生命周期</button><button data-tab="2">任务17: 封装与重载</button><button data-tab="3">拓展F: 智能指针</button></nav>
+<main>
+  <header><div class="kicker">自动驾驶仿真系统 · PROJECT F</div><h1>车辆对象管理</h1><p>从结构体与全局函数，逐步走向车辆类、成员方法、私有状态和智能指针管理。</p></header>
+  <section class="panel active" id="panel0">
+    <h2>🚗 任务F - 车辆类设计：让状态与行为归于同一对象</h2>
+    <p class="desc"><strong>背景：</strong>车辆状态和全局运动函数分散，容易产生无效状态。<br><strong>要求：</strong>点选应由车辆类管理的状态，再对照任务 16、17 如何分步完成封装。</p>
+    <div class="cards" id="designCards"></div>
+    <div class="box"><h3>你的类设计判断</h3><div class="term" id="designOutput" aria-live="polite"></div></div>
+    <details class="note"><summary>任务设计提示</summary><p>设计报告建议把位置、速度、车道设为私有，并规划 <code>change_lane(target_lane)</code>。任务 16 先引入 Vehicle 类及成员运动方法，状态仍为 <code>public</code>；任务 17 才把状态改为 <code>private</code>，补充 Getter、加速重载与流输出。<code>change_lane</code> 可作为后续扩展目标。</p></details>
+  </section>
+  <section class="panel" id="panel1">
+    <h2>⚙️ 任务16 - 对象生命周期：创建、运动与销毁车辆</h2>
+    <p class="desc"><strong>背景：</strong>车辆类要在驾驶仿真中接管原先分散的运动行为。<br><strong>要求：</strong>单步观察构造、加速、位置更新和析构；此阶段成员状态仍为 <code>public</code>。</p>
+    <div class="timeline" id="lifeSteps"></div>
+    <div class="control"><button class="btn" id="lifeNext">下一步</button><button class="btn alt" id="lifeReset">重置</button></div>
+    <div class="split"><div class="box"><h3>Vehicle 对象状态</h3><div class="term" id="lifeState" aria-live="polite"></div></div><div class="box"><h3>当前对应的成员调用</h3><div class="code" id="lifeCode"></div></div></div>
+    <div class="note"><code>accelerate(0.1)</code> 使速度增加 <code>2.0×0.1×3.6=0.72 km/h</code>；随后 <code>update_position(0.1)</code> 增加约 <code>0.02 m</code>。</div>
+    <p>关联案例：<a href="../案例演示/项目F_车辆对象管理/任务16_车辆对象设计/案例51_克隆车辆.html">案例 51 · 克隆车辆</a>；机制解释：<a href="../面向对象/深拷贝与浅拷贝.html">深拷贝与浅拷贝</a>。</p>
+  </section>
+  <section class="panel" id="panel2">
+    <h2>🔒 任务17 - 封装与重载：规范车辆操作</h2>
+    <p class="desc"><strong>背景：</strong>直接改写速度会破坏车辆类的状态约束。<br><strong>要求：</strong>选择读取、加速或输出操作，观察私有成员访问、Getter 与重载的不同调用路径。</p>
+    <div class="control"><label>选择调用<select id="accessAction"><option value="direct">直接读取私有 speed_kmh_</option><option value="getter">调用 get_speed_kmh()</option><option value="default">调用 accelerate()</option><option value="amount">调用 accelerate(5.0)</option><option value="output">用 operator&lt;&lt; 输出车辆</option></select></label><button class="btn" id="runAccess">执行/检查</button><button class="btn alt" id="resetAccess">速度归零</button></div>
+    <div class="split"><div class="box"><h3>访问/调用路径</h3><div class="code" id="accessCode"></div></div><div class="box"><h3>反馈</h3><div class="term" id="accessOutput" aria-live="polite"></div></div></div>
+    <div class="note">无参 <code>accelerate()</code> 可转调 <code>accelerate(0.72)</code>；带参版本仅对正数增加速度。手动分支的 <code>boost</code> 使用 <code>accelerate(5.0)</code>。</div>
+    <p>重载对照案例：<a href="../案例演示/项目F_车辆对象管理/任务17_功能重载优化/案例56_优雅地定义车辆操作.html">案例 56 · 优雅地定义车辆操作</a>。可比较两种重载调用的对象变化。</p>
+    <div class="qa"><p>思考：<code>get_speed_kmh()</code> 返回的是当前速度，还是直接暴露可写的私有成员？</p><button class="btn alt" data-qa="wrong">可写成员引用</button> <button class="btn alt" data-qa="right">当前速度的值</button><div id="qaFeedback" class="feedback" aria-live="polite"></div></div>
+  </section>
+  <section class="panel" id="panel3">
+    <h2>🎯 拓展任务F - 智能指针：管理车辆与障碍物</h2>
+    <p class="desc"><strong>背景：</strong>动态对象若依靠手动释放，容易遗漏所有权。<br><strong>要求：</strong>点击查看主车的 <code>unique_ptr</code>、障碍物容器的 <code>shared_ptr</code> 如何随作用域变化。</p>
+    <div class="control"><button class="btn" id="ownerNext">下一步</button><button class="btn alt" id="ownerReset">重置</button></div><div class="timeline" id="ownerSteps"></div>
+    <div class="split"><div class="box"><h3>所有权图</h3><div class="term" id="ownerGraph" aria-live="polite"></div></div><div class="box"><h3>代码依据与解释</h3><div class="code" id="ownerCode"></div></div></div>
+    <div class="note">观察智能指针在最后一个持有者离开后怎样释放对象。<code>shared_ptr</code> 支持共享持有，但当前示例主要由障碍物容器持有，不虚构一个实际存在的第二所有者。</div>
+    <p>拓展案例：<a href="../案例演示/项目F_车辆对象管理/项目实战/拓展案例F1_智能指针管理动态车辆对象.html">F1 · 智能指针管理动态车辆对象</a>。可比较原生指针与智能指针的释放责任。</p>
+  </section>
+</main><!-- 案例资源索引 --><section class="content-wrapper" aria-label="项目F案例资源" style="background:rgba(30,41,59,.7);border:1px solid #ffffff1c;border-radius:1.5rem;padding:1.5rem 2rem;margin-top:0"><h2 style="font-size:1.25rem">项目 F · 案例入口</h2><p class="desc">按 AIGC 案例、普通案例、拓展案例排列。完整对应关系见 <a href="../资源目录.html#project-F">资源总目录</a>。</p><div style="display:flex;flex-wrap:wrap;gap:8px 16px;font-size:.9rem"><a href="../案例演示/项目F_车辆对象管理/项目导入/案例F_AIGC代码逻辑医生.html">AIGC 案例 F · AIGC代码逻辑医生</a><a href="../案例演示/项目F_车辆对象管理/任务16_车辆对象设计/案例49_设计“车辆”类.html">案例49 · 设计“车辆”类</a><a href="../案例演示/项目F_车辆对象管理/任务16_车辆对象设计/案例50_车辆的生命周期.html">案例50 · 车辆的生命周期</a><a href="../案例演示/项目F_车辆对象管理/任务16_车辆对象设计/案例51_克隆车辆.html">案例51 · 克隆车辆</a><a href="../案例演示/项目F_车辆对象管理/任务17_功能重载优化/案例52_封装车辆核心数据.html">案例52 · 封装车辆核心数据</a><a href="../案例演示/项目F_车辆对象管理/任务17_功能重载优化/案例53_返回自身引用的链式操作.html">案例53 · 返回自身引用的链式操作</a><a href="../案例演示/项目F_车辆对象管理/任务17_功能重载优化/案例54_车辆的唯一ID和常量方法.html">案例54 · 车辆的唯一ID和常量方法</a><a href="../案例演示/项目F_车辆对象管理/任务17_功能重载优化/案例55_诊断工具的“后门”.html">案例55 · 诊断工具的“后门”</a><a href="../案例演示/项目F_车辆对象管理/任务17_功能重载优化/案例56_优雅地定义车辆操作.html">案例56 · 优雅地定义车辆操作</a><a href="../案例演示/项目F_车辆对象管理/项目实战/拓展案例F1_智能指针管理动态车辆对象.html">拓展案例F1 · 智能指针管理动态车辆对象</a><a href="../案例演示/项目F_车辆对象管理/项目实战/拓展案例F2_设计GPS数据点内存池.html">拓展案例F2 · 设计GPS数据点内存池</a></div></section>
+<script>
+(() => {
+  'use strict';const $=id=>document.getElementById(id);
+  document.querySelectorAll('[data-tab]').forEach(button=>button.onclick=()=>{const tab=Number(button.dataset.tab);document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b===button));document.querySelectorAll('.panel').forEach((p,i)=>p.classList.toggle('active',i===tab))});
+  const choices=[['position','位置 position_','车辆位置应由成员方法更新'],['speed','速度 speed_kmh_','速度应由加速/减速方法维护'],['lane','车道 lane_index_','车道是车辆状态的一部分'],['identity','主车标记 is_ego_','身份状态应与车辆对象保持一致']];
+  const picked=new Set();
+  $('designCards').replaceChildren(...choices.map(([key,title,detail])=>{const b=document.createElement('button');b.className='card-btn';const strong=document.createElement('strong');strong.textContent=title;const small=document.createElement('small');small.textContent=detail;b.append(strong,small);b.onclick=()=>{picked.has(key)?picked.delete(key):picked.add(key);b.classList.toggle('selected',picked.has(key));renderDesign()};return b}));
+  function renderDesign(){$('designOutput').textContent=picked.size?`已选择 ${picked.size}/4 类状态。\n${[...picked].map(k=>'• '+choices.find(c=>c[0]===k)[1]).join('\n')}\n\n设计目标：通过成员函数管理状态；任务 16 先建立类，任务 17 才完成 private 封装。`:'点击左侧状态卡片，规划 Vehicle 应管理什么。'}renderDesign();
+  const life=[
+    ['尚未创建','先观察公共接口和对象初始状态。'],
+    ['构造完成','SimulationSystem system = {Vehicle(true, 0, 20.0), {}, CRUISE_SPEED_KMH};\nposition = {20.0, 0}; speed_kmh = 0; lane_index = 0; is_ego = true;'],
+    ['加速一个时间步','ego_car.accelerate(0.1);\nspeed_kmh = 0 + 2.0×0.1×3.6 = 0.72 km/h;'],
+    ['更新位置','ego_car.update_position(0.1);\nposition.x = 20 + 0.72/3.6×0.1 = 20.02 m;'],
+    ['离开作用域','~Vehicle() 调用；控制台输出“车辆对象已销毁。”']
+  ];let lifeStep=0;
+  function renderLife(){$('lifeSteps').replaceChildren(...life.map((v,i)=>{const s=document.createElement('span');s.textContent=`${i+1}. ${v[0]}`;if(i===lifeStep)s.className='active';return s}));$('lifeState').textContent=lifeStep===0?'对象尚未创建':lifeStep===4?'对象已销毁':`主车 · 车道 0\n位置 X = ${lifeStep>=3?'20.02':'20.00'} m\n速度 = ${lifeStep>=2?'0.72':'0.00'} km/h`;$('lifeCode').textContent=life[lifeStep][1];$('lifeNext').disabled=lifeStep===life.length-1}
+  $('lifeNext').onclick=()=>{if(lifeStep<life.length-1){lifeStep++;renderLife()}};$('lifeReset').onclick=()=>{lifeStep=0;renderLife()};renderLife();
+  let speed=0;function runAccess(){const action=$('accessAction').value;let code='',out='';if(action==='direct'){code='system.ego_car.speed_kmh_  // 外部代码，不能访问 private';out='编译期访问错误：speed_kmh_ 是私有成员。请改用 get_speed_kmh()。'}if(action==='getter'){code='system.ego_car.get_speed_kmh()';out=`返回 ${speed.toFixed(2)} km/h（按值读取，不提供外部写权限）。`}if(action==='default'){speed+=.72;code='accelerate() → accelerate(0.72)\nif (amount_kmh > 0.0) speed_kmh_ += amount_kmh;';out=`当前速度 ${speed.toFixed(2)} km/h。`}if(action==='amount'){speed+=5;code='accelerate(5.0)\nif (amount_kmh > 0.0) speed_kmh_ += amount_kmh;';out=`当前速度 ${speed.toFixed(2)} km/h。`}if(action==='output'){code='std::cout << system.ego_car;\n// 友元 operator<< 读取内部状态并格式化';out=`主车 V@20.00 m, lane=0, speed=${speed.toFixed(2)} km/h`}$('accessCode').textContent=code;$('accessOutput').textContent=out}
+  $('runAccess').onclick=runAccess;$('resetAccess').onclick=()=>{speed=0;$('accessAction').value='getter';runAccess()};$('accessAction').onchange=runAccess;runAccess();
+  document.querySelectorAll('[data-qa]').forEach(b=>b.onclick=()=>{const right=b.dataset.qa==='right';$('qaFeedback').className='feedback '+(right?'good':'bad');$('qaFeedback').textContent=right?'正确。函数返回 double 值；外部不能用返回值改写私有速度。':'再看函数声明：double get_speed_kmh() const，返回的是值，不是可写引用。'});
+  const owner=[
+    ['创建主车','system.ego_car = std::make_unique<Vehicle>(true, 0, 20.0);','SimulationSystem.ego_car ─unique_ptr→ Vehicle 主车\n障碍物容器：空'],
+    ['读取障碍物','auto obstacle = std::make_shared<Obstacle>();\nsystem.obstacles.push_back(obstacle);','SimulationSystem.ego_car ─unique_ptr→ Vehicle 主车\n局部 obstacle 与 vector 元素 ─shared_ptr→ 同一障碍物（在加载函数内）'],
+    ['加载函数返回','局部 shared_ptr obstacle 离开作用域；\nvector 中的 shared_ptr 仍持有障碍物。','SimulationSystem.ego_car ─unique_ptr→ Vehicle 主车\nvector 中的 shared_ptr ─→ 障碍物（仍存活）'],
+    ['系统对象结束','SimulationSystem 的智能指针成员析构；\n主车和障碍物在最后一个所有者消失后释放。','SimulationSystem 生命周期结束\n主车与障碍物均不再由这些指针持有']
+  ];let ownerStep=0;
+  function renderOwner(){$('ownerSteps').replaceChildren(...owner.map((v,i)=>{const s=document.createElement('span');s.textContent=`${i+1}. ${v[0]}`;if(i===ownerStep)s.className='active';return s}));$('ownerCode').textContent=owner[ownerStep][1];$('ownerGraph').textContent=owner[ownerStep][2];$('ownerNext').disabled=ownerStep===owner.length-1}
+  $('ownerNext').onclick=()=>{if(ownerStep<owner.length-1){ownerStep++;renderOwner()}};$('ownerReset').onclick=()=>{ownerStep=0;renderOwner()};renderOwner();
+})();
+</script>
+</body>
+</html>

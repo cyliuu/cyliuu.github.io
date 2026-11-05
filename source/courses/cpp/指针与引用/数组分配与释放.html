@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>new[] 与 delete[] 数组内存管理</title><link rel="stylesheet" href="../机制通用样式.css"></head><body><main>
+<div class="eyebrow">指针与引用 · 数字资源 · 动态数组</div><h1>new[] 与 delete[]：数组从分配到释放</h1>
+<p class="lead">用动态整数数组观察 new[] 分配、指针移动、delete[] 释放与置空。图解聚焦所有权和生命周期，不执行真实内存分配。</p>
+<nav><a href="../资源目录.html">返回资源目录</a></nav>
+<section class="panel"><h2>逐步追踪路线数组</h2><div class="toolbar"><label>途经点数量（1～8）<input id="count" type="number" min="1" max="8" step="1" value="4"></label><button class="btn primary" id="next">下一步</button><button class="btn" id="reset">重置</button></div>
+<div class="grid"><div><div class="code"><div class="codehead">示例工程/main.cpp · 按源码顺序摘录</div><pre>int num_waypoints = 0;
+std::cin &gt;&gt; num_waypoints;
+int* route_points = nullptr;
+route_points = new int[num_waypoints];
+for (int i = 0; i &lt; num_waypoints; ++i) {
+    *(route_points + i) = (i + 1) * 10;
+}
+delete[] route_points;
+route_points = nullptr;</pre></div><div class="notice">网页把输入限定为 1～8 以便观察；原源码没有验证输入数量。<code>new[]</code> 与 <code>delete[]</code> 配对，不能改用 <code>free</code> 释放；持有动态数组的对象还需在复制和析构时明确所有权。</div></div>
+<div><div class="display"><h3>指针与数组状态</h3><div id="state" aria-live="polite"></div><div id="cells" class="tiles" style="margin-top:10px"></div></div><div id="trace" class="terminal" aria-live="polite"></div></div></div></section>
+<section class="panel"><h2>判断题</h2><p>对 <code>new int[n]</code> 得到的数组，应怎样释放？</p><div class="quiz"><button class="btn" data-answer="wrong">调用 free(pointer)</button><button class="btn" data-answer="right">调用 delete[] pointer</button><button class="btn" data-answer="wrong">只把 pointer 设为 nullptr</button></div><div id="feedback" class="feedback" aria-live="polite"></div></section>
+<p class="small">此图只展示对象与指针的逻辑关系，不显示真实地址。<code>delete[]</code> 结束数组对象的生命周期并释放对应分配；不保证内存立即归还操作系统。置空只改变这个指针变量，不能替代释放，也不能修复其他别名指针。</p>
+</main><script>
+(()=>{'use strict';const $=id=>document.getElementById(id);let step=0;
+function count(){const n=Number($('count').value);return Number.isInteger(n)&&n>=1&&n<=8?n:null}
+function draw(){const n=count();if(n===null){$('state').textContent='请输入 1～8 的整数。';$('cells').replaceChildren();$('trace').textContent='输入无效，不推进状态。';$('next').disabled=true;return}
+$('next').disabled=step>=4;const labels=['① 指针尚未指向数组','② new[] 分配数组','③ 按索引填入路线数据','④ delete[] 释放数组','⑤ 指针置为 nullptr'];$('state').textContent=labels[step]+'；route_points = '+(step===0||step===4?'nullptr':step===3?'悬空值（不可解引用）':'数组起始位置（示意）');
+$('cells').replaceChildren(...Array.from({length:n},(_,i)=>{const e=document.createElement('div');e.className='tile'+(step>=2&&step<3?' on':'');e.textContent=step===1?'['+i+'] 未初始化':step===2?'['+i+'] '+(i+1)*10:step>=3?'['+i+'] 已释放':'['+i+'] 未分配';return e}));
+$('trace').textContent=[
+'定义 int* route_points = nullptr；此时没有可通过该指针访问的路线数组。',
+'执行 new int['+n+']；得到 '+n+' 个 int 的动态数组。元素尚未初始化，不能读取其值。',
+'循环写入 *(route_points + i) = (i + 1) * 10；数组为 '+Array.from({length:n},(_,i)=>(i+1)*10).join('、')+'。',
+'执行 delete[] route_points；数组生命周期结束。指针变量仍保留旧值，但不可再解引用。',
+'执行 route_points = nullptr；该变量不再保存已释放数组的位置。'][step]}
+$('next').onclick=()=>{if(count()===null)return;step=Math.min(step+1,4);draw()};$('reset').onclick=()=>{$('count').value='4';step=0;draw()};$('count').oninput=()=>{step=0;draw()};
+document.querySelectorAll('[data-answer]').forEach(b=>b.onclick=()=>{const ok=b.dataset.answer==='right';$('feedback').textContent=ok?'正确：new[] 必须与 delete[] 配对。':'free 不能与 new[] 配对；只置空会丢失指向分配区的地址，造成泄漏。';$('feedback').className='feedback '+(ok?'good':'bad')});draw()})();
+</script></body></html>

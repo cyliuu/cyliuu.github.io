@@ -1,0 +1,80 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>案例 49 · 设计“车辆”类</title><style>:root{--bg:#f6f8fa;--text:#24292f;--muted:#57606a;--line:#d0d7de;--blue:#0969da;--green:#1a7f37;--red:#cf222e}*{box-sizing:border-box}body{margin:0;padding:40px 20px;background:var(--bg);color:var(--text);font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button{font:inherit;cursor:pointer}main{max-width:1200px;margin:auto}.eyebrow{font-size:12px;color:var(--blue);font-weight:700;text-align:center}h1{text-align:center;font-size:24px;font-weight:600;margin:2px 0 12px}h2{font-size:1.18rem;margin:0 0 12px}h3{font-size:1rem;margin:0 0 8px}p{margin:0 0 12px}.lead{max-width:900px;margin:auto;text-align:center;color:var(--muted);font-size:14px}nav{display:flex;justify-content:center;flex-wrap:wrap;gap:9px;margin:14px 0 20px;font-size:13px}a{color:var(--blue)}nav a{border:1px solid var(--line);background:#fff;padding:7px 11px;border-radius:8px;text-decoration:none}.panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px;box-shadow:0 8px 24px rgba(140,149,159,.15);margin-bottom:16px}.grid{display:grid;grid-template-columns:1.08fr 1fr;gap:22px}.code{border:1px solid var(--line);border-radius:8px;overflow:hidden}.codehead{padding:9px 14px;background:#f6f8fa;border-bottom:1px solid var(--line);color:var(--muted);font-size:13px}.code pre{margin:0;padding:10px 14px;overflow:auto;max-height:540px;font:14px/1.8 ui-monospace,SFMono-Regular,Consolas,monospace}.file{border-top:1px solid var(--line)}.file:first-child{border-top:0}.file summary{padding:8px 14px;cursor:pointer;font-size:13px;color:var(--blue);font-weight:600}.btn{padding:10px 20px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--text);font-size:14px;font-weight:600}.btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}.controls{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 18px}.choice{display:block;width:100%;text-align:left;margin:7px 0}.choice.correct{border-color:var(--green);background:#dafbe1}.choice.wrong{border-color:var(--red);background:#ffebe9}.note{border-left:4px solid var(--blue);background:#f6f8fa;padding:10px 13px;margin-top:13px}.note.good{border-color:var(--green)}.note.bad{border-color:var(--red)}.terminal{background:#24292f;color:#57ab5a;border-radius:8px;padding:16px;white-space:pre-wrap;font:13px/1.6 ui-monospace,Consolas,monospace;min-height:125px;margin-top:16px}.book-text{white-space:pre-line;font-size:14px;color:var(--muted)}.chips{display:flex;gap:6px;flex-wrap:wrap}.chip{display:inline-block;border:1px solid var(--line);background:#f6f8fa;border-radius:6px;padding:3px 7px;font-size:13px}.small{color:var(--muted);font-size:14px}button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--blue);outline-offset:2px}@media(max-width:760px){body{padding:16px 10px}.grid{grid-template-columns:1fr}.panel{padding:15px}}.experiment-controls{align-items:end}.experiment-controls label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}.experiment-controls input,.experiment-controls select{min-width:130px;max-width:210px;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--text);font:14px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.experiment-controls input:focus-visible,.experiment-controls select:focus-visible{outline:2px solid var(--blue);outline-offset:2px}</style><link rel="stylesheet" href="../../../案例统一样式.css"></head><body class="case-document"><main class="case-page">
+<div class="eyebrow">项目 F · 任务 16 · 案例 49</div><h1>设计“车辆”类</h1><p class="lead">把数据和操作封装进车辆类，比较私有状态与公共接口的职责。</p><nav class="case-nav" aria-label="案例导航"><a href="../../../项目演示/项目F.html">返回项目 F</a><a href="../../../资源目录.html#case-49">返回资源总目录</a></nav><section class="case-meta" aria-label="案例知识与相关资源"><div class="case-meta-group"><span class="case-meta-label">对应知识点</span><div class="case-meta-items"><span class="case-tag">知识点 83 · 类与对象</span></div></div><div class="case-meta-group"><span class="case-meta-label">相关机制页</span><div class="case-meta-items"><a class="case-mechanism" href="../../../面向对象/类与对象生命周期.html">类与对象生命周期</a></div></div></section>
+<section class="panel"><h2>案例任务与源码核对</h2><div class="grid"><div><h3>情境背景</h3><div class="book-text">在任何复杂的软件系统中，无论是交通模拟、赛车游戏还是物流管理平台，我们都需要用代码来描述和模拟真实世界的实体。车辆（Vehicle）就是一个典型的例子，它既有自身的静态属性（如速度、位置、颜色），也有一系列动态的行为（如加速、刹车、转向）。在程序设计的初级阶段，我们可能会使用结构体（struct）来聚合车辆的各种数据，然而操作这些数据的行为却与数据本身是分离的。这种模式导致代码分散、难以维护，且任何外部代码都能随意修改车辆的关键数据，缺乏安全性。为了解决这些问题，我们需要引入面向对象编程（OOP）的核心思想——封装，将数据和操作数据的行为“打包”成一个权责一体的智能对象。</div><h3 style="margin-top:18px">案例要求</h3><div class="book-text">将一个基于 struct 和全局函数的简化车辆表示法重构为封装良好的 Vehicle 类：把 speed、position 等数据迁移为 private 属性，将操作数据的全局函数改为 public 成员函数（如 accelerate()），并在 main 中创建对象、通过公共接口修改和显示车辆状态。</div></div><div><div class="note"><strong>源码核对重点：</strong>private 限制外部直接访问，public 成员函数是受控接口；get_speed 负责读取状态。</div></div></div></section>
+<section class="panel"><h2>先预测，再验证</h2><div class="grid"><div><h3>Vehicle 的 speed 与 position 为 private，外部代码应通过什么更新速度？</h3><div id="choices"><button class="btn choice" data-choice="0">直接写 vehicle.speed</button><button class="btn choice" data-choice="1">调用公开的 accelerate 等成员函数</button><button class="btn choice" data-choice="2">改写类定义内存</button></div><div id="feedback" class="note" aria-live="polite">请选择一种判断，查看依据。</div><div class="controls"><button class="btn primary" id="next">推演下一步</button><button class="btn" id="reset">重新开始</button></div><div id="trace" class="terminal" aria-live="polite">等待推演。网页展示源码逻辑，不在浏览器执行 C++ 程序。</div></div><div class="code"><div class="codehead">工程原始文件 · 点击文件名展开</div><details class="file" open><summary>ee_49/main.cpp</summary><pre>// 从struct到class，设计第一个&quot;车辆&quot;类
+
+#include &lt;iostream&gt;
+
+// 我们要重构的 Vehicle 类
+class Vehicle {
+// public 访问说明符：定义了类的&quot;公共接口&quot;
+//    外部代码可以通过这些接口与对象交互
+public:
+    // 公共成员函数 - 对象的&quot;行为&quot;
+
+    // 加速（行为）
+    void accelerate() {
+        // 成员函数可以直接访问同一个类的私有成员
+        if (speed &lt; 120.0) {
+            speed += 5.0;
+        }
+    }
+
+    // 减速（行为）
+    void brake() {
+        if (speed &gt; 0.0) {
+            speed -= 5.0;
+        }
+    }
+
+    // 获取当前速度（行为） - 用于从外部安全地读取私有数据
+    double get_speed() {
+        return speed;
+    }
+
+    // 设置车辆的初始状态（行为）
+    void set_initial_state(double initial_speed) {
+        speed = initial_speed;
+    }
+
+// private 访问说明符：定义了类的&quot;内部数据&quot;
+//    这些数据被保护起来，只能被本类的成员函数访问
+private:
+    // 私有数据成员 - 对象的&quot;属性&quot;
+    double speed;       // 车速 (km/h)
+    double position;    // 位置 (m)
+};
+
+// 程序入口使用 Vehicle 对象
+int main() {
+    // 创建一个 Vehicle 类的对象（实例），名为 my_car
+    Vehicle my_car;
+
+    // 通过公共接口（成员函数）来初始化和操作对象
+    my_car.set_initial_state(60.0);
+    std::cout &lt;&lt; &quot;初始车速: &quot; &lt;&lt; my_car.get_speed() &lt;&lt; &quot; km/h&quot; &lt;&lt; std::endl;
+
+    my_car.accelerate(); // 调用加速行为
+    std::cout &lt;&lt; &quot;加速后车速: &quot; &lt;&lt; my_car.get_speed() &lt;&lt; &quot; km/h&quot; &lt;&lt; std::endl;
+
+    my_car.brake(); // 调用减速行为
+    my_car.brake();
+    std::cout &lt;&lt; &quot;连续两次减速后车速: &quot; &lt;&lt; my_car.get_speed() &lt;&lt; &quot; km/h&quot; &lt;&lt; std::endl;
+
+    // 尝试从外部直接访问私有成员，将会导致编译失败
+    // my_car.speed = 200.0; // &lt;- 如果取消这行注释，编译器会报错！
+    // 错误信息: &#39;double Vehicle::speed&#39; is private
+
+    return 0;
+}
+</pre></details><details class="file"><summary>ee_49/CMakeLists.txt</summary><pre>cmake_minimum_required(VERSION 3.16)
+project(ee_49 LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+add_executable(ee_49 main.cpp)
+</pre></details></div></div></section>
+<section class="panel"><h2>条件变更实验</h2><p><strong>先预测：</strong>尝试从类外直接写 Vehicle 的 private speed。</p><div class="controls"><button class="btn primary" id="revealVariant">核对变式结果</button><button class="btn" id="resetVariant">重新预测</button></div><div class="terminal" id="variantResult" aria-live="polite">先根据源码与条件判断，再揭示结果。</div></section><section class="panel"><h2>改条件，再推演 · 通过公开接口改变车速</h2><p class="small">修改当前案例的条件，先预测输出，再核对源码规则。属于浏览器教学模型，不会修改或执行原 C++ 工程。</p><div class="controls experiment-controls"><label>初始车速<input id="exp-speed" type="number" min="0" max="130" step="5" value="60"></label><label>操作<select id="exp-action"><option value="accelerate">accelerate()</option><option value="brake">brake()</option></select></label><button class="btn primary" id="runExperiment" type="button">按新条件推演</button><button class="btn" id="resetExperiment" type="button">恢复初始条件</button></div><div id="experimentResult" class="terminal" aria-live="polite">先预测，再点击“按新条件推演”核对。</div></section><p class="small">教学说明：选择题与步骤推演是依据源码编写的浏览器交互，不等于实际编译、链接、运行图形库或 Shell 脚本。涉及本机文件、设备、第三方库或浮点舍入时，以源码和实际运行环境为准。</p>
+</main><script>const lesson={"correct":1,"explanation":"private 限制外部直接访问，public 成员函数是受控接口；get_speed 负责读取状态。","steps":["创建 Vehicle 对象。","通过公开操作修改受保护状态。","用 getter 读取并核对新速度。"]};(()=>{'use strict';const $=id=>document.getElementById(id);let step=0;function reset(){step=0;$('feedback').textContent='请选择一种判断，查看依据。';$('feedback').className='note';$('trace').textContent='等待推演。网页展示源码逻辑，不在浏览器执行 C++ 程序。';document.querySelectorAll('[data-choice]').forEach(b=>{b.classList.remove('correct','wrong');b.disabled=false});$('next').disabled=false}document.querySelectorAll('[data-choice]').forEach(b=>b.onclick=()=>{const i=Number(b.dataset.choice),ok=i===lesson.correct;$('feedback').textContent=(ok?'判断正确。':'需要修正。')+lesson.explanation;$('feedback').className='note '+(ok?'good':'bad');document.querySelectorAll('[data-choice]').forEach(x=>{x.disabled=true;x.classList.toggle('correct',Number(x.dataset.choice)===lesson.correct);x.classList.toggle('wrong',x===b&&!ok)})});$('next').onclick=()=>{step=Math.min(step+1,lesson.steps.length);$('trace').textContent=lesson.steps.slice(0,step).map((x,i)=>String(i+1)+'. '+x).join('\n');$('next').disabled=step===lesson.steps.length};$('reset').onclick=reset;})();</script><script>(()=>{"use strict";const v=["尝试从类外直接写 Vehicle 的 private speed。","源码这种写法不能通过访问控制检查；应调用公开的 accelerate 等方法。","封装将状态修改约束在类的公共接口内。"];const result=document.getElementById("variantResult");document.getElementById("revealVariant").onclick=()=>{result.textContent="推演结果："+v[1]+"\n依据："+v[2]};document.getElementById("resetVariant").onclick=()=>{result.textContent="先根据源码与条件判断，再揭示结果。"}})();</script><script>(()=>{"use strict";const fields=[{"label":"初始车速","id":"speed","kind":"number","value":60,"min":0,"max":130,"step":5},{"label":"操作","id":"action","kind":"select","options":[["accelerate","accelerate()"],["brake","brake()"]]}];const calculate=v=>{const after=v.action==='accelerate'?(v.speed<120?v.speed+5:v.speed):(v.speed>0?v.speed-5:v.speed);return `set_initial_state(${v.speed}) 后调用 ${v.action}()：get_speed() 返回 ${after} km/h。源码仅检查操作前的边界，因此 118 加速后可到 123；并未实现绝对限速钳制。`};const result=document.getElementById("experimentResult");for(const field of fields){document.getElementById("exp-"+field.id).oninput=()=>{result.textContent="条件已变化，请先预测，再点击按钮核对。"}}document.getElementById("runExperiment").onclick=()=>{const values={};for(const field of fields){const input=document.getElementById("exp-"+field.id);if(field.kind==="number"){const value=Number(input.value);const offset=(value-field.min)/field.step;if(input.value.trim()===""||!Number.isFinite(value)||value<field.min||value>field.max||Math.abs(offset-Math.round(offset))>1e-8){result.textContent="请填写范围和步长内的有效数值："+field.label;return}values[field.id]=value}else{if(!field.options.some(option=>option[0]===input.value)){result.textContent="请选择有效选项："+field.label;return}values[field.id]=input.value}}result.textContent=calculate(values)};document.getElementById("resetExperiment").onclick=()=>{for(const field of fields){document.getElementById("exp-"+field.id).value=String(field.kind==="number"?field.value:field.options[0][0])}result.textContent="先预测，再点击“按新条件推演”核对。"}})();</script></body></html>

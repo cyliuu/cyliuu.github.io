@@ -1,0 +1,55 @@
+debug: false
+navbar:
+  visiable: always
+  logo:
+    img: ''
+    icon: ''
+    title: "Cyliuu's Learning Blog"
+  menu:
+    - name: 首页
+      url: /
+    - name: 我的课程
+      url: /courses/
+    - name: 学习资源
+      url: /resources/
+    - name: 博客
+      url: /blog/
+    - name: 关于
+      url: /about/
+  search: 搜索文章
+site_tree:
+  404:
+    data:
+      permalink: https://cyliuu.github.io/404.html
+cover:
+  features:
+    - name: 我的课程
+      url: /courses/
+    - name: 学习资源
+      url: /resources/
+    - name: 博客
+      url: /blog/
+  display:
+    home: false
+    archive: false
+    others: false
+sidebar:
+  for:
+    home: []
+    page: []
+    index_blog: [recent]
+    post: [toc, recent]
+article:
+  body:
+    top_meta: [category, date]
+comments:
+  service: ''
+site_footer:
+  layout: [social_links, info, copyright]
+  social_links: '[GitHub](https://github.com/cyliuu) · [E-Mail](mailto:lcy940903@gmail.com) · [Weibo](https://weibo.com/243339151) · [Instagram](https://instagram.com/cyliuu)'
+  source: https://github.com/cyliuu/cyliuu.github.io
+  copyright: '© 2026 Cyliuu'
+custom_css:
+  max_width: 1200px
+  border_radius:
+    card: 18px

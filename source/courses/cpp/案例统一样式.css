@@ -1,0 +1,22 @@
+/* 88 个案例页共用的页面外框；实验区各自的交互样式仍由原页面控制。 */
+body.case-document{background:#f6f8fa;color:#24292f;font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:32px 18px}
+.case-page{max-width:1200px;margin:0 auto}
+.case-page>.eyebrow{color:#0969da;font-size:12px;font-weight:700;letter-spacing:.02em;text-align:center;margin:0 0 4px}
+.case-page>h1{font-size:26px;line-height:1.3;font-weight:650;text-align:center;margin:0 0 10px}
+.case-page>.lead{max-width:900px;color:#57606a;font-size:14px;line-height:1.65;text-align:center;margin:0 auto 16px}
+.case-page>.case-nav{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:0 0 16px;font-size:13px}
+.case-page>.case-nav a{display:inline-flex;align-items:center;min-height:36px;padding:7px 13px;border:1px solid #d0d7de;border-radius:8px;background:#fff;color:#0969da;text-decoration:none;font-weight:600}
+.case-page>.case-nav a:hover{border-color:#0969da;background:#f2f7ff}
+.case-page>.case-meta{display:grid;grid-template-columns:1fr 1fr;gap:18px;background:#fff;border:1px solid #d0d7de;border-left:4px solid #0969da;border-radius:12px;padding:15px 18px;margin:0 0 18px;box-shadow:0 5px 18px rgba(140,149,159,.09)}
+.case-meta-group{min-width:0}
+.case-meta-label{display:block;font-size:13px;font-weight:700;color:#57606a;margin-bottom:8px}
+.case-meta-items{display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.case-meta .case-tag,.case-meta .case-mechanism{display:inline-flex;align-items:center;min-height:28px;padding:4px 8px;border:1px solid #d0d7de;border-radius:6px;background:#f6f8fa;font-size:13px;line-height:1.35}
+.case-meta .case-mechanism{color:#0969da;text-decoration:none;background:#f2f7ff;border-color:#b6d4fb}
+.case-meta .case-mechanism:hover{text-decoration:underline}
+.case-meta .case-empty{color:#6e7781;font-size:13px}
+.case-page>.panel{margin-bottom:18px;border-radius:12px}
+.case-page>.panel h2{font-size:19px;line-height:1.4}
+.case-page>.panel h3{font-size:16px;line-height:1.45}
+.case-page a:focus-visible,.case-page button:focus-visible,.case-page input:focus-visible,.case-page select:focus-visible{outline:2px solid #0969da;outline-offset:2px}
+@media(max-width:700px){body.case-document{padding:16px 10px}.case-page>.case-meta{grid-template-columns:1fr;gap:13px;padding:14px}.case-page>h1{font-size:23px}.case-page>.case-nav a{flex:1;justify-content:center}}

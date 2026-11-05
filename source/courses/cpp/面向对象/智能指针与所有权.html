@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>智能指针与所有权 · 对象生命周期实验</title>
+  <style>
+    :root{--bg:#f6f8fa;--card:#fff;--text:#24292f;--muted:#57606a;--line:#d0d7de;--blue:#0969da;--green:#1a7f37;--red:#cf222e}
+    *{box-sizing:border-box}body{margin:0;padding:40px 20px;background:var(--bg);color:var(--text);font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button{font:inherit;cursor:pointer}main{width:min(1200px,100%);margin:0 auto}
+    .eyebrow{text-align:center;font-size:12px;color:var(--blue);font-weight:700}h1{text-align:center;font-size:24px;line-height:1.3;font-weight:600;margin:2px 0 12px}h2{font-size:1.18rem;margin:0 0 10px}h3{font-size:1rem;margin:0 0 8px}p{margin:0 0 12px}.lead{max-width:900px;margin:0 auto;text-align:center;font-size:14px;color:var(--muted)}.small{font-size:14px;color:var(--muted)}a{color:var(--blue)}nav{display:flex;justify-content:center;flex-wrap:wrap;gap:9px;margin:14px 0 20px;font-size:13px}nav a{background:#fff;border:1px solid var(--line);border-radius:8px;padding:7px 11px;text-decoration:none}nav a:hover{text-decoration:underline}
+    .panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:24px;box-shadow:0 8px 24px rgba(140,149,159,.15)}.toolbar{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin:14px 0}.btn{border:1px solid var(--line);border-radius:6px;background:#fff;padding:10px 20px;color:var(--text);font-size:14px;font-weight:600}.btn:hover:not(:disabled){border-color:var(--blue);color:var(--blue)}.btn.active,.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}.btn:disabled{opacity:.5;cursor:not-allowed}.stepbar{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0 18px}.stepbar span{border:1px solid var(--line);border-radius:999px;padding:4px 9px;color:var(--muted);font-size:.82rem}.stepbar .active{border-color:var(--blue);background:#ddf4ff;color:#0550ae;font-weight:700}
+    .grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}.code{border:1px solid var(--line);border-radius:9px;overflow:hidden;background:#fff}.codehead{padding:9px 13px;border-bottom:1px solid var(--line);background:#f6f8fa;color:var(--muted);font-size:.82rem}.code pre{margin:0;padding:10px 0;overflow-x:auto;font:14px/1.8 ui-monospace,SFMono-Regular,Consolas,monospace}.line{display:block;white-space:pre;padding:0 13px}.line.active{background:#f6f8fa;border-left:3px solid var(--blue);padding-left:10px;font-weight:700}.n{display:inline-block;width:2em;color:#8c959f;user-select:none}.mem{display:grid;gap:11px}.obj,.heap{border:2px dashed var(--line);border-radius:9px;padding:12px;min-height:92px}.obj strong,.heap strong{display:block;color:var(--blue)}.heap{border-color:#d4a72c;background:#fafbfc;min-height:130px}.token{display:inline-block;border:1px solid var(--line);border-radius:6px;padding:4px 7px;margin:4px 6px 0 0;font:13px ui-monospace,SFMono-Regular,Consolas,monospace}.token.live{border-color:#54aeff;background:#ddf4ff}.token.leak{border-color:#ff8182;background:#ffebe9}.token.gone{border-style:dashed;color:var(--muted)}.arrow{color:var(--blue);font-weight:700}.notice{margin-top:15px;border-left:4px solid var(--blue);background:#f6f8fa;border-radius:5px;padding:10px 13px;font-size:14px}.notice.bad{border-color:var(--red);background:#fff0ee}.notice.good{border-color:var(--green);background:#dafbe1}.below{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;font-size:14px}.feedback{min-height:1.6em;margin-top:8px;font-weight:600}.feedback.good{color:var(--green)}.feedback.bad{color:var(--red)}
+    @media(max-width:800px){body{padding:16px 10px}.grid,.below{grid-template-columns:1fr}.panel{padding:15px}}
+  </style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">面向对象 · 数字资源 · 内存分析</div>
+  <h1>智能指针与所有权：谁负责释放车辆日志？</h1>
+  <p class="lead">比较原生指针、unique_ptr 与 shared_ptr 对动态对象的管理，逐步观察所有权转移、引用计数和对象释放。地址与计数只作教学图解。</p>
+  <nav aria-label="相关资源"><a href="深拷贝与浅拷贝.html">深拷贝与浅拷贝</a><a href="../项目演示/项目F.html">返回项目 F</a><a href="../资源目录.html">返回资源总目录</a></nav>
+  <section class="panel">
+    <h2>同一个 VehicleLog，三种管理方式</h2>
+    <div class="toolbar" role="group" aria-label="选择管理方式"><button class="btn active" data-mode="raw" aria-pressed="true">原生指针：泄漏风险</button><button class="btn" data-mode="unique" aria-pressed="false">unique_ptr：独占</button><button class="btn" data-mode="shared" aria-pressed="false">shared_ptr：共享</button></div>
+    <div class="toolbar"><button class="btn" id="prev">上一步</button><button class="btn primary" id="next">下一步</button><button class="btn" id="reset">重置</button><span class="small" id="counter"></span></div>
+    <div class="stepbar" id="steps" aria-label="执行时间线"></div>
+    <div class="grid">
+      <div class="code"><div class="codehead" id="codehead"></div><pre id="code"></pre></div>
+      <div class="mem"><div class="obj"><strong>车辆对象与持有者</strong><div id="owners"></div></div><div class="heap"><strong>VehicleLog 对象（示意）</strong><div id="heap"></div></div><div class="obj"><strong>释放责任</strong><div id="responsibility"></div></div></div>
+    </div>
+    <div class="notice" id="explain" aria-live="polite"></div>
+  </section>
+  <div class="below">
+    <section class="panel"><h2>先判断</h2><p>在源码的共享方案中，<code>s_car2</code> 离开作用域后，为什么日志尚未析构？</p><button class="btn" data-answer="wrong">因为原生指针 s_car1 自动管理日志</button> <button class="btn" data-answer="right">因为 s_car1 的 shared_ptr 仍持有日志</button><div class="feedback" id="feedback" aria-live="polite"></div></section>
+    <section class="panel"><h2>读源码时别混淆两层所有权</h2><p><code>SharedPtrVehicle* s_car1 = new ...</code> 创建的是外层车辆对象，源码仍以 <code>delete s_car1</code> 手动释放；车内的 <code>shared_ptr&lt;VehicleLog&gt;</code> 只负责日志。复制 <code>shared_ptr</code> 是共享同一日志，不是“深拷贝出第二份日志”。</p><p class="small">若把原生指针版的浅拷贝误改成双方析构时都 <code>delete log_ptr_</code>，还会带来重复释放风险。本页只解释风险，不执行未定义行为。</p></section>
+  </div>
+</main>
+<script>
+(()=>{'use strict';
+const $=id=>document.getElementById(id);
+const data={
+ raw:{title:'RawPtrVehicle',code:['RawPtrVehicle car_A("Raw-A");','// car_A 离开作用域；类没有释放 log_ptr_ 的析构逻辑','RawPtrVehicle* car_B = new RawPtrVehicle("Raw-B");','RawPtrVehicle car_C = *car_B; // 两个原生指针别名','delete car_B; // 只释放外层车辆对象','// car_C 离开作用域；Raw-B 日志仍未释放'],steps:[
+  {label:'尚未创建',line:0,owners:'尚无车辆对象。',heap:'尚无日志对象。',resp:'暂无释放责任。',msg:'从空状态开始，预测每次离开作用域会释放哪一层。'},
+  {label:'构造 car_A',line:0,owners:'car_A → log_ptr_ <span class="arrow">→</span> Raw-A 日志',heap:'<span class="token live">Raw-A · 存活</span>',resp:'RawPtrVehicle 持有原生指针；源码没有 delete log_ptr_ 的析构逻辑。',msg:'new VehicleLog 创建日志。原生指针本身没有自动释放所指堆对象的能力。'},
+  {label:'car_A 退出',line:1,owners:'car_A 已销毁；没有持有者再指向 Raw-A。',heap:'<span class="token leak">Raw-A · 泄漏</span>',resp:'日志仍在堆上，但地址已丢失。',msg:'只结束外层车辆对象的生命周期，并未调用 VehicleLog 析构函数。',tone:'bad'},
+  {label:'构造 car_B',line:2,owners:'car_B → log_ptr_ <span class="arrow">→</span> Raw-B 日志',heap:'<span class="token leak">Raw-A · 泄漏</span><span class="token live">Raw-B · 存活</span>',resp:'car_B 自身由 new 创建，须手动 delete；日志也需要独立释放。',msg:'此时有两层分配：外层 RawPtrVehicle 和内层 VehicleLog。'},
+  {label:'拷贝 car_C',line:3,owners:'car_B.log_ptr_ 与 car_C.log_ptr_ <span class="arrow">→</span> 同一份 Raw-B 日志',heap:'<span class="token leak">Raw-A · 泄漏</span><span class="token live">Raw-B · 两个别名</span>',resp:'默认拷贝仅复制指针值，没有新建 VehicleLog。',msg:'共享一个裸指针并不自动建立可追踪的共享所有权。'},
+  {label:'delete car_B',line:4,owners:'car_B 外层对象已释放；car_C 仍指向 Raw-B。',heap:'<span class="token leak">Raw-A · 泄漏</span><span class="token live">Raw-B · 存活</span>',resp:'源码没有删除 car_B.log_ptr_；delete car_B 只释放外层对象。',msg:'不要把“删除车辆对象”误读为“车辆内部所有 new 出来的对象也自动删除”。'},
+  {label:'car_C 退出',line:5,owners:'car_C 也已销毁；两个日志均无持有者。',heap:'<span class="token leak">Raw-A · 泄漏</span><span class="token leak">Raw-B · 泄漏</span>',resp:'原程序结束前未对两个 VehicleLog 调用 delete。',msg:'这份源码刻意展示泄漏，不是推荐写法。',tone:'bad'}]},
+ unique:{title:'UniquePtrVehicle',code:['UniquePtrVehicle car_D("Unique-D");','log_ptr_ = std::make_unique<VehicleLog>(id_);','// 复制 UniquePtrVehicle：源码注释说明不可编译','// car_D 离开作用域，成员 unique_ptr 被销毁','// VehicleLog 析构，输出 [Log DESTROYED]'],steps:[
+  {label:'尚未创建',line:0,owners:'尚无车辆对象。',heap:'尚无日志对象。',resp:'暂无释放责任。',msg:'独占所有权意味着同一时刻只能有一个 unique_ptr 负责这份日志。'},
+  {label:'构造 car_D',line:1,owners:'car_D.log_ptr_ <span class="arrow">→</span> Unique-D 日志',heap:'<span class="token live">Unique-D · 存活</span>',resp:'unique_ptr 是车辆的成员；它独占日志所有权。',msg:'make_unique 创建日志，并把其释放责任交给成员 unique_ptr。'},
+  {label:'尝试复制',line:2,owners:'仍只有 car_D.log_ptr_ 一个所有者。',heap:'<span class="token live">Unique-D · 存活</span>',resp:'源码把复制语句注释掉；若启用，UniquePtrVehicle 不可复制。',msg:'这里仅显示编译期拒绝的概念，不运行一个“失败的 C++ 程序”。'},
+  {label:'car_D 退出',line:3,owners:'car_D 和其成员 unique_ptr 已销毁。',heap:'<span class="token gone">Unique-D · 已析构</span>',resp:'成员析构自动释放 VehicleLog，无需手写 delete。',msg:'这是 RAII：资源生命周期绑定到管理它的对象生命周期。',tone:'good'}]},
+ shared:{title:'SharedPtrVehicle',code:['s_car1 = new SharedPtrVehicle("Shared-S1");','SharedPtrVehicle s_car2 = *s_car1;','// 拷贝构造：log_ptr_ = other.log_ptr_;','// s_car2 离开作用域，引用计数减 1','delete s_car1; // 最后一个 shared_ptr 销毁','// VehicleLog 析构，输出 [Log DESTROYED]'],steps:[
+  {label:'尚未创建',line:0,owners:'尚无车辆对象。',heap:'尚无日志对象。',resp:'暂无释放责任。',msg:'注意：s_car1 本身是一个指向车辆对象的原生指针。'},
+  {label:'构造 s_car1',line:0,owners:'s_car1 → 外层车辆；车内 shared_ptr <span class="arrow">→</span> Shared-S1 日志',heap:'<span class="token live">Shared-S1 · 引用计数 1</span>',resp:'车内 shared_ptr 管日志；外层车辆仍需要 delete s_car1。',msg:'此时只有一份 VehicleLog 和一个 shared_ptr 持有者。'},
+  {label:'拷贝 s_car2',line:2,owners:'s_car1 车内 shared_ptr 与 s_car2 车内 shared_ptr <span class="arrow">→</span> 同一日志',heap:'<span class="token live">Shared-S1 · 引用计数 2</span>',resp:'复制 shared_ptr 增加持有者数量，没有复制 VehicleLog。',msg:'s_car2 的车辆对象是副本；它内部的日志是共享的。'},
+  {label:'s_car2 退出',line:3,owners:'s_car2 已销毁；s_car1 车内 shared_ptr 仍持有日志。',heap:'<span class="token live">Shared-S1 · 引用计数 1</span>',resp:'一个持有者消失，日志仍需保留给另一个持有者。',msg:'因此这里不会输出 [Log DESTROYED]。'},
+  {label:'delete s_car1',line:4,owners:'外层车辆被手动释放；其 shared_ptr 成员随之销毁。',heap:'<span class="token gone">Shared-S1 · 引用计数 0，已析构</span>',resp:'最后一个持有者消失，VehicleLog 自动析构。',msg:'不要遗漏 delete s_car1：shared_ptr 只管理它指向的日志，不自动管理装着它的原生指针车辆。',tone:'good'}]}
+};
+let mode='raw',step=0;
+function render(){const current=data[mode],s=current.steps[step];$('codehead').textContent=current.title;$('code').replaceChildren(...current.code.map((line,i)=>{const span=document.createElement('span');span.className='line'+(i===s.line?' active':'');const n=document.createElement('span');n.className='n';n.textContent=String(i+1);span.append(n,document.createTextNode(line));return span}));$('owners').innerHTML=s.owners;$('heap').innerHTML=s.heap;$('responsibility').textContent=s.resp;$('explain').textContent=s.msg;$('explain').className='notice'+(s.tone?' '+s.tone:'');$('counter').textContent=`第 ${step} / ${current.steps.length-1} 步`;$('steps').replaceChildren(...current.steps.map((item,i)=>{const x=document.createElement('span');x.textContent=item.label;x.className=i===step?'active':'';return x}));$('prev').disabled=step===0;$('next').disabled=step===current.steps.length-1;document.querySelectorAll('[data-mode]').forEach(b=>{const active=b.dataset.mode===mode;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active))})}
+document.querySelectorAll('[data-mode]').forEach(b=>b.onclick=()=>{mode=b.dataset.mode;step=0;render()});$('prev').onclick=()=>{if(step>0){step--;render()}};$('next').onclick=()=>{if(step<data[mode].steps.length-1){step++;render()}};$('reset').onclick=()=>{step=0;render()};document.querySelectorAll('[data-answer]').forEach(b=>b.onclick=()=>{const ok=b.dataset.answer==='right';$('feedback').textContent=ok?'正确。s_car1 车内的 shared_ptr 仍在，引用计数从 2 降为 1。':'再看共享时间线：s_car1 是原生指针，但它指向的车辆内有一个仍存活的 shared_ptr。';$('feedback').className='feedback '+(ok?'good':'bad')});render();
+})();
+</script>
+</body>
+</html>

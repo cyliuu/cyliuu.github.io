@@ -1,0 +1,101 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>案例 E · AIGC核心功能实现师</title>
+<link rel="stylesheet" href="../../../机制通用样式.css"><link rel="stylesheet" href="../../../AI协作案例/AI案例样式.css"><link rel="stylesheet" href="../../../案例统一样式.css"></head><body class="case-document"><main class="case-page">
+<div class="eyebrow">项目 E · 项目导入 · AIGC 案例 E</div>
+<h1>AIGC核心功能实现师</h1>
+<p class="lead">把自适应巡航速度规则写成独立函数，核对输入、分段条件与返回值。</p>
+<nav class="case-nav" aria-label="案例导航"><a href="../../../项目演示/项目E.html">返回项目 E</a><a href="../../../资源目录.html#ai-E">返回资源总目录</a></nav><section class="case-meta" aria-label="案例知识与相关资源"><div class="case-meta-group"><span class="case-meta-label">对应知识点</span><div class="case-meta-items"><span class="case-tag">知识点 68 · 面向过程设计</span></div></div><div class="case-meta-group"><span class="case-meta-label">相关机制页</span><div class="case-meta-items"><a class="case-mechanism" href="../../../函数/函数调用机制.html">函数调用机制</a></div></div></section>
+<section class="panel"><h2>案例任务与源码核对</h2><h3>案例背景</h3><p>随着一个车载应用的功能逐渐丰富，<code>main</code> 函数不可避免地变得越来越长，各种逻辑都混杂在一起。这种“一锅烩”的写法导致代码可读性差、难以维护，并且任何一处微小的修改都可能牵一发而动全身，这在软件工程中是不可持续的。为了解决这个问题，我们需要引入一种更专业的设计思想——面向过程设计。其核心就是“分而治之”，将一个庞大的任务分解成一系列职责单一、逻辑清晰的步骤，并将每个步骤封装成独立的函数。在本案例中，你将扮演一名“系统设计师”，借助 AIGC 的力量，为一个典型的核心算法逻辑——例如智能巡航控制中的速度决策，生成第一个独立的函数模块。</p><h3>任务要求</h3><p>使用 AIGC 工具，根据功能描述，生成一个用于计算自适应巡航目标速度的核心 C++ 函数。向任意一款 AIGC 工具，用自然语言清晰地描述一个核心的 ACC 算法规则；你的描述必须包含函数的名称（<code>calculate_target_speed</code>）、输入参数（当前速度、前车距离）和明确的、分段的计算逻辑；要求 AIGC 为你生成一个完整的、符合 C++ 语法的、可直接运行的函数代码；分析 AIGC 生成的代码，理解它是如何将你的自然语言描述，转化为结构化的程序逻辑的。输入给 AIGC 的提示（Prompt）如下：<br>&gt; 我需要你扮演一名专业的 C++ 软件工程师。请为我编写一个用于自动驾驶自适应巡航控制的核心功能函数。函数要求如下：函数名为 <code>calculate_target_speed</code>；它接收两个 <code>double</code> 类型的参数 <code>current_speed</code>（当前车速，km/h）和 <code>distance_to_front_car</code>（与前车的距离，m）；它返回一个 <code>double</code> 类型的目标车速（km/h）。函数内部的逻辑如下：如果与前车的距离大于 100 米，则目标速度为最高限速 120 km/h；如果距离在 50 米到 100 米之间（含边界），则目标速度为保持当前速度不变；如果距离小于 50 米，则目标速度为当前速度的 80%（乘以 0.8），以进行减速。请生成完整的、包含必要头文件和注释的 C++ 函数代码。</p><div class="notice"><blockquote>[提示] 本案例包含后续将学习的函数、参数和返回值等内容。此时不要求逐行解释代码，重点观察一个完整功能被独立封装后的代码形态。</blockquote></div></section>
+<section class="panel"><h2>逐步推演</h2><div class="ai-step-box"><h3 id="aiStepTitle"></h3><p id="aiStepText"></p><div class="ai-step-evidence" id="aiStepEvidence"></div><span id="aiStepCount" class="small"></span></div><div class="toolbar"><button class="btn" id="aiPrev">上一步</button><button class="btn primary" id="aiNext">下一步</button><button class="btn" id="aiReset">重置</button></div></section>
+<section class="panel"><h2>先判断</h2><p>当前速度 90 km/h、前车距离恰为 100 米，目标速度是？</p><div class="quiz"><button class="btn" data-ai-choice="0">120 km/h</button><button class="btn" data-ai-choice="1">90 km/h</button><button class="btn" data-ai-choice="2">72 km/h</button></div><div class="ai-result" id="aiFeedback" aria-live="polite"></div></section>
+<section class="panel ai-book"><h2>案例原始资料</h2><p class="small">以下为案例的提示、代码与运行分析；其中展示的 AIGC 输出不是本网页实时生成。</p><details><summary>案例代码、提示与输入</summary><pre><code>#include &lt;iostream&gt;
+
+/**
+ * @brief 根据与前车的距离计算自适应巡航的目标速度
+ * * @param current_speed 当前车速 (km/h)
+ * @param distance_to_front_car 与前方车辆的距离 (m)
+ * @return double 计算出的目标车速 (km/h)
+ */
+double calculate_target_speed(double current_speed, double distance_to_front_car) {
+    const double MAX_SPEED = 120.0;
+
+    if (distance_to_front_car &gt; 100.0) {
+        // 距离安全，可以加速到最高限速
+        return MAX_SPEED;
+    } else if (distance_to_front_car &gt;= 50.0) {
+        // 距离适中，保持当前速度跟车
+        return current_speed;
+    } else {
+        // 距离过近，需要减速，目标速度为当前速度的80%
+        return current_speed * 0.8;
+    }
+}
+
+// 用于测试的 main 函数
+int main() {
+    std::cout &lt;&lt; &quot;测试场景1 (远距离): &quot; 
+              &lt;&lt; calculate_target_speed(80.0, 150.0) &lt;&lt; &quot; km/h&quot; &lt;&lt; std::endl;
+
+    std::cout &lt;&lt; &quot;测试场景2 (跟车距离): &quot; 
+              &lt;&lt; calculate_target_speed(90.0, 75.0) &lt;&lt; &quot; km/h&quot; &lt;&lt; std::endl;
+
+    std::cout &lt;&lt; &quot;测试场景3 (近距离): &quot; 
+              &lt;&lt; calculate_target_speed(100.0, 40.0) &lt;&lt; &quot; km/h&quot; &lt;&lt; std::endl;
+
+    return 0;
+}</code></pre></details><details><summary>运行效果与分析</summary><p>程序运行输出：</p>
+<pre><code>测试场景1 (远距离): 120 km/h
+测试场景2 (跟车距离): 90 km/h
+测试场景3 (近距离): 80 km/h</code></pre>
+<p>AIGC 准确地理解了我们的自然语言需求，并将其转化为了一个结构清晰、逻辑正确的 C++ 函数；<code>if-else if-else</code> 结构完美地对应了我们描述的三种分段逻辑；这个函数是自包含的，它封装了单一的职责（计算目标速度），可以被项目中的任何其他部分轻松调用，这正是面向过程设计中“功能分解”思想的体现。</p></details></section>
+<section class="panel ai-source"><h2>代码工程对照</h2><p class="ai-source-path">cpp_simulation/simulation_examples/e_E/</p><p class="small">案例 E 与 e_E/main.cpp 均实现 calculate_target_speed；三档距离与 if—else if—else 分支对应。</p><details><summary>main.cpp</summary><pre>#include &lt;iostream&gt;
+
+/**
+ * @brief 根据与前车的距离计算自适应巡航的目标速度
+ * * @param current_speed 当前车速 (km/h)
+ * @param distance_to_front_car 与前方车辆的距离 (m)
+ * @return double 计算出的目标车速 (km/h)
+ */
+double calculate_target_speed(double current_speed, double distance_to_front_car) {
+    const double MAX_SPEED = 120.0;
+
+    if (distance_to_front_car &gt; 100.0) {
+        // 距离安全，可以加速到最高限速
+        return MAX_SPEED;
+    } else if (distance_to_front_car &gt;= 50.0) {
+        // 距离适中，保持当前速度跟车
+        return current_speed;
+    } else {
+        // 距离过近，需要减速，目标速度为当前速度的80%
+        return current_speed * 0.8;
+    }
+}
+
+// 用于测试的 main 函数
+int main() {
+    std::cout &lt;&lt; &quot;测试场景1 (远距离): &quot; 
+              &lt;&lt; calculate_target_speed(80.0, 150.0) &lt;&lt; &quot; km/h&quot; &lt;&lt; std::endl;
+
+    std::cout &lt;&lt; &quot;测试场景2 (跟车距离): &quot; 
+              &lt;&lt; calculate_target_speed(90.0, 75.0) &lt;&lt; &quot; km/h&quot; &lt;&lt; std::endl;
+
+    std::cout &lt;&lt; &quot;测试场景3 (近距离): &quot; 
+              &lt;&lt; calculate_target_speed(100.0, 40.0) &lt;&lt; &quot; km/h&quot; &lt;&lt; std::endl;
+
+    return 0;
+}
+</pre></details>
+<details><summary>README.md</summary><pre># e_E：AIGC核心功能实现师
+
+- 案例编号：案例E
+- 归属：项目5 驾驶决策开发
+- 覆盖知识点：知识点68
+
+## 实施步骤
+
+1. 检查本目录的源码、输入文件、外部资源和工程补全说明。
+2. 若存在 `CMakeLists.txt`，先独立配置本目录，再构建对应目标。
+3. 运行生成的程序并核对输出；阅读、推导或操作类案例直接按目录说明完成。
+
+</pre></details></section>
+</main><script>window.aiCaseData={"steps": [{"title": "远距离", "text": "距离大于 100 米时，目标速度为 120 km/h；工程示例 150 米得到 120。", "evidence": "if (distance_to_front_car > 100.0) return MAX_SPEED;"}, {"title": "跟车区间", "text": "距离 50～100 米（含边界）时保持当前速度；示例 75 米、90 km/h 得到 90。", "evidence": "else if (distance_to_front_car >= 50.0) return current_speed;"}, {"title": "近距离", "text": "距离小于 50 米时返回当前速度的 80%；示例 40 米、100 km/h 得到 80。", "evidence": "return current_speed * 0.8;"}], "quiz": {"correct": 1, "right": "正确。100 米不满足大于 100，进入保持速度分支。", "wrong": "请看 e_E/main.cpp 的 >100 与 >=50 两个边界。"}};</script><script src="../../../AI协作案例/AI案例交互.js"></script></body></html>

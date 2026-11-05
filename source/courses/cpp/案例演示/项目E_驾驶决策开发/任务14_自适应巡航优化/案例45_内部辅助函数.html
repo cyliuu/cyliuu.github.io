@@ -1,0 +1,73 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>案例 45 · 内部辅助函数</title><style>:root{--bg:#f6f8fa;--text:#24292f;--muted:#57606a;--line:#d0d7de;--blue:#0969da;--green:#1a7f37;--red:#cf222e}*{box-sizing:border-box}body{margin:0;padding:40px 20px;background:var(--bg);color:var(--text);font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button{font:inherit;cursor:pointer}main{max-width:1200px;margin:auto}.eyebrow{font-size:12px;color:var(--blue);font-weight:700;text-align:center}h1{text-align:center;font-size:24px;font-weight:600;margin:2px 0 12px}h2{font-size:1.18rem;margin:0 0 12px}h3{font-size:1rem;margin:0 0 8px}p{margin:0 0 12px}.lead{max-width:900px;margin:auto;text-align:center;color:var(--muted);font-size:14px}nav{display:flex;justify-content:center;flex-wrap:wrap;gap:9px;margin:14px 0 20px;font-size:13px}a{color:var(--blue)}nav a{border:1px solid var(--line);background:#fff;padding:7px 11px;border-radius:8px;text-decoration:none}.panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px;box-shadow:0 8px 24px rgba(140,149,159,.15);margin-bottom:16px}.grid{display:grid;grid-template-columns:1.08fr 1fr;gap:22px}.code{border:1px solid var(--line);border-radius:8px;overflow:hidden}.codehead{padding:9px 14px;background:#f6f8fa;border-bottom:1px solid var(--line);color:var(--muted);font-size:13px}.code pre{margin:0;padding:10px 14px;overflow:auto;max-height:540px;font:14px/1.8 ui-monospace,SFMono-Regular,Consolas,monospace}.file{border-top:1px solid var(--line)}.file:first-child{border-top:0}.file summary{padding:8px 14px;cursor:pointer;font-size:13px;color:var(--blue);font-weight:600}.btn{padding:10px 20px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--text);font-size:14px;font-weight:600}.btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}.controls{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 18px}.choice{display:block;width:100%;text-align:left;margin:7px 0}.choice.correct{border-color:var(--green);background:#dafbe1}.choice.wrong{border-color:var(--red);background:#ffebe9}.note{border-left:4px solid var(--blue);background:#f6f8fa;padding:10px 13px;margin-top:13px}.note.good{border-color:var(--green)}.note.bad{border-color:var(--red)}.terminal{background:#24292f;color:#57ab5a;border-radius:8px;padding:16px;white-space:pre-wrap;font:13px/1.6 ui-monospace,Consolas,monospace;min-height:125px;margin-top:16px}.book-text{white-space:pre-line;font-size:14px;color:var(--muted)}.chips{display:flex;gap:6px;flex-wrap:wrap}.chip{display:inline-block;border:1px solid var(--line);background:#f6f8fa;border-radius:6px;padding:3px 7px;font-size:13px}.small{color:var(--muted);font-size:14px}button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--blue);outline-offset:2px}@media(max-width:760px){body{padding:16px 10px}.grid{grid-template-columns:1fr}.panel{padding:15px}}.experiment-controls{align-items:end}.experiment-controls label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}.experiment-controls input,.experiment-controls select{min-width:130px;max-width:210px;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--text);font:14px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.experiment-controls input:focus-visible,.experiment-controls select:focus-visible{outline:2px solid var(--blue);outline-offset:2px}</style><link rel="stylesheet" href="../../../案例统一样式.css"></head><body class="case-document"><main class="case-page">
+<div class="eyebrow">项目 E · 任务 14 · 案例 45</div><h1>内部辅助函数</h1><p class="lead">比较公开函数与文件内部辅助函数，观察静态链接范围怎样限制外部访问。</p><nav class="case-nav" aria-label="案例导航"><a href="../../../项目演示/项目E.html">返回项目 E</a><a href="../../../资源目录.html#case-45">返回资源总目录</a></nav><section class="case-meta" aria-label="案例知识与相关资源"><div class="case-meta-group"><span class="case-meta-label">对应知识点</span><div class="case-meta-items"><span class="case-tag">知识点 75 · 特殊函数</span></div></div><div class="case-meta-group"><span class="case-meta-label">相关机制页</span><div class="case-meta-items"><span class="case-empty">暂无独立机制页</span></div></div></section>
+<section class="panel"><h2>案例任务与源码核对</h2><div class="grid"><div><h3>情境背景</h3><div class="book-text">在大型的软件项目中，代码通常被组织成多个独立的模块（例如，一个专门负责数学运算的 math_utils 模块，一个负责日志记录的 logging 模块等）。每个模块都会包含一些对外提供服务的公共接口函数，同时也会有一些只在模块内部使用的辅助函数。一个常见的工程问题是：如果 math_utils 模块内部有一个辅助函数叫 is_valid()，而 logging 模块内部也有一个同名的辅助函数，当链接器最终将所有模块组合在一起时，就会发现两个同名的函数，从而导致“多重定义”的链接错误。为了解决这个问题，并实现良好的信息隐藏，我们需要一种机制来明确地告诉编译器：这个函数是本模块的“内部秘密”，不应该被外部世界看到。静态函数正是实现这一目标的关键工具。</div><h3 style="margin-top:18px">案例要求</h3><div class="book-text">通过创建一个简单的数学工具模块，来实践如何使用静态函数封装内部实现，并与外部函数进行区分。创建一个多文件项目，包含 math_utils.h、math_utils.cpp 和 main.cpp；在 math_utils.h 中，声明一个对外公开的外部函数 double average(const double arr[], int size)，用于计算数组的平均值；在 math_utils.cpp 中，定义 average 函数，并定义一个静态函数 static double sum(const double arr[], int size)，它只用于辅助 average 函数计算数组总和，static 关键字将确保此函数只在 math_utils.cpp 文件内部可见；在 main.cpp 中，成功调用外部函数 average，并尝试声明并调用静态函数 sum，观察并理解为什么这会导致链接错误。</div></div><div><div class="note"><strong>源码核对重点：</strong>命名空间作用域的 static 为内部链接，不是类的 static 成员；average 经头文件声明可供 main.cpp 调用。</div></div></div></section>
+<section class="panel"><h2>先预测，再验证</h2><div class="grid"><div><h3>math_utils.cpp 中 static 辅助 sum 与公开 average 的链接可见性如何？</h3><div id="choices"><button class="btn choice" data-choice="0">两者都可被任意源文件直接外部链接</button><button class="btn choice" data-choice="1">sum 限于本翻译单元，average 供外部调用</button><button class="btn choice" data-choice="2">sum 自动变成类静态方法</button></div><div id="feedback" class="note" aria-live="polite">请选择一种判断，查看依据。</div><div class="controls"><button class="btn primary" id="next">推演下一步</button><button class="btn" id="reset">重新开始</button></div><div id="trace" class="terminal" aria-live="polite">等待推演。网页展示源码逻辑，不在浏览器执行 C++ 程序。</div></div><div class="code"><div class="codehead">工程原始文件 · 点击文件名展开</div><details class="file" open><summary>ee_45/main.cpp</summary><pre>// 使用math_utils模块
+
+#include &lt;iostream&gt;
+#include &quot;math_utils.h&quot; // 包含模块的头文件
+
+// 尝试声明在另一个文件中定义的静态函数（这将导致链接失败）
+// extern double sum(const double arr[], int size);
+
+int main() {
+    double sensor_readings[] = {10.5, 11.0, 9.8, 10.2, 11.5};
+    int count = 5;
+
+    // 成功调用外部函数 average，因为它的声明在头文件中是公开的
+    double avg_reading = average(sensor_readings, count);
+    std::cout &lt;&lt; &quot;传感器的平均读数是： &quot; &lt;&lt; avg_reading &lt;&lt; std::endl;
+
+    // 如果取消上面 extern double sum(...) 的注释并尝试调用，就会在链接阶段报错
+    // double total = sum(sensor_readings, count); // Linker Error!
+
+    return 0;
+}
+</pre></details><details class="file"><summary>ee_45/math_utils.h</summary><pre>// 声明了本模块对外提供的公共函数接口
+
+#ifndef MATH_UTILS_H
+#define MATH_UTILS_H
+
+// 这是一个外部函数（默认），其声明对所有包含此头文件的文件都可见
+// 功能：计算一个double数组的平均值
+double average(const double arr[], int size);
+
+#endif // MATH_UTILS_H
+</pre></details><details class="file"><summary>ee_45/math_utils.cpp</summary><pre>// 实现了math_utils模块的功能
+
+#include &quot;math_utils.h&quot;
+
+// 定义一个静态函数 (内部链接)
+// static 关键字将 sum 函数的作用域限制在当前源文件
+//    其他.cpp文件即使声明了它，也无法在链接时找到它
+static double sum(const double arr[], int size) {
+    double total = 0.0;
+    for (int i = 0; i &lt; size; ++i) {
+        total += arr[i];
+    }
+    return total;
+}
+
+// 定义外部函数 (外部链接)
+//    这个函数是模块的公共接口
+double average(const double arr[], int size) {
+    if (size &lt;= 0) {
+        return 0.0;
+    }
+    // 在内部调用同文件下的静态辅助函数
+    return sum(arr, size) / size;
+}
+</pre></details><details class="file"><summary>ee_45/CMakeLists.txt</summary><pre>cmake_minimum_required(VERSION 3.16)
+project(ee_45 LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+add_executable(ee_45
+    main.cpp
+    math_utils.cpp
+    math_utils.h
+)
+</pre></details></div></div></section>
+<section class="panel"><h2>条件变更实验</h2><p><strong>先预测：</strong>在 main.cpp 尝试直接调用 math_utils.cpp 内部的 static sum。</p><div class="controls"><button class="btn primary" id="revealVariant">核对变式结果</button><button class="btn" id="resetVariant">重新预测</button></div><div class="terminal" id="variantResult" aria-live="polite">先根据源码与条件判断，再揭示结果。</div></section><section class="panel"><h2>改条件，再推演 · 切换调用位置</h2><p class="small">修改当前案例的条件，先预测输出，再核对源码规则。属于浏览器教学模型，不会修改或执行原 C++ 工程。</p><div class="controls experiment-controls"><label>调用点<select id="exp-where"><option value="same">math_utils.cpp 内</option><option value="other">main.cpp 中</option></select></label><button class="btn primary" id="runExperiment" type="button">按新条件推演</button><button class="btn" id="resetExperiment" type="button">恢复初始条件</button></div><div id="experimentResult" class="terminal" aria-live="polite">先预测，再点击“按新条件推演”核对。</div></section><p class="small">教学说明：选择题与步骤推演是依据源码编写的浏览器交互，不等于实际编译、链接、运行图形库或 Shell 脚本。涉及本机文件、设备、第三方库或浮点舍入时，以源码和实际运行环境为准。</p>
+</main><script>const lesson={"correct":1,"explanation":"命名空间作用域的 static 为内部链接，不是类的 static 成员；average 经头文件声明可供 main.cpp 调用。","steps":["math_utils.cpp 内部调用 sum。","static 限制 sum 名称的外部可见性。","main.cpp 只调用声明并链接的 average。"]};(()=>{'use strict';const $=id=>document.getElementById(id);let step=0;function reset(){step=0;$('feedback').textContent='请选择一种判断，查看依据。';$('feedback').className='note';$('trace').textContent='等待推演。网页展示源码逻辑，不在浏览器执行 C++ 程序。';document.querySelectorAll('[data-choice]').forEach(b=>{b.classList.remove('correct','wrong');b.disabled=false});$('next').disabled=false}document.querySelectorAll('[data-choice]').forEach(b=>b.onclick=()=>{const i=Number(b.dataset.choice),ok=i===lesson.correct;$('feedback').textContent=(ok?'判断正确。':'需要修正。')+lesson.explanation;$('feedback').className='note '+(ok?'good':'bad');document.querySelectorAll('[data-choice]').forEach(x=>{x.disabled=true;x.classList.toggle('correct',Number(x.dataset.choice)===lesson.correct);x.classList.toggle('wrong',x===b&&!ok)})});$('next').onclick=()=>{step=Math.min(step+1,lesson.steps.length);$('trace').textContent=lesson.steps.slice(0,step).map((x,i)=>String(i+1)+'. '+x).join('\n');$('next').disabled=step===lesson.steps.length};$('reset').onclick=reset;})();</script><script>(()=>{"use strict";const v=["在 main.cpp 尝试直接调用 math_utils.cpp 内部的 static sum。","外部翻译单元不能链接这个内部名称；应通过公开的 average 接口。","命名空间作用域 static 限制链接可见性。"];const result=document.getElementById("variantResult");document.getElementById("revealVariant").onclick=()=>{result.textContent="推演结果："+v[1]+"\n依据："+v[2]};document.getElementById("resetVariant").onclick=()=>{result.textContent="先根据源码与条件判断，再揭示结果。"}})();</script><script>(()=>{"use strict";const fields=[{"label":"调用点","id":"where","kind":"select","options":[["same","math_utils.cpp 内"],["other","main.cpp 中"]]}];const calculate=v=>v.where==='same'?'同一翻译单元中的 average 可以调用内部链接的 static sum。':'main.cpp 不能直接外部链接 math_utils.cpp 的 static sum；应调用公开的 average。';const result=document.getElementById("experimentResult");for(const field of fields){document.getElementById("exp-"+field.id).oninput=()=>{result.textContent="条件已变化，请先预测，再点击按钮核对。"}}document.getElementById("runExperiment").onclick=()=>{const values={};for(const field of fields){const input=document.getElementById("exp-"+field.id);if(field.kind==="number"){const value=Number(input.value);const offset=(value-field.min)/field.step;if(input.value.trim()===""||!Number.isFinite(value)||value<field.min||value>field.max||Math.abs(offset-Math.round(offset))>1e-8){result.textContent="请填写范围和步长内的有效数值："+field.label;return}values[field.id]=value}else{if(!field.options.some(option=>option[0]===input.value)){result.textContent="请选择有效选项："+field.label;return}values[field.id]=input.value}}result.textContent=calculate(values)};document.getElementById("resetExperiment").onclick=()=>{for(const field of fields){document.getElementById("exp-"+field.id).value=String(field.kind==="number"?field.value:field.options[0][0])}result.textContent="先预测，再点击“按新条件推演”核对。"}})();</script></body></html>

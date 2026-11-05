@@ -1,0 +1,80 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>案例 27 · 安全传递车辆识别码</title><style>:root{--bg:#f6f8fa;--text:#24292f;--muted:#57606a;--line:#d0d7de;--blue:#0969da;--green:#1a7f37;--red:#cf222e}*{box-sizing:border-box}body{margin:0;padding:40px 20px;background:var(--bg);color:var(--text);font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button{font:inherit;cursor:pointer}main{max-width:1200px;margin:auto}.eyebrow{font-size:12px;color:var(--blue);font-weight:700;text-align:center}h1{text-align:center;font-size:24px;font-weight:600;margin:2px 0 12px}h2{font-size:1.18rem;margin:0 0 12px}h3{font-size:1rem;margin:0 0 8px}p{margin:0 0 12px}.lead{max-width:900px;margin:auto;text-align:center;color:var(--muted);font-size:14px}nav{display:flex;justify-content:center;flex-wrap:wrap;gap:9px;margin:14px 0 20px;font-size:13px}a{color:var(--blue)}nav a{border:1px solid var(--line);background:#fff;padding:7px 11px;border-radius:8px;text-decoration:none}.panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px;box-shadow:0 8px 24px rgba(140,149,159,.15);margin-bottom:16px}.grid{display:grid;grid-template-columns:1.08fr 1fr;gap:22px}.code{border:1px solid var(--line);border-radius:8px;overflow:hidden}.codehead{padding:9px 14px;background:#f6f8fa;border-bottom:1px solid var(--line);color:var(--muted);font-size:13px}.code pre{margin:0;padding:10px 14px;overflow:auto;max-height:540px;font:14px/1.8 ui-monospace,SFMono-Regular,Consolas,monospace}.file{border-top:1px solid var(--line)}.file:first-child{border-top:0}.file summary{padding:8px 14px;cursor:pointer;font-size:13px;color:var(--blue);font-weight:600}.btn{padding:10px 20px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--text);font-size:14px;font-weight:600}.btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}.controls{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 18px}.choice{display:block;width:100%;text-align:left;margin:7px 0}.choice.correct{border-color:var(--green);background:#dafbe1}.choice.wrong{border-color:var(--red);background:#ffebe9}.note{border-left:4px solid var(--blue);background:#f6f8fa;padding:10px 13px;margin-top:13px}.note.good{border-color:var(--green)}.note.bad{border-color:var(--red)}.terminal{background:#24292f;color:#57ab5a;border-radius:8px;padding:16px;white-space:pre-wrap;font:13px/1.6 ui-monospace,Consolas,monospace;min-height:125px;margin-top:16px}.book-text{white-space:pre-line;font-size:14px;color:var(--muted)}.chips{display:flex;gap:6px;flex-wrap:wrap}.chip{display:inline-block;border:1px solid var(--line);background:#f6f8fa;border-radius:6px;padding:3px 7px;font-size:13px}.small{color:var(--muted);font-size:14px}button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--blue);outline-offset:2px}@media(max-width:760px){body{padding:16px 10px}.grid{grid-template-columns:1fr}.panel{padding:15px}}.experiment-controls{align-items:end}.experiment-controls label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}.experiment-controls input,.experiment-controls select{min-width:130px;max-width:210px;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--text);font:14px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.experiment-controls input:focus-visible,.experiment-controls select:focus-visible{outline:2px solid var(--blue);outline-offset:2px}</style><link rel="stylesheet" href="../../../案例统一样式.css"></head><body class="case-document"><main class="case-page">
+<div class="eyebrow">项目 D · 任务 09 · 案例 27</div><h1>安全传递车辆识别码</h1><p class="lead">比较按值、指针和引用三种传递方式，判断车辆识别码何时复制、何时共享原对象。</p><nav class="case-nav" aria-label="案例导航"><a href="../../../项目演示/项目D.html">返回项目 D</a><a href="../../../资源目录.html#case-27">返回资源总目录</a></nav><section class="case-meta" aria-label="案例知识与相关资源"><div class="case-meta-group"><span class="case-meta-label">对应知识点</span><div class="case-meta-items"><span class="case-tag">知识点 53 · 引用与传值</span></div></div><div class="case-meta-group"><span class="case-meta-label">相关机制页</span><div class="case-meta-items"><a class="case-mechanism" href="../../../指针与引用/引用与传值.html">引用与传值</a></div></div></section>
+<section class="panel"><h2>案例任务与源码核对</h2><div class="grid"><div><h3>情境背景</h3><div class="book-text">车辆识别码（VIN）是汽车的“身份证”，一个由 17 位字符组成的唯一序列，包含了车辆的生产厂家、年代、车型等重要信息。在车载软件系统中，这个 VIN 码需要在不同的模块间频繁传递，例如从车辆信息模块传递给诊断模块，再传递给云端通信模块。由于 VIN 码是一个相对较长的字符串，如果每次传递都完整地复制一份，会造成不必要的性能开销。更重要的是，在传递过程中，我们必须保证这个“身份证”信息不会被任何模块意外地修改。因此，寻找到一种既高效又安全的数据传递方式，是软件设计中的一个核心问题。</div><h3 style="margin-top:18px">案例要求</h3><div class="book-text">在一个模拟的程序流程中，对比三种不同的方式来“传递”一个车辆的 VIN 码，深刻体会 const 引用在处理大型、只读数据时的巨大优势。在 main 函数中，定义一个 std::string 类型的变量 vin，并初始化为一个 17 位的字符串；模拟一个“数据处理单元”，在这个单元中访问并打印 VIN 码；分别使用三种方式将 vin “传递”给这个处理单元：方式 1（按值传递）直接复制一份 vin，方式 2（按 const 指针传递）传递 vin 的地址并保证其不可修改，方式 3（按 const 引用传递）为 vin 创建一个只读的别名。</div></div><div><div class="note"><strong>源码核对重点：</strong>const 引用避免按值拷贝，并通过类型限制函数内部修改；const 指针也可只读，但调用与空指针语义不同。</div></div></div></section>
+<section class="panel"><h2>先预测，再验证</h2><div class="grid"><div><h3>只读地传递较长 VIN，且不希望复制字符串，合适方式是？</h3><div id="choices"><button class="btn choice" data-choice="0">按值传入 std::string</button><button class="btn choice" data-choice="1">按 const std::string&amp; 传入</button><button class="btn choice" data-choice="2">以非常量引用并随意改写</button></div><div id="feedback" class="note" aria-live="polite">请选择一种判断，查看依据。</div><div class="controls"><button class="btn primary" id="next">推演下一步</button><button class="btn" id="reset">重新开始</button></div><div id="trace" class="terminal" aria-live="polite">等待推演。网页展示源码逻辑，不在浏览器执行 C++ 程序。</div></div><div class="code"><div class="codehead">工程原始文件 · 点击文件名展开</div><details class="file" open><summary>ee_27/main.cpp</summary><pre>// 对比三种方式传递 VIN 码，体会 const 引用的优势
+
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+int main() {
+    // 在内存中定义一个VIN码字符串
+    std::string vin = &quot;LFWC2MD98PTxxxxxx&quot;;
+
+    std::cout &lt;&lt; &quot;原始VIN码地址: &quot; &lt;&lt; &amp;vin &lt;&lt; std::endl;
+    std::cout &lt;&lt; &quot;========================================&quot; &lt;&lt; std::endl;
+
+    // 方式 1：按值传递 (创建副本)
+    {
+        // 进入&quot;处理单元&quot;作用域
+        std::cout &lt;&lt; &quot;方式 1：按值传递&quot; &lt;&lt; std::endl;
+
+        // 模拟参数传递：创建一个全新的字符串 `vin_copy`，
+        // 并将 `vin` 的内容完整地复制过来
+        std::string vin_copy = vin; 
+
+        std::cout &lt;&lt; &quot;  - 内部副本 vin_copy 的地址: &quot; &lt;&lt; &amp;vin_copy &lt;&lt; std::endl;
+        std::cout &lt;&lt; &quot;  - 观察: 内部地址与原始地址不同，发生了数据拷贝。&quot; &lt;&lt; std::endl;
+        std::cout &lt;&lt; &quot;  - 处理单元访问到的VIN: &quot; &lt;&lt; vin_copy &lt;&lt; std::endl;
+        std::cout &lt;&lt; &quot;  - 缺点: 对于长字符串，每次拷贝都会消耗时间和内存。&quot; &lt;&lt; std::endl;
+    }
+    std::cout &lt;&lt; &quot;========================================&quot; &lt;&lt; std::endl;
+
+    // 方式 2：按 const 指针传递 (传递地址)
+    {
+        // 进入&quot;处理单元&quot;作用域
+        std::cout &lt;&lt; &quot;方式 2：按 const 指针传递&quot; &lt;&lt; std::endl;
+
+        // 模拟参数传递：创建一个指针 `p_vin`，
+        // 它存储了 `vin` 的内存地址。`const` 保证了不能通过指针修改原数据
+        const std::string* p_vin = &amp;vin;
+
+        std::cout &lt;&lt; &quot;  - 指针 p_vin 中存储的地址: &quot; &lt;&lt; p_vin &lt;&lt; std::endl;
+        std::cout &lt;&lt; &quot;  - 观察: 指针存储的地址与原始地址相同，没有数据拷贝。&quot; &lt;&lt; std::endl;
+        // 访问时需要解引用 `*`
+        std::cout &lt;&lt; &quot;  - 处理单元访问到的VIN: &quot; &lt;&lt; *p_vin &lt;&lt; std::endl;
+        // *p_vin = &quot;tampered&quot;; // 编译错误！const指针保护了原始数据
+        std::cout &lt;&lt; &quot;  - 优点: 高效。缺点: 访问语法稍显繁琐(*)。&quot; &lt;&lt; std::endl;
+    }
+    std::cout &lt;&lt; &quot;========================================&quot; &lt;&lt; std::endl;
+
+    // 方式 3：按 const 引用传递 (起别名)
+    {
+        // 进入&quot;处理单元&quot;作用域
+        std::cout &lt;&lt; &quot;方式 3：按 const 引用传递&quot; &lt;&lt; std::endl;
+
+        // 模拟参数传递：创建一个引用 `ref_vin`，
+        // 它成为 `vin` 的一个只读别名
+        const std::string&amp; ref_vin = vin;
+
+        std::cout &lt;&lt; &quot;  - 引用 ref_vin 的地址: &quot; &lt;&lt; &amp;ref_vin &lt;&lt; std::endl;
+        std::cout &lt;&lt; &quot;  - 观察: 引用地址与原始地址相同，没有数据拷贝。&quot; &lt;&lt; std::endl;
+        // 像使用普通变量一样直接访问
+        std::cout &lt;&lt; &quot;  - 处理单元访问到的VIN: &quot; &lt;&lt; ref_vin &lt;&lt; std::endl;
+        // ref_vin = &quot;tampered&quot;; // 编译错误！const引用保护了原始数据
+        std::cout &lt;&lt; &quot;  - 优点: 既高效(无拷贝)，又安全(const)，且语法简洁。&quot; &lt;&lt; std::endl;
+    }
+    std::cout &lt;&lt; &quot;========================================&quot; &lt;&lt; std::endl;
+
+    return 0;
+}
+</pre></details><details class="file"><summary>ee_27/CMakeLists.txt</summary><pre>cmake_minimum_required(VERSION 3.16)
+project(ee_27 LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+add_executable(ee_27 main.cpp)
+</pre></details></div></div></section>
+<section class="panel"><h2>条件变更实验</h2><p><strong>先预测：</strong>比较按值接收 VIN 与按 const 引用接收 VIN。</p><div class="controls"><button class="btn primary" id="revealVariant">核对变式结果</button><button class="btn" id="resetVariant">重新预测</button></div><div class="terminal" id="variantResult" aria-live="polite">先根据源码与条件判断，再揭示结果。</div></section><section class="panel"><h2>改条件，再推演 · 比较 VIN 传参方式</h2><p class="small">修改当前案例的条件，先预测输出，再核对源码规则。属于浏览器教学模型，不会修改或执行原 C++ 工程。</p><div class="controls experiment-controls"><label>参数方式<select id="exp-mode"><option value="value">按值</option><option value="reference">const 引用</option></select></label><button class="btn primary" id="runExperiment" type="button">按新条件推演</button><button class="btn" id="resetExperiment" type="button">恢复初始条件</button></div><div id="experimentResult" class="terminal" aria-live="polite">先预测，再点击“按新条件推演”核对。</div></section><p class="small">教学说明：选择题与步骤推演是依据源码编写的浏览器交互，不等于实际编译、链接、运行图形库或 Shell 脚本。涉及本机文件、设备、第三方库或浮点舍入时，以源码和实际运行环境为准。</p>
+</main><script>const lesson={"correct":1,"explanation":"const 引用避免按值拷贝，并通过类型限制函数内部修改；const 指针也可只读，但调用与空指针语义不同。","steps":["按值参数会构造独立副本。","const 引用绑定原字符串且禁止通过该引用修改。","比较两种方式的复制与可空性语义。"]};(()=>{'use strict';const $=id=>document.getElementById(id);let step=0;function reset(){step=0;$('feedback').textContent='请选择一种判断，查看依据。';$('feedback').className='note';$('trace').textContent='等待推演。网页展示源码逻辑，不在浏览器执行 C++ 程序。';document.querySelectorAll('[data-choice]').forEach(b=>{b.classList.remove('correct','wrong');b.disabled=false});$('next').disabled=false}document.querySelectorAll('[data-choice]').forEach(b=>b.onclick=()=>{const i=Number(b.dataset.choice),ok=i===lesson.correct;$('feedback').textContent=(ok?'判断正确。':'需要修正。')+lesson.explanation;$('feedback').className='note '+(ok?'good':'bad');document.querySelectorAll('[data-choice]').forEach(x=>{x.disabled=true;x.classList.toggle('correct',Number(x.dataset.choice)===lesson.correct);x.classList.toggle('wrong',x===b&&!ok)})});$('next').onclick=()=>{step=Math.min(step+1,lesson.steps.length);$('trace').textContent=lesson.steps.slice(0,step).map((x,i)=>String(i+1)+'. '+x).join('\n');$('next').disabled=step===lesson.steps.length};$('reset').onclick=reset;})();</script><script>(()=>{"use strict";const v=["比较按值接收 VIN 与按 const 引用接收 VIN。","按值产生独立字符串副本；const 引用只读地绑定原对象。","两种函数参数的复制与别名语义不同。"];const result=document.getElementById("variantResult");document.getElementById("revealVariant").onclick=()=>{result.textContent="推演结果："+v[1]+"\n依据："+v[2]};document.getElementById("resetVariant").onclick=()=>{result.textContent="先根据源码与条件判断，再揭示结果。"}})();</script><script>(()=>{"use strict";const fields=[{"label":"参数方式","id":"mode","kind":"select","options":[["value","按值"],["reference","const 引用"]]}];const calculate=v=>v.mode==='value'?'按值参数创建独立 std::string 对象；修改副本不改变调用者对象。':'const std::string& 绑定调用者对象，函数内不能通过该引用修改 VIN，且避免本次按值拷贝。';const result=document.getElementById("experimentResult");for(const field of fields){document.getElementById("exp-"+field.id).oninput=()=>{result.textContent="条件已变化，请先预测，再点击按钮核对。"}}document.getElementById("runExperiment").onclick=()=>{const values={};for(const field of fields){const input=document.getElementById("exp-"+field.id);if(field.kind==="number"){const value=Number(input.value);const offset=(value-field.min)/field.step;if(input.value.trim()===""||!Number.isFinite(value)||value<field.min||value>field.max||Math.abs(offset-Math.round(offset))>1e-8){result.textContent="请填写范围和步长内的有效数值："+field.label;return}values[field.id]=value}else{if(!field.options.some(option=>option[0]===input.value)){result.textContent="请选择有效选项："+field.label;return}values[field.id]=input.value}}result.textContent=calculate(values)};document.getElementById("resetExperiment").onclick=()=>{for(const field of fields){document.getElementById("exp-"+field.id).value=String(field.kind==="number"?field.value:field.options[0][0])}result.textContent="先预测，再点击“按新条件推演”核对。"}})();</script></body></html>

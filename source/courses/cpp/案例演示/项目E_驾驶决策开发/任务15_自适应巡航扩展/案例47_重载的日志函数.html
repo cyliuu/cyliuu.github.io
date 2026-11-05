@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>案例47 · 重载的日志函数</title>
+  <style>
+    :root{--bg:#f6f8fa;--text:#24292f;--muted:#57606a;--line:#d0d7de;--blue:#0969da;--green:#1a7f37;--red:#cf222e}*{box-sizing:border-box}body{margin:0;padding:40px 20px;background:var(--bg);color:var(--text);font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button{font:inherit;cursor:pointer}main{max-width:1200px;margin:auto}.eyebrow{font-size:12px;color:var(--blue);font-weight:700;text-align:center}h1{text-align:center;font-size:24px;font-weight:600;margin:2px 0 12px}h2{font-size:1.18rem;margin:0 0 12px}h3{font-size:1rem;margin:0 0 8px}p{margin:0 0 12px}.lead{max-width:900px;margin:auto;text-align:center;color:var(--muted);font-size:14px}nav{display:flex;justify-content:center;flex-wrap:wrap;gap:9px;margin:14px 0 20px;font-size:13px}a{color:var(--blue)}nav a{border:1px solid var(--line);background:#fff;padding:7px 11px;border-radius:8px;text-decoration:none}nav a:hover{text-decoration:underline}.panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px;box-shadow:0 8px 24px rgba(140,149,159,.15)}.calls{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 18px}.btn{padding:10px 20px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--text);font-size:14px;font-weight:600}.btn.active,.btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}.btn:hover:not(.active){border-color:var(--blue)}.grid{display:grid;grid-template-columns:1.08fr 1fr;gap:22px}.code{border:1px solid var(--line);border-radius:8px;overflow:hidden}.codehead{padding:9px 14px;background:#f6f8fa;border-bottom:1px solid var(--line);color:var(--muted);font-size:13px}.code pre{margin:0;padding:10px 0;overflow-x:auto;font:14px/1.8 ui-monospace,SFMono-Regular,Consolas,monospace}.line{display:block;padding:0 14px;white-space:pre}.line.active{padding-left:11px;border-left:3px solid var(--blue);background:#f6f8fa;font-weight:700}.n{display:inline-block;width:2em;color:#8c959f;user-select:none}.signature{border:2px dashed var(--line);padding:10px 12px;margin-bottom:9px;border-radius:8px;background:#fafbfc;font-family:ui-monospace,Consolas,monospace;font-size:13px}.signature.matched{border-color:#2da44e;background:#dafbe1}.signature.dim{opacity:.55}.note{border-left:4px solid var(--blue);background:#f6f8fa;padding:10px 13px;margin-top:13px}.terminal{background:#24292f;color:#57ab5a;border-radius:8px;padding:16px;white-space:pre-wrap;font:13px/1.6 ui-monospace,Consolas,monospace;min-height:125px;margin-top:16px}.feedback{min-height:1.5em;margin-top:8px;font-weight:700}.feedback.good{color:var(--green)}.feedback.bad{color:var(--red)}.small{color:var(--muted);font-size:14px}
+    @media(max-width:760px){body{padding:16px 10px}.grid{grid-template-columns:1fr}.panel{padding:15px}}
+  </style>
+<link rel="stylesheet" href="../../../案例统一样式.css"></head><body class="case-document"><main class="case-page">
+  <div class="eyebrow">项目 E · 任务 15 · 案例 47</div><h1>重载的日志函数</h1>
+  <p class="lead">选择不同参数形式，预测同名日志函数会匹配哪个重载版本。</p>
+  <nav class="case-nav" aria-label="案例导航"><a href="../../../项目演示/项目E.html">返回项目 E</a><a href="../../../资源目录.html#case-47">返回资源总目录</a></nav><section class="case-meta" aria-label="案例知识与相关资源"><div class="case-meta-group"><span class="case-meta-label">对应知识点</span><div class="case-meta-items"><span class="case-tag">知识点 77 · 函数重载</span></div></div><div class="case-meta-group"><span class="case-meta-label">相关机制页</span><div class="case-meta-items"><a class="case-mechanism" href="../../../函数/函数重载匹配规则.html">函数重载匹配规则</a></div></div></section>
+  <section class="panel"><h2>自动驾驶日志分派实验</h2><div class="calls" role="group" aria-label="选择源码调用"><button class="btn active" data-call="0">文本日志</button><button class="btn" data-call="1">错误码日志</button><button class="btn" data-call="2">组件状态日志</button></div>
+    <div class="grid"><div class="code"><div class="codehead">ee_47/main.cpp · 关键函数与调用</div><pre id="source"></pre></div><div><h3>候选重载</h3><div id="signatures"></div><p>你预测哪个版本会被选中？</p><div id="choices"></div><div id="feedback" class="feedback" aria-live="polite"></div><div id="reason" class="note" aria-live="polite">先作预测，再核对参数个数和类型。</div></div></div>
+    <div id="terminal" class="terminal" aria-label="控制台输出示意">--- 自动驾驶日志系统 ---
+选择调用并作出预测...</div>
+  </section>
+  <p class="small" style="margin-top:15px">浏览器只依据案例源码展示重载选择与输出，不调用 C++ 编译器。三个按钮不是任意表达式求值器；它们仅覆盖源码中实际出现的三次调用。</p>
+</main><script>
+(() => {
+  'use strict';const $=id=>document.getElementById(id);
+  const lines=[
+    'void log_event(const std::string& message) {',
+    '  std::cout << "[INFO] Message: \\"" << message << "\\"" << std::endl;',
+    '}',
+    'void log_event(int error_code) {',
+    '  std::cout << "[ERROR] Code: " << error_code << std::endl;',
+    '}',
+    'void log_event(const std::string& component, int status_code) {',
+    '  std::cout << "[STATUS] Component: " << component',
+    '            << ", Status: " << status_code << std::endl;',
+    '}',
+    'log_event("系统初始化完成。");',
+    'log_event(404);',
+    'log_event("Lidar", 0);'
+  ];
+  const sigs=['log_event(const std::string& message)','log_event(int error_code)','log_event(const std::string& component, int status_code)'];
+  const tasks=[
+    {line:10,match:0,call:'log_event("系统初始化完成。");',args:'1 个字符串参数',output:'[INFO] Message: "系统初始化完成。"'},
+    {line:11,match:1,call:'log_event(404);',args:'1 个整数参数',output:'[ERROR] Code: 404'},
+    {line:12,match:2,call:'log_event("Lidar", 0);',args:'字符串 + 整数，共 2 个参数',output:'[STATUS] Component: Lidar, Status: 0'}
+  ];let selected=0,answered=false;
+  function render(){const task=tasks[selected];document.querySelectorAll('[data-call]').forEach(b=>b.classList.toggle('active',Number(b.dataset.call)===selected));$('source').replaceChildren(...lines.map((v,i)=>{const row=document.createElement('span');row.className='line'+([task.line,...(answered?selected===0?[0,1]:selected===1?[3,4]:[6,7,8]:[])].includes(i)?' active':'');const n=document.createElement('span');n.className='n';n.textContent=String(i+1);row.append(n,document.createTextNode(v));return row}));$('signatures').replaceChildren(...sigs.map((s,i)=>{const box=document.createElement('div');box.className='signature'+(answered?(i===task.match?' matched':' dim'):'');box.textContent=`版本 ${i+1}：${s}`;return box}));$('choices').replaceChildren(...sigs.map((s,i)=>{const b=document.createElement('button');b.className='btn';b.style.margin='0 6px 7px 0';b.textContent=`版本 ${i+1}`;b.onclick=()=>answer(i);return b}));if(!answered){$('feedback').textContent='';$('feedback').className='feedback';$('reason').textContent=`当前调用：${task.call}　实参：${task.args}。先选一个版本。`;$('terminal').textContent='--- 自动驾驶日志系统 ---\n等待重载匹配...'}else{$('reason').textContent=`${task.args}，与版本 ${task.match+1} 的形参列表相符。`;$('terminal').textContent=`--- 自动驾驶日志系统 ---\n${task.output}`}}
+  function answer(i){answered=true;render();const ok=i===tasks[selected].match;$('feedback').className='feedback '+(ok?'good':'bad');$('feedback').textContent=ok?`正确，匹配版本 ${i+1}。`:`这次调用的参数是 ${tasks[selected].args}，应选版本 ${tasks[selected].match+1}。`}
+  document.querySelectorAll('[data-call]').forEach(b=>b.onclick=()=>{selected=Number(b.dataset.call);answered=false;render()});render();
+})();
+</script></body></html>

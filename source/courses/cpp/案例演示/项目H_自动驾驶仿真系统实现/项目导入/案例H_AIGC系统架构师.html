@@ -1,0 +1,157 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>案例 H · AIGC系统架构师</title>
+<link rel="stylesheet" href="../../../机制通用样式.css"><link rel="stylesheet" href="../../../AI协作案例/AI案例样式.css"><link rel="stylesheet" href="../../../案例统一样式.css"></head><body class="case-document"><main class="case-page">
+<div class="eyebrow">项目 H · 项目导入 · AIGC 案例 H</div>
+<h1>AIGC系统架构师</h1>
+<p class="lead">规划仿真系统的主控与子模块关系，逐步核对初始化、循环调用和结束条件。</p>
+<nav class="case-nav" aria-label="案例导航"><a href="../../../项目演示/项目H.html">返回项目 H</a><a href="../../../资源目录.html#ai-H">返回资源总目录</a></nav><section class="case-meta" aria-label="案例知识与相关资源"><div class="case-meta-group"><span class="case-meta-label">对应知识点</span><div class="case-meta-items"><span class="case-tag">知识点 108 · 软件设计模式</span></div></div><div class="case-meta-group"><span class="case-meta-label">相关机制页</span><div class="case-meta-items"><span class="case-empty">暂无独立机制页</span></div></div></section>
+<section class="panel"><h2>案例任务与源码核对</h2><h3>案例背景</h3><p>从独立的函数到功能完善的类，我们已经掌握了构建软件“零件”的各种技能。然而，一个真正强大、可靠的软件系统，远不止是简单地将所有零件堆砌在一起。它更像一座精心设计的建筑，需要有明确的承重墙（核心模块）、功能分区（子系统）和统一的入口（主控逻辑）。在将所有模块集成为一个协同工作的整体之前，必须进行顶层的“架构设计”。在这一最终阶段，我们将扮演一名“系统架构师”，并邀请 AIGC 作为我们的高级技术顾问。我们的任务不再是实现某个具体功能，而是从宏观视角出发，为一个复杂的系统规划其“四梁八柱”。我们将学习如何运用软件设计模式——这些被无数前辈工程师验证过的、解决特定问题的“最佳实践”——来指导我们的设计。这将是我们从“程序员”向“架构师”角色转变的第一次思想预演。</p><h3>任务要求</h3><p>使用 AIGC 工具为命令行自动驾驶仿真系统设计合理的类结构和关系：以自然语言说明可移动车辆、表示环境的地图和固定障碍物等核心组件，要求工具给出 C++ 类关系及可能采用的设计模式，并分析其如何将复杂需求分解为职责清晰、相互协作的类。</p></section>
+<section class="panel"><h2>逐步推演</h2><div class="ai-step-box"><h3 id="aiStepTitle"></h3><p id="aiStepText"></p><div class="ai-step-evidence" id="aiStepEvidence"></div><span id="aiStepCount" class="small"></span></div><div class="toolbar"><button class="btn" id="aiPrev">上一步</button><button class="btn primary" id="aiNext">下一步</button><button class="btn" id="aiReset">重置</button></div></section>
+<section class="panel"><h2>先判断</h2><p>e_H 工程的主循环在完成几步后结束？</p><div class="quiz"><button class="btn" data-ai-choice="0">1 步</button><button class="btn" data-ai-choice="1">3 步</button><button class="btn" data-ai-choice="2">不会结束</button></div><div class="ai-result" id="aiFeedback" aria-live="polite"></div></section>
+<section class="panel ai-book"><h2>案例原始资料</h2><p class="small">以下为案例的提示、代码与运行分析；其中展示的 AIGC 输出不是本网页实时生成。</p><details><summary>案例代码、提示与输入</summary><p>本案例的“代码”是我们输入给 AIGC 的提示（Prompt），以及 AIGC 返回的架构设计方案。输入给 AIGC 的提示如下：</p>
+<blockquote>我需要你扮演一名资深的C++软件系统架构师。请为我设计一个简单的、基于命令行的“自动驾驶仿真系统”的顶层架构。<br><br><strong>系统需求如下：</strong><br><br>1. 系统需要有一个<strong>主控中心</strong>，负责管理和驱动整个仿真流程。<br>2. 系统中要有一个可以移动的 **<code>Vehicle</code>（车辆）**对象。<br>3. 系统需要一个 **<code>Map</code>（地图）**对象，用于描述道路环境。<br>4. 地图上可以放置多个 **<code>Obstacle</code>（障碍物）**对象。<br>5. 主控中心需要能整合这些模块，模拟车辆根据地图和障碍物信息进行移动的简单逻辑。<br><br><strong>你的任务是：</strong><br><br>1. 为这个系统设计一套合理的C++<strong>类结构</strong>，并画出它们之间的关系（用文字描述即可）。<br>2. 为每个核心类提供一个简单的<strong>头文件定义</strong>（<code>.h</code>文件内容）。<br>3. 解释你的设计中可能应用了哪些常见的<strong>软件设计模式</strong>，并说明为什么。</blockquote></details><details><summary>运行效果与分析</summary><p>AIGC 生成的架构设计方案（示例）：好的，作为一名系统架构师，我为您设计了一套基于“关注点分离”和常见设计模式的 C++ 架构。我建议使用一个名为 <code>SimulationSystem</code> 的核心类来作为系统的“主控中心”，它将“拥有”并管理 <code>Vehicle</code>、<code>Map</code>、<code>ObstacleManager</code> 等子系统。这种设计清晰地分离了各个模块的职责。核心类头文件定义如下：</p>
+<pre><code>class Obstacle { /* ... 障碍物的基础属性 ... */ };
+
+#include &lt;vector&gt;
+#include &quot;Obstacle.h&quot;
+class ObstacleManager {
+public:
+    void load_obstacles();
+private:
+    std::vector&lt;Obstacle&gt; obstacles_;
+};
+
+class Map { /* ... 地图数据和方法 ... */ };
+
+class Vehicle { /* ... 车辆的属性和行为 ... */ };
+
+// SimulationSystem.h (核心主控类)
+#include &quot;Vehicle.h&quot;
+#include &quot;Map.h&quot;
+#include &quot;ObstacleManager.h&quot;
+
+class SimulationSystem {
+public:
+    void initialize(); // 初始化所有子系统
+    void run_simulation_step(); // 运行一个仿真步长
+    bool is_finished() const;
+
+private:
+    Vehicle         ego_vehicle_;
+    Map             world_map_;
+    ObstacleManager obstacle_manager_;
+};</code></pre>
+<p>应用的设计模式：外观模式（Facade Pattern），<code>SimulationSystem</code> 类是这个模式的完美体现，它为整个复杂的仿真子系统（车辆、地图、障碍物管理）提供了一个简化的、统一的入口，外部调用者（例如 <code>main</code> 函数）只需要与 <code>SimulationSystem</code> 交互，调用 <code>initialize()</code> 和 <code>run_simulation_step()</code> 即可，而无需关心其内部各个模块之间复杂的调用关系；单例模式（Singleton Pattern，可选），如果整个应用程序在任何时候都只允许存在一个仿真实例，那么可以将 <code>SimulationSystem</code> 设计为单例模式，确保全局只有一个仿真的“世界”，避免多个仿真实例造成的状态冲突。现象分析：AIGC 没有直接开始写实现，而是先进行了顶层设计，定义了各个模块和它们之间的关系；它提出的 <code>SimulationSystem</code> 核心类，正是将所有子系统整合起来的关键，体现了“高内聚、低耦合”的设计思想；AIGC 能够准确识别并应用软件设计模式（如外观模式）来解释其设计思路，这表明了设计模式是解决特定架构问题的“通用语言”。</p></details></section>
+<section class="panel ai-source"><h2>代码工程对照</h2><p class="ai-source-path">cpp_simulation/simulation_examples/e_H/</p><p class="small">原始资料给出顶层架构建议；e_H 将 SimulationSystem、Vehicle、Map、ObstacleManager 等补成自包含的最小可运行工程。</p><details><summary>main.cpp</summary><pre>#include &quot;SimulationSystem.h&quot;
+
+int main() {
+    SimulationSystem simulation;
+    simulation.initialize();
+
+    while (!simulation.is_finished()) {
+        simulation.run_simulation_step();
+    }
+    return 0;
+}
+</pre></details>
+<details><summary>SimulationSystem.h</summary><pre>#pragma once
+
+#include &quot;Map.h&quot;
+#include &quot;ObstacleManager.h&quot;
+#include &quot;Vehicle.h&quot;
+
+class SimulationSystem {
+public:
+    void initialize();
+    void run_simulation_step();
+    bool is_finished() const;
+
+private:
+    Map map_;
+    ObstacleManager obstacle_manager_;
+    Vehicle ego_vehicle_{1, 0.0, 36.0};
+    int completed_steps_ = 0;
+};
+</pre></details>
+<details><summary>SimulationSystem.cpp</summary><pre>#include &quot;SimulationSystem.h&quot;
+
+#include &lt;iostream&gt;
+
+void SimulationSystem::initialize() {
+    map_.load_default_scene();
+    obstacle_manager_.add_obstacle({101, 40.0});
+    std::cout &lt;&lt; &quot;加载地图：&quot; &lt;&lt; map_.road_name() &lt;&lt; &#x27;\n&#x27;;
+    std::cout &lt;&lt; &quot;已加载障碍物数量：&quot; &lt;&lt; obstacle_manager_.count() &lt;&lt; &#x27;\n&#x27;;
+}
+
+void SimulationSystem::run_simulation_step() {
+    ego_vehicle_.advance(1.0);
+    ++completed_steps_;
+    std::cout &lt;&lt; &quot;第 &quot; &lt;&lt; completed_steps_ &lt;&lt; &quot; 步：车辆位置 &quot;
+              &lt;&lt; ego_vehicle_.position_m() &lt;&lt; &quot; m&quot; &lt;&lt; &#x27;\n&#x27;;
+}
+
+bool SimulationSystem::is_finished() const {
+    return completed_steps_ &gt;= 3;
+}
+</pre></details>
+<details><summary>Vehicle.h</summary><pre>#pragma once
+
+class Vehicle {
+public:
+    Vehicle(int id, double initial_position_m, double speed_kmh);
+
+    void advance(double elapsed_seconds);
+    double position_m() const;
+
+private:
+    int id_;
+    double position_m_;
+    double speed_kmh_;
+};
+</pre></details>
+<details><summary>Map.h</summary><pre>#pragma once
+
+#include &lt;string&gt;
+
+class Map {
+public:
+    void load_default_scene();
+    const std::string&amp; road_name() const;
+
+private:
+    std::string road_name_;
+};
+</pre></details>
+<details><summary>ObstacleManager.h</summary><pre>#pragma once
+
+#include &quot;Obstacle.h&quot;
+
+#include &lt;vector&gt;
+
+class ObstacleManager {
+public:
+    void add_obstacle(const Obstacle&amp; obstacle);
+    std::size_t count() const;
+
+private:
+    std::vector&lt;Obstacle&gt; obstacles_;
+};
+</pre></details>
+<details><summary>README.md</summary><pre># e_H：AIGC系统架构师
+
+- 案例编号：案例H
+- 归属：项目8 自动驾驶仿真系统实现
+- 覆盖知识点：知识点108
+
+## 工程化补全
+
+本案例给出各核心类的头文件。目录中按案例的 `SimulationSystem`、`Vehicle`、`Map`、`ObstacleManager` 与 `Obstacle` 结构补成最小可运行实现；`e_H` 通过三步命令行仿真验证主控类对各模块的整合。该工程完全自包含。
+
+## 实施步骤
+
+1. 检查本目录的源码、输入文件、外部资源和工程补全说明。
+2. 若存在 `CMakeLists.txt`，先独立配置本目录，再构建对应目标。
+3. 运行生成的程序并核对输出；阅读、推导或操作类案例直接按目录说明完成。
+</pre></details></section>
+</main><script>window.aiCaseData={"steps": [{"title": "主控入口", "text": "main 创建 SimulationSystem 并调用 initialize，不直接操作各子模块。", "evidence": "SimulationSystem simulation; simulation.initialize();"}, {"title": "模块协作", "text": "initialize 加载默认地图与障碍物；每一步调用车辆前进并计数。", "evidence": "map_.load_default_scene(); ego_vehicle_.advance(1.0);"}, {"title": "结束条件", "text": "e_H 的 is_finished 在 completed_steps_ 达到 3 时返回 true。", "evidence": "return completed_steps_ >= 3;"}], "quiz": {"correct": 1, "right": "正确。is_finished 在步数达到 3 时为真。", "wrong": "请核对 e_H/SimulationSystem.cpp 的结束条件。"}};</script><script src="../../../AI协作案例/AI案例交互.js"></script></body></html>

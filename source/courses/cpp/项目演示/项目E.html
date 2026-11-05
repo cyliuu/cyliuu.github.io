@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>自动驾驶仿真系统 - 项目E：驾驶决策开发</title>
+  <style>
+    :root{--bg:#0f172a;--card:rgba(30,41,59,.7);--primary:#38bdf8;--accent:#818cf8;--text:#f1f5f9;--muted:#cbd5e1;--good:#4ade80;--bad:#fb7185}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font:16px/1.6 "Segoe UI",system-ui,sans-serif}button,input,select{font:inherit}button{cursor:pointer}a{color:#7dd3fc}
+    .nav{position:sticky;top:0;z-index:20;display:flex;justify-content:center;gap:8px;flex-wrap:wrap;padding:1rem;background:rgba(15,23,42,.9);border-bottom:1px solid #ffffff1a}.nav button{border:1px solid var(--primary);border-radius:20px;color:var(--primary);background:transparent;padding:.5rem 1.2rem;transition:.3s}.nav button.active,.nav button:hover{background:var(--primary);color:var(--bg)}
+    main{width:90%;max-width:1000px;margin:2rem auto 60px}.panel{display:none;background:var(--card);border:1px solid #ffffff1a;border-radius:1.5rem;padding:2rem;backdrop-filter:blur(10px)}.panel.active{display:block}h2{color:var(--primary);font-size:1.8rem;margin:0 0 12px}h3{font-size:1rem;margin:0 0 9px}.desc{font-size:.95rem;color:var(--muted);margin:0 0 20px}.demo{background:#000;border:1px solid var(--accent);border-radius:1rem;padding:1.5rem;margin:1rem 0;min-height:180px}.split{display:grid;grid-template-columns:1fr 1fr;gap:14px}.term{white-space:pre-wrap;color:var(--good);font:1.05rem/1.5 Consolas,Monaco,"Courier New",monospace}.controls{display:flex;flex-wrap:wrap;align-items:end;gap:10px;margin:14px 0}label{display:grid;gap:4px;color:var(--muted);font-size:.9rem;font-weight:600}input,select{border:1px solid #64748b;border-radius:7px;background:#1e293b;color:#fff;padding:8px 10px;max-width:100%}input[type=number]{width:110px}.btn{border:0;border-radius:.5rem;background:var(--accent);color:#fff;padding:.8rem 1.5rem;font-weight:700}.btn.alt{background:#334155;border:1px solid #64748b}.btn:hover{filter:brightness(1.15)}.note{border-left:3px solid #475569;border-radius:4px;background:#1e293b;color:#cbd5e1;padding:8px 11px;font-size:.88rem;margin:12px 0}.modules{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}.module{border:1px dashed var(--primary);border-radius:8px;background:#17223a;color:#e2e8f0;padding:13px;min-height:100px;text-align:left}.module strong{color:var(--primary);display:block}.module small{color:var(--muted)}.module.selected{border-color:var(--good);box-shadow:0 0 0 2px #4ade8055 inset}.flow{display:flex;flex-wrap:wrap;gap:7px;margin:10px 0}.flow span{padding:5px 9px;border:1px solid #64748b;border-radius:999px;font-size:.82rem;color:var(--muted)}.flow .active{border-color:var(--primary);color:#fff;background:#0c2942}.status{min-height:1.5em}.good{color:var(--good)}.bad{color:var(--bad)}.result{border-top:1px solid #475569;padding-top:12px;margin-top:14px}
+    @media(max-width:730px){main{width:calc(100% - 18px);margin-top:16px}.panel{padding:17px}.split{grid-template-columns:1fr}.nav{justify-content:flex-start;flex-wrap:nowrap;overflow-x:auto}.nav button{white-space:nowrap;font-size:.84rem}}
+  </style>
+</head>
+<body>
+<nav class="nav" aria-label="项目 E 任务导航"><button class="active" data-tab="0">任务E: 函数规划</button><button data-tab="1">任务13: 驾驶决策</button><button data-tab="2">任务14: 行为封装</button><button data-tab="3">任务15: 通用接口</button><button data-tab="4">拓展E: 静态库</button></nav>
+<main>
+  <section class="panel active" id="panel0">
+    <h2>🧭 任务E - 函数规划：为 main 函数“瘦身”</h2>
+    <p class="desc"><strong>背景：</strong>场景读取、障碍物更新、决策、运动与渲染都堆在 <code>main()</code> 中，调用顺序不易辨认。<br><strong>要求：</strong>依次点选模块，为驾驶主循环规划函数调用链。</p>
+    <div class="modules" id="moduleCards"></div>
+    <div class="demo"><h3>main() 的调用链</h3><div id="moduleOutput" class="term" aria-live="polite"></div></div>
+    <div class="controls"><button class="btn alt" id="moduleReset">重新排列</button></div>
+    <details class="note"><summary>与设计报告核对</summary><p>项目导入阶段规划 <code>load_obstacles</code>、<code>decision_making</code>、<code>accelerate/decelerate/update_position</code> 和 <code>render</code>。本阶段仍是结构体与全局函数，不提前引入项目 F 的类。</p></details>
+  </section>
+  <section class="panel" id="panel1">
+    <h2>🚦 任务13 - 驾驶决策：计算目标速度</h2>
+    <p class="desc"><strong>背景：</strong>限速牌、前车、锥桶、行人和交通灯会改变巡航目标。<br><strong>要求：</strong>选择一种障碍物并调整距离、车道或状态，观察 <code>decision_making</code> 的判定。</p>
+    <div class="controls"><label>障碍物类型<select id="obType"><option value="sign">限速牌</option><option value="vehicle">其他车辆</option><option value="cone">锥桶</option><option value="pedestrian">行人</option><option value="light">交通灯</option></select></label><label>相对距离（m）<input id="distance" type="number" value="15" min="-20" max="120"></label><label>所在车道<select id="lane"><option value="1">主车道 1</option><option value="0">其他车道 0</option><option value="2">其他车道 2</option></select></label><label>限速/前车速度<input id="value" type="number" value="30" min="0" max="120"></label><label>信号灯<select id="light"><option value="Red">红灯</option><option value="Yellow">黄灯</option><option value="Green">绿灯</option></select></label><button class="btn" id="decide">执行决策</button></div>
+    <div class="split"><div class="demo"><h3>条件检查</h3><div id="decisionTrace" class="term" aria-live="polite"></div></div><div class="demo"><h3>目标速度</h3><div id="decisionResult" class="term" aria-live="polite"></div></div></div>
+    <div class="note">此页只放入一个可调障碍物，便于观察一条分支；完整实现应遍历场景中的全部障碍物。基准巡航目标 50 km/h、安全距离 20 m。</div>
+    <p>配套案例：<a href="../案例演示/项目E_驾驶决策开发/任务13_自适应巡航实现/案例39_模块化刹车距离计算.html">案例 39 · 模块化刹车距离计算</a>、<a href="../案例演示/项目E_驾驶决策开发/任务13_自适应巡航实现/案例40_递归预测车辆轨迹.html">案例 40 · 递归预测车辆轨迹</a></p>
+  </section>
+  <section class="panel" id="panel2">
+    <h2>🛠️ 任务14 - 行为封装：一次仿真步如何更新车辆</h2>
+    <p class="desc"><strong>背景：</strong>重复的运动公式应由独立函数统一管理。<br><strong>要求：</strong>选择加速、减速或位置更新，观察传入状态、计算和返回后的状态。</p>
+    <div class="controls"><label>当前速度（km/h）<input id="speed" type="number" min="0" max="120" value="18"></label><label>当前位置 x（m）<input id="position" type="number" min="0" max="100" value="20"></label><label>调用函数<select id="motion"><option value="accelerate">accelerate(car, 0.1)</option><option value="decelerate">decelerate(car, 0.1)</option><option value="position">update_position(car, 0.1)</option></select></label><button class="btn" id="motionRun">执行一个函数</button></div>
+    <div class="demo"><h3>状态变化与公式</h3><div id="motionOutput" class="term" aria-live="polite"></div></div>
+    <div class="note">此阶段使用 <code>Vehicle</code> 结构体。<code>inline update_position</code> 是内联建议，不保证编译器一定展开；源文件内的 <code>static check_safety_distance</code> 限制名称的链接可见性，不表示局部变量。</div>
+    <p>对应案例：<a href="../案例演示/项目E_驾驶决策开发/任务14_自适应巡航优化/案例46_动态决策回调.html">案例 46 · 动态决策回调</a></p>
+  </section>
+  <section class="panel" id="panel3">
+    <h2>🧩 任务15 - 通用接口：模板计算与重载显示</h2>
+    <p class="desc"><strong>背景：</strong>车辆和障碍物需要共同参与距离计算，同时保留各自不同的显示格式。<br><strong>要求：</strong>切换对象类型，观察模板调用与 <code>print_status</code> 重载的分工。</p>
+    <div class="controls"><label>显示对象<select id="printType"><option value="vehicle">Vehicle 主车</option><option value="Cone">Obstacle 锥桶</option><option value="OtherVehicle">Obstacle 其他车辆</option><option value="TrafficLight">Obstacle 交通灯</option></select></label><label>对象 x（m）<input id="targetX" type="number" value="42" min="0" max="120"></label><button class="btn" id="printRun">调用接口</button></div>
+    <div class="note">距离计算区另设一个位于 x=20 m 的参照对象，仅用于展示函数模板可接受不同类型；<code>print_status</code> 区显示上方选定的对象。参照对象只用于类型比较，不作为第二辆主车。</div>
+    <div class="split"><div class="demo"><h3>模板调用：calculate_distance</h3><div class="term" id="distanceOutput" aria-live="polite"></div></div><div class="demo"><h3>重载调用：print_status</h3><div class="term" id="printOutput" aria-live="polite"></div></div></div>
+    <div class="note">模板只比较 <code>position.x</code> 的绝对差值，并非二维欧氏距离；重载由实参的 <code>Vehicle</code> / <code>Obstacle</code> 类型决定。</div>
+    <p>对应案例：<a href="../案例演示/项目E_驾驶决策开发/任务15_自适应巡航扩展/案例47_重载的日志函数.html">案例 47 · 重载的日志函数</a>。原有《函数重载匹配规则》是知识页，未算作案例 47。</p>
+  </section>
+  <section class="panel" id="panel4">
+    <h2>📦 拓展任务E - 静态库：装配驾驶决策模块</h2>
+    <p class="desc"><strong>背景：</strong>车辆运动、障碍物更新和决策可以打包，供主程序调用。<br><strong>要求：</strong>切换是否链接核心静态库，观察构建关系和程序是否能获得实现。</p>
+    <div class="controls"><label>构建配置<select id="linkMode"><option value="linked">已链接 simulation_core</option><option value="missing">遗漏 target_link_libraries</option></select></label><button class="btn" id="buildRun">模拟构建</button></div>
+    <div class="flow"><span>模块实现</span><span>静态库</span><span>主程序</span><span>链接</span><span>运行结果</span></div>
+    <div class="demo"><h3>构建终端</h3><div class="term" id="buildOutput" aria-live="polite"></div></div>
+    <div class="note">构建提示：<code>add_library(simulation_core STATIC ...)</code>，输出文件名 <code>libsimulation_core.a</code>，可执行目标 <code>simulation</code> 显式链接该库。网页展示典型链接问题的教学模型，不调用真实 CMake。</div>
+  </section>
+</main><!-- 案例资源索引 --><section class="content-wrapper" aria-label="项目E案例资源" style="background:rgba(30,41,59,.7);border:1px solid #ffffff1c;border-radius:1.5rem;padding:1.5rem 2rem;margin-top:0"><h2 style="font-size:1.25rem">项目 E · 案例入口</h2><p class="desc">按 AIGC 案例、普通案例、拓展案例排列。完整对应关系见 <a href="../资源目录.html#project-E">资源总目录</a>。</p><div style="display:flex;flex-wrap:wrap;gap:8px 16px;font-size:.9rem"><a href="../案例演示/项目E_驾驶决策开发/项目导入/案例E_AIGC核心功能实现师.html">AIGC 案例 E · AIGC核心功能实现师</a><a href="../案例演示/项目E_驾驶决策开发/任务13_自适应巡航实现/案例39_模块化刹车距离计算.html">案例39 · 模块化刹车距离计算</a><a href="../案例演示/项目E_驾驶决策开发/任务13_自适应巡航实现/案例40_递归预测车辆轨迹.html">案例40 · 递归预测车辆轨迹</a><a href="../案例演示/项目E_驾驶决策开发/任务13_自适应巡航实现/案例41_通过引用归一化数据.html">案例41 · 通过引用归一化数据</a><a href="../案例演示/项目E_驾驶决策开发/任务13_自适应巡航实现/案例42_自定义日志打印.html">案例42 · 自定义日志打印</a><a href="../案例演示/项目E_驾驶决策开发/任务13_自适应巡航实现/案例43_获取速度限制.html">案例43 · 获取速度限制</a><a href="../案例演示/项目E_驾驶决策开发/任务14_自适应巡航优化/案例44_内联的角度转换.html">案例44 · 内联的角度转换</a><a href="../案例演示/项目E_驾驶决策开发/任务14_自适应巡航优化/案例45_内部辅助函数.html">案例45 · 内部辅助函数</a><a href="../案例演示/项目E_驾驶决策开发/任务14_自适应巡航优化/案例46_动态决策回调.html">案例46 · 动态决策回调</a><a href="../案例演示/项目E_驾驶决策开发/任务15_自适应巡航扩展/案例47_重载的日志函数.html">案例47 · 重载的日志函数</a><a href="../案例演示/项目E_驾驶决策开发/任务15_自适应巡航扩展/案例48_通用的最小距离查找.html">案例48 · 通用的最小距离查找</a><a href="../案例演示/项目E_驾驶决策开发/项目实战/拓展案例E1_创建数学工具静态库.html">拓展案例E1 · 创建数学工具静态库</a><a href="../案例演示/项目E_驾驶决策开发/项目实战/拓展案例E2_使用外部库解析配置文件.html">拓展案例E2 · 使用外部库解析配置文件</a></div></section>
+<script>
+(() => {
+  'use strict'; const $=id=>document.getElementById(id);
+  document.querySelectorAll('[data-tab]').forEach(button=>button.onclick=()=>{const n=Number(button.dataset.tab);document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b===button));document.querySelectorAll('.panel').forEach((p,i)=>p.classList.toggle('active',i===n))});
+  const modules=[['load','加载场景','load_obstacles'],['update','更新障碍物','update_obstacles'],['decide','执行决策','decision_making'],['move','更新主车','accelerate/decelerate → update_position'],['render','渲染场景','render']];let chosen=[];
+  function renderModules(){$('moduleCards').replaceChildren(...modules.map(([key,name,call])=>{const b=document.createElement('button');b.className='module'+(chosen.includes(key)?' selected':'');const strong=document.createElement('strong');strong.textContent=name;const small=document.createElement('small');small.textContent=call;b.append(strong,small);b.onclick=()=>{if(!chosen.includes(key)){chosen.push(key);renderModules()}};return b}));const ideal=modules.map(x=>x[0]);$('moduleOutput').textContent=chosen.length?chosen.map((key,i)=>`${i+1}. ${modules.find(x=>x[0]===key)[2]}`).join('\n')+`\n\n${chosen.length===5?(chosen.every((x,i)=>x===ideal[i])?'✓ 调用顺序正确。加载后进入“更新→决策→车辆运动→渲染”。':'顺序需要调整：先加载场景，再更新、决策、运动，最后渲染。'):'继续点选下一个模块。'}`:'点击模块卡片，按调用顺序组成主循环。'}
+  $('moduleReset').onclick=()=>{chosen=[];renderModules()};renderModules();
+  function decision(){const type=$('obType').value,d=Number($('distance').value),lane=Number($('lane').value),v=Number($('value').value),light=$('light').value;if(!Number.isFinite(d)||!Number.isFinite(v)||d<-20||d>120||v<0||v>120){$('decisionTrace').textContent='请输入有效的距离（-20～120 m）与速度/限速（0～120 km/h）。';$('decisionResult').textContent='等待有效输入';return}let target=50,reason='没有触发降低目标速度的条件';const trace=[`初始目标 = 50 km/h`,`相对距离 = ${d} m`];if(d<0){trace.push('目标在主车后方：continue，跳过');reason='后方目标不参与此次决策'}else if(type==='sign'){trace.push(`RoadSign 且距离 < 80：${d<80}`,`限速 ${v} < 当前目标 50：${v<50}`);if(d<80&&v<50){target=v;reason='前方限速牌降低目标速度'}}else if(type==='vehicle'){trace.push(`同车道：${lane===1}`,`距离 < 20：${d<20}`,`前车速度 ${v} < 50：${v<50}`);if(lane===1&&d<20&&v<50){target=v;reason='同车道近距离跟车'}}else if(type==='cone'||type==='pedestrian'){trace.push(`同车道：${lane===1}`,`距离 < 20：${d<20}`);if(lane===1&&d<20){target=0;reason='锥桶/行人位于本车道近距离'}}else{trace.push(`TrafficLight 且距离 < 30：${d<30}`,`灯态不是 Green：${light!=='Green'}`);if(d<30&&light!=='Green'){target=0;reason='近距离红/黄灯停车'}}$('decisionTrace').textContent=trace.join('\n');$('decisionResult').textContent=`target_speed_kmh = ${target.toFixed(1)} km/h\n${reason}`}
+  $('decide').onclick=decision;['obType','distance','lane','value','light'].forEach(id=>$(id).onchange=decision);decision();
+  function motion(){const speed=Number($('speed').value),x=Number($('position').value),kind=$('motion').value;if(!Number.isFinite(speed)||!Number.isFinite(x)||speed<0||speed>120||x<0||x>100){$('motionOutput').textContent='请输入有效的速度（0～120 km/h）与位置（0～100 m）。';return}let out='';if(kind==='accelerate')out=`accelerate(car, 0.1)\n速度 = ${speed.toFixed(2)} + 2.0×0.1×3.6 = ${(speed+.72).toFixed(2)} km/h\n位置保持 ${x.toFixed(2)} m`;if(kind==='decelerate')out=`decelerate(car, 0.1)\n速度 = max(0, ${speed.toFixed(2)} - 0.72) = ${Math.max(0,speed-.72).toFixed(2)} km/h\n位置保持 ${x.toFixed(2)} m`;if(kind==='position')out=`update_position(car, 0.1)\n位置 = ${x.toFixed(2)} + ${speed.toFixed(2)}/3.6×0.1 = ${(x+speed/36).toFixed(2)} m\n速度保持 ${speed.toFixed(2)} km/h`;$('motionOutput').textContent=out}
+  $('motionRun').onclick=motion;motion();
+  function printDemo(){const type=$('printType').value,x=Number($('targetX').value);if(!Number.isFinite(x)||x<0||x>120){$('distanceOutput').textContent='请输入 0～120 m 的位置。';$('printOutput').textContent='等待有效输入';return}$('distanceOutput').textContent=`教学参照对象 x = 20.00 m\n所选对象 x = ${x.toFixed(2)} m\n|20.00 - ${x.toFixed(2)}| = ${Math.abs(20-x).toFixed(2)} m\n模板要求两个对象都有 position.x`; $('printOutput').textContent=type==='vehicle'?`print_status(const Vehicle&)\n主车: x=${x.toFixed(2)} m, lane=1, speed=0.00 km/h`:`print_status(const Obstacle&)\n${type}@(${x.toFixed(2)}, 1)`}
+  $('printRun').onclick=printDemo;printDemo();
+  function build(){const ok=$('linkMode').value==='linked';$('buildOutput').textContent=ok?'[构建] 编译核心模块\n[归档] 生成静态库\n[链接] 主程序 + 核心库 → 可执行程序\n✓ 链接成功。':'[构建] 主程序已编译；核心库未加入链接\n[链接] 可能出现未定义引用：车辆运动或驾驶决策实现不可用\n✗ 修复：target_link_libraries(simulation PRIVATE simulation_core)'}$('buildRun').onclick=build;build();
+})();
+</script>
+</body>
+</html>

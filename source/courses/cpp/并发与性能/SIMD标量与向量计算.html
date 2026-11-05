@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>SIMD 标量与向量计算</title><link rel="stylesheet" href="../机制通用样式.css"></head><body><main>
+<div class="eyebrow">并发与性能 · 数字资源 · 向量计算</div><h1>SIMD：四点一组与尾部处理</h1>
+<p class="lead">用一组数值的批量平移观察四元素向量批次、标量尾部与不支持向量指令时的标量回退。网页只显示操作次数，不虚构加速倍数。</p>
+<nav><a href="../资源目录.html">返回资源目录</a></nav>
+<section class="panel"><h2>改变点数，观察完整批次与尾部</h2><div class="toolbar"><label>点数（1～12）<input id="count" type="number" min="1" max="12" step="1" value="7"></label><label>tx<input id="tx" type="number" step="0.1" value="1.5"></label><label>ty<input id="ty" type="number" step="0.1" value="-2.5"></label><label>tz<input id="tz" type="number" step="0.1" value="3"></label><button class="btn primary" id="run">计算并分组</button><button class="btn" id="reset">恢复源码偏移</button></div>
+<div class="grid"><div><div class="code"><div class="codehead">示例工程/main.cpp · 算法骨架</div><pre>for (; index + 3 &lt; points.size(); index += 4) {
+    // NEON/SSE：一次处理四个点的 x/y/z
+}
+for (; index &lt; points.size(); ++index) {
+    // 尾部或不支持 SIMD 时的标量回退
+}</pre></div><div class="notice">原源码用 500000 点计时并比较结果。本页缩为 1～12 点以便观察，时长不展示。数值用 float32 舍入模拟；真实指令、内存对齐与性能不在浏览器执行。</div></div>
+<div><div class="display"><h3>批次分布</h3><div id="groups" class="tiles"></div></div><div id="trace" class="terminal" aria-live="polite"></div></div></div></section>
+<section class="panel"><h2>判断题</h2><p>7 个点在支持 NEON/SSE 的路径上，源码怎样覆盖全部数据？</p><div class="quiz"><button class="btn" data-answer="right">四点向量批次 + 三点标量尾部</button><button class="btn" data-answer="wrong">仅处理前四点</button><button class="btn" data-answer="wrong">七点全部一次装入寄存器</button></div><div id="feedback" class="feedback" aria-live="polite"></div></section>
+<p class="small">本页只展示算法分组与数值结果。速度快慢必须在目标硬件、相同编译优化和相同输入规模下实测。</p>
+</main><script>
+(()=>{'use strict';const $=id=>document.getElementById(id);
+function run(){const n=Number($('count').value),offsets=['tx','ty','tz'].map(id=>Number($(id).value));if(!Number.isInteger(n)||n<1||n>12||['tx','ty','tz'].some(id=>$(id).value==='')||offsets.some(x=>!Number.isFinite(x))){$('groups').textContent='请输入 1～12 个点和有限偏移量。';$('trace').textContent='输入无效，未计算。';return}
+const batches=Math.floor(n/4),tail=n%4;$('groups').replaceChildren(...Array.from({length:n},(_,i)=>{const e=document.createElement('div');e.className='tile'+(i<batches*4?' on':'');e.textContent='点 '+i+'\n'+(i<batches*4?'批 '+(Math.floor(i/4)+1):'尾部');return e}));
+const lines=['完整四点批次：'+batches+'；标量尾部：'+tail+' 点。'];for(let i=0;i<Math.min(n,4);i++){const v=Math.fround(i*0.01),x=Math.fround(v+offsets[0]),y=Math.fround(Math.fround(v*2)+offsets[1]),z=Math.fround(Math.fround(v*3)+offsets[2]);lines.push('点 '+i+': ('+v+', '+Math.fround(v*2)+', '+Math.fround(v*3)+') → ('+x+', '+y+', '+z+')')}lines.push('标量与向量路径应在容差内一致；是否更快须在目标机器实测。');$('trace').textContent=lines.join('\n')}
+$('run').onclick=run;$('reset').onclick=()=>{$('count').value='7';$('tx').value='1.5';$('ty').value='-2.5';$('tz').value='3';run()};
+document.querySelectorAll('[data-answer]').forEach(b=>b.onclick=()=>{const ok=b.dataset.answer==='right';$('feedback').textContent=ok?'正确：源码先处理四点完整批次，再由尾部循环处理剩余三点。':'源码的第二个循环专门处理不足四点的尾部。';$('feedback').className='feedback '+(ok?'good':'bad')});run()})();
+</script></body></html>

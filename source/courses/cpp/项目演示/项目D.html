@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>自动驾驶仿真系统 - 项目D：环境感知开发</title>
+  <style>
+    :root { --bg:#0f172a; --card-bg:rgba(30,41,59,.7); --primary:#38bdf8; --accent:#818cf8; --text:#f1f5f9; --muted:#cbd5e1; --code-bg:#000; --success:#4ade80; --warning:#fbbf24; --danger:#fb7185; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; background:var(--bg); color:var(--text); font:16px/1.6 "Segoe UI",system-ui,sans-serif; }
+    button,input,select,textarea { font:inherit; }
+    button { cursor:pointer; }
+    .nav-container { position:sticky; top:0; z-index:20; display:flex; gap:8px; justify-content:center; flex-wrap:wrap; padding:1rem; background:rgba(15,23,42,.9); border-bottom:1px solid #ffffff1a; }
+    .nav-btn { border:1px solid var(--primary); color:var(--primary); background:transparent; padding:.5rem 1.2rem; border-radius:20px; font-weight:400; transition:.3s; }
+    .nav-btn.active,.nav-btn:hover { background:var(--primary); color:var(--bg); }
+    .content-wrapper { max-width:1000px; width:90%; margin:2rem auto 60px; }
+    .masthead { margin-bottom:20px; }
+    .masthead .kicker { color:var(--primary); font-size:.88rem; font-weight:700; letter-spacing:.08em; }
+    h1 { font-size:clamp(1.55rem,3vw,2.3rem); line-height:1.25; margin:4px 0 7px; }
+    .masthead p { margin:0; color:var(--muted); }
+    .task-card { display:none; background:var(--card-bg); border:1px solid #ffffff1c; border-radius:1.5rem; padding:2rem; backdrop-filter:blur(10px); }
+    .task-card.active { display:block; }
+    h2 { color:var(--primary); margin:0 0 12px; font-size:1.8rem; }
+    h3 { margin:0 0 10px; font-size:1rem; color:var(--text); }
+    p { margin:0 0 12px; }
+    .desc { color:var(--muted); }
+    .source { color:#94a3b8; font-size:.82rem; margin-bottom:20px; }
+    .demo-box { background:var(--code-bg); border:1px solid var(--accent); border-radius:1rem; padding:1.5rem; margin:1rem 0; }
+    .split { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .control-row { display:flex; gap:10px; flex-wrap:wrap; align-items:end; margin:10px 0 15px; }
+    label { display:grid; gap:4px; font-size:.9rem; color:var(--muted); font-weight:600; }
+    input,select,textarea { border:1px solid #64748b; border-radius:8px; color:#fff; background:#1e293b; padding:8px 10px; max-width:100%; }
+    input[type=number] { width:110px; }
+    textarea { width:100%; min-height:150px; resize:vertical; font-family:ui-monospace,SFMono-Regular,Consolas,monospace; font-size:.86rem; }
+    .action-btn { background:var(--accent); color:#fff; border:0; border-radius:.5rem; padding:.8rem 1.5rem; font-weight:700; }
+    .action-btn:hover { filter:brightness(1.15); }
+    .action-btn.alt { background:#334155; border:1px solid #64748b; }
+    .term { white-space:pre-wrap; font: 1.05rem/1.5 Consolas,Monaco,"Courier New",monospace; color:#4ade80; min-height:120px; }
+    .note { border-left:3px solid #475569; padding:8px 11px; background:#1e293b; color:#cbd5e1; border-radius:4px; font-size:.88rem; }
+    .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:10px; margin:14px 0; }
+    .object-card { color:#e2e8f0; background:#17223a; border:1px dashed var(--primary); border-radius:8px; padding:12px; text-align:left; min-height:100px; }
+    .object-card strong { color:var(--primary); display:block; }
+    .object-card.selected { border-color:var(--success); box-shadow:0 0 0 2px #4ade8055 inset; }
+    .object-card small { color:var(--muted); }
+    .stat { background:#162035; border:1px solid #475569; border-radius:10px; padding:12px; }
+    .stat strong { color:var(--primary); font-size:1.3rem; }
+    .stat small { display:block; color:var(--muted); }
+    .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:10px; margin:12px 0; }
+    .lane-table { width:100%; border-collapse:collapse; font-size:.9rem; }
+    .lane-table th,.lane-table td { border:1px solid #475569; padding:8px; text-align:center; }
+    .lane-table th { background:#243248; color:var(--primary); }
+    .lane-table tr.active { background:#12527155; }
+    .list { margin:0; padding-left:20px; color:var(--muted); }
+    .list li { margin:4px 0; }
+    .model { display:grid; gap:8px; }
+    #modelFields { white-space:pre-wrap; font-family:ui-monospace,SFMono-Regular,Consolas,monospace; color:#dbeafe; }
+    .model code { color:#7dd3fc; }
+    .chip { display:inline-block; padding:4px 8px; border:1px solid #64748b; border-radius:999px; margin:2px; font-size:.82rem; }
+    .road { width:100%; height:auto; max-height:400px; background:#1c2d3c; border:1px solid #475569; border-radius:12px; }
+    .legend { display:flex; flex-wrap:wrap; gap:12px; color:var(--muted); font-size:.84rem; }
+    .legend i { display:inline-block; width:12px; height:12px; border-radius:50%; margin-right:4px; }
+    .qa { margin-top:14px; padding-top:12px; border-top:1px solid #475569; }
+    .qa-output { min-height:24px; color:var(--success); font-weight:700; }
+    a { color:#7dd3fc; }
+    @media(max-width:720px) { .split { grid-template-columns:1fr; } .task-card { padding:18px; } .content-wrapper { width:calc(100% - 18px); margin-top:16px; } .nav-container { justify-content:flex-start; overflow-x:auto; flex-wrap:nowrap; } .nav-btn { white-space:nowrap; font-size:.85rem; } }
+  </style>
+</head>
+<body>
+<nav class="nav-container" aria-label="项目 D 任务导航">
+  <button class="nav-btn active" data-panel="0">任务D: 对象规划</button>
+  <button class="nav-btn" data-panel="1">任务9: 指针与引用</button>
+  <button class="nav-btn" data-panel="2">任务10: 栅格碰撞</button>
+  <button class="nav-btn" data-panel="3">任务11: 场景建模</button>
+  <button class="nav-btn" data-panel="4">任务12: 文件加载</button>
+  <button class="nav-btn" data-panel="5">拓展D: 感知图</button>
+</nav>
+<main class="content-wrapper">
+
+  <section class="task-card active" id="panel0">
+    <h2>🗺️ 任务D - 对象规划：设计感知场景</h2>
+    <p class="desc"><strong>背景：</strong>仿真世界需要区分锥桶、行人、车辆、路标和交通灯。<br><strong>要求：</strong>选择场景对象，思考哪些属性是共有的、哪些状态会随时间改变。</p>
+    <div class="cards" id="designCards"></div>
+    <div class="demo-box"><h3>你的对象设计</h3><div id="designResult" class="term" aria-live="polite"></div></div>
+    <div class="note">共同属性：类型、二维位置；动态对象另需速度和方向，交通灯需状态与计时，路标需限速值。后续任务 11 才落实为完整结构体。</div>
+  </section>
+
+  <section class="task-card" id="panel1">
+    <h2>📡 任务9 - 传感器采集：用指针和引用传递状态</h2>
+    <p class="desc"><strong>背景：</strong>感知数据与车辆速度必须在控制逻辑之间传递。<br><strong>要求：</strong>改变探测距离，观察指针读取量程以及引用修改车速的过程。</p>
+    <div class="source">初始条件：探测量程 80 m；检测距离进入量程时，目标速度设为 30 km/h。</div>
+    <div class="control-row"><label>探测距离（教学可调，米）<input id="sensorDistance" type="number" min="0" max="150" value="35"></label><button class="action-btn" id="sensorRun">单步探测</button><button class="action-btn alt" id="sensorReset">恢复初始示例</button></div>
+    <div class="split"><div class="demo-box"><h3>地址关系</h3><div class="term" id="sensorMemory"></div></div><div class="demo-box"><h3>运行结果</h3><div class="term" id="sensorOutput" aria-live="polite"></div></div></div>
+    <p class="note">配套案例：<a href="../案例演示/项目D_环境感知开发/任务09_传感器数据采集/案例26_用指针遍历雷达点云.html">案例 26 · 用指针遍历雷达点云</a>、<a href="../案例演示/项目D_环境感知开发/任务09_传感器数据采集/案例28_动态分配行车路线.html">案例 28 · 动态分配行车路线</a>。机制动画可打开现有的<a href="../指针与引用/指针与地址.html">《指针与地址》</a>与<a href="../指针与引用/引用与传值.html">《引用与传值》</a>。</p>
+  </section>
+
+  <section class="task-card" id="panel2">
+    <h2>🛣️ 任务10 - 栅格碰撞：管理车道障碍物</h2>
+    <p class="desc"><strong>背景：</strong>三条车道中的障碍物需要按最近距离整理。<br><strong>要求：</strong>切换主车车道与位置，查看二维栅格如何影响减速判断。</p>
+    <div class="source">初始障碍物：距离 48 m／车道 1、42 m／车道 0、75 m／车道 2、34 m／车道 1；安全距离 20 m，时间步 0.1 s。</div>
+    <div class="control-row"><label>主车所在车道<select id="egoLane"><option value="0">车道 0</option><option value="1" selected>车道 1</option><option value="2">车道 2</option></select></label><label>主车 X 坐标（米）<input id="egoX" type="number" min="0" max="100" value="20"></label><label>本步初始速度（km/h）<input id="egoSpeed" type="number" min="0" max="120" value="0"></label><button class="action-btn" id="gridRun">计算一个仿真步</button></div>
+    <div class="split"><div class="demo-box"><h3>sensor_grid[3][2]</h3><table class="lane-table"><thead><tr><th>车道</th><th>最近距离（m）</th><th>相对速度</th></tr></thead><tbody id="gridRows"></tbody></table></div><div class="demo-box"><h3>决策与位移</h3><div class="term" id="gridOutput" aria-live="polite"></div></div></div>
+    <div class="note">可修改初始速度，比较一个时间步后的速度与位置；初始速度为 0 km/h。</div>
+    <p class="note">容器操作案例：<a href="../案例演示/项目D_环境感知开发/任务10_传感器数据管理/案例34_管理动态故障码列表.html">案例 34 · 管理动态故障码列表</a>。它与本页栅格操作分别练习不同的数据处理方式。</p>
+  </section>
+
+  <section class="task-card" id="panel3">
+    <h2>🧩 任务11 - 场景建模：定义车辆与障碍物</h2>
+    <p class="desc"><strong>背景：</strong>散落的变量难以表达完整的场景对象。<br><strong>要求：</strong>点选对象，观察 <code>Point</code>、<code>Vehicle</code>、<code>Obstacle</code> 结构体与枚举如何组织字段。</p>
+    <div class="cards" id="modelCards"></div>
+    <div class="split"><div class="demo-box model"><h3>结构体字段</h3><div id="modelFields"></div></div><div class="demo-box"><h3>行为解释</h3><div id="modelBehavior" class="term"></div></div></div>
+    <div class="note">此页保持项目 D 的结构体与枚举语境，不把它提前讲成项目 G 的继承/虚函数体系。</div>
+    <p class="note">结构体练习：<a href="../案例演示/项目D_环境感知开发/任务11_场景对象建模/案例35_定义雷达目标.html">案例 35 · 定义雷达目标</a>。</p>
+  </section>
+
+  <section class="task-card" id="panel4">
+    <h2>📂 任务12 - 文件加载：让场景数据可编辑</h2>
+    <p class="desc"><strong>背景：</strong>硬编码障碍物不便于反复测试。<br><strong>要求：</strong>编辑下方场景文本，观察逐行读取、识别类型和障碍物列表的变化。</p>
+    <div class="split"><div class="demo-box"><label for="sceneText">场景文本（教学输入）</label><textarea id="sceneText" spellcheck="false"># 类型 X坐标 Y坐标 [速度 方向/状态/限速]
+Cone 46 1
+Pedestrian 57 -1 3.6 1
+OtherVehicle 68 2 24 1
+RoadSign 35 -1 40
+TrafficLight 82 -1 Red</textarea><div class="control-row"><button class="action-btn" id="loadScene">解析并显示</button><button class="action-btn alt" id="resetScene">恢复样例</button></div></div><div class="demo-box"><h3>加载结果</h3><div id="sceneOutput" class="term" aria-live="polite"></div></div></div>
+    <div class="note">遇到未知类型时跳过该记录；坐标缺失或文本超长时给出输入提示。</div>
+    <p class="note">文件流练习：<a href="../案例演示/项目D_环境感知开发/任务12_障碍物数据解析/案例37_读取障碍物日志文件.html">案例 37 · 读取障碍物日志文件</a>。三字段提取与逐行解析适用于不同文本格式，先识别格式再选择方法。</p>
+  </section>
+
+  <section class="task-card" id="panel5">
+    <h2>🎯 拓展任务D - 感知图：可视化探测范围</h2>
+    <p class="desc"><strong>背景：</strong>感知系统需要把场景对象转换为主车视角的目标图。<br><strong>要求：</strong>选择障碍物，核对相对坐标、欧氏距离和探测范围。可按给定基准数据开始推演。</p>
+    <div class="source">动手提示：先完成距离计算与对象筛选，再核对图形输出。</div>
+    <div class="control-row"><label>观察目标<select id="targetSelect"></select></label><button class="action-btn" id="perceptionReset">恢复初始场景</button></div>
+    <div class="demo-box"><svg id="perceptionSvg" class="road" viewBox="0 0 920 310" role="img" aria-label="俯视感知示意图"></svg><div class="legend"><span><i style="background:#38bdf8"></i>主车</span><span><i style="background:#4ade80"></i>探测范围内</span><span><i style="background:#fbbf24"></i>范围外/盲区</span></div></div>
+    <div class="split"><div class="demo-box"><h3>目标计算</h3><div id="perceptionResult" class="term" aria-live="polite"></div></div><div class="demo-box"><h3>学习核对</h3><p>车道差不能直接当米数。代码先将 <code>(目标车道－主车车道) × 3.5 m</code>，再与纵向距离求欧氏距离。</p><div class="qa"><button class="action-btn alt" id="qaCheck">为什么车道差要乘 3.5？</button><div class="qa-output" id="qaAnswer" aria-live="polite"></div></div></div></div>
+  </section>
+</main><!-- 案例资源索引 --><section class="content-wrapper" aria-label="项目D案例资源" style="background:rgba(30,41,59,.7);border:1px solid #ffffff1c;border-radius:1.5rem;padding:1.5rem 2rem;margin-top:0"><h2 style="font-size:1.25rem">项目 D · 案例入口</h2><p class="desc">按 AIGC 案例、普通案例、拓展案例排列。完整对应关系见 <a href="../资源目录.html#project-D">资源总目录</a>。</p><div style="display:flex;flex-wrap:wrap;gap:8px 16px;font-size:.9rem"><a href="../案例演示/项目D_环境感知开发/项目导入/案例D_AIGC数据结构优化师.html">AIGC 案例 D · AIGC数据结构优化师</a><a href="../案例演示/项目D_环境感知开发/任务09_传感器数据采集/案例25_通过指针校准传感器.html">案例25 · 通过指针校准传感器</a><a href="../案例演示/项目D_环境感知开发/任务09_传感器数据采集/案例26_用指针遍历雷达点云.html">案例26 · 用指针遍历雷达点云</a><a href="../案例演示/项目D_环境感知开发/任务09_传感器数据采集/案例27_安全传递车辆识别码.html">案例27 · 安全传递车辆识别码</a><a href="../案例演示/项目D_环境感知开发/任务09_传感器数据采集/案例28_动态分配行车路线.html">案例28 · 动态分配行车路线</a><a href="../案例演示/项目D_环境感知开发/任务10_传感器数据管理/案例29_存储摄像头标定系数.html">案例29 · 存储摄像头标定系数</a><a href="../案例演示/项目D_环境感知开发/任务10_传感器数据管理/案例30_定义红外传感器网格.html">案例30 · 定义红外传感器网格</a><a href="../案例演示/项目D_环境感知开发/任务10_传感器数据管理/案例31_获取传感器地址与指针.html">案例31 · 获取传感器地址与指针</a><a href="../案例演示/项目D_环境感知开发/任务10_传感器数据管理/案例32_处理C风格的传感器指令.html">案例32 · 处理C风格的传感器指令</a><a href="../案例演示/项目D_环境感知开发/任务10_传感器数据管理/案例33_解析更复杂的传感器参数.html">案例33 · 解析更复杂的传感器参数</a><a href="../案例演示/项目D_环境感知开发/任务10_传感器数据管理/案例34_管理动态故障码列表.html">案例34 · 管理动态故障码列表</a><a href="../案例演示/项目D_环境感知开发/任务11_场景对象建模/案例35_定义雷达目标.html">案例35 · 定义雷达目标</a><a href="../案例演示/项目D_环境感知开发/任务11_场景对象建模/案例36_建模不同类型的交通参与者.html">案例36 · 建模不同类型的交通参与者</a><a href="../案例演示/项目D_环境感知开发/任务12_障碍物数据解析/案例37_读取障碍物日志文件.html">案例37 · 读取障碍物日志文件</a><a href="../案例演示/项目D_环境感知开发/任务12_障碍物数据解析/案例38_保存检测到的障碍物信息.html">案例38 · 保存检测到的障碍物信息</a><a href="../案例演示/项目D_环境感知开发/项目实战/拓展案例D1_使用Eigen库进行3D坐标变换.html">拓展案例D1 · 使用Eigen库进行3D坐标变换</a><a href="../案例演示/项目D_环境感知开发/项目实战/拓展案例D2_使用OpenCV加载并显示摄像头图像.html">拓展案例D2 · 使用OpenCV加载并显示摄像头图像</a></div></section>
+<script>
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const navButtons = [...document.querySelectorAll('.nav-btn')];
+  navButtons.forEach(button => button.addEventListener('click', () => {
+    const index = Number(button.dataset.panel);
+    navButtons.forEach((item, i) => item.classList.toggle('active', i === index));
+    document.querySelectorAll('.task-card').forEach((section, i) => section.classList.toggle('active', i === index));
+  }));
+
+  const designTypes = [
+    ['锥桶','静态占道对象；类型与位置'], ['行人','横向往复移动；速度与方向'],
+    ['其他车辆','沿车道行驶；速度与方向'], ['限速路标','路侧静态规则；限速值'],
+    ['交通信号灯','红/黄/绿循环；状态与计时']
+  ];
+  const selected = new Set();
+  function renderDesign() {
+    $('designCards').replaceChildren(...designTypes.map(([name, description]) => {
+      const button = document.createElement('button'); button.type = 'button'; button.className = 'object-card' + (selected.has(name) ? ' selected' : '');
+      const strong = document.createElement('strong'); strong.textContent = name;
+      const small = document.createElement('small'); small.textContent = description;
+      button.append(strong, small); button.addEventListener('click', () => { selected.has(name) ? selected.delete(name) : selected.add(name); renderDesign(); });
+      return button;
+    }));
+    $('designResult').textContent = selected.size ? `已选对象：${[...selected].join('、')}\n共同字段：type、position.x、position.y\n请继续思考：哪些对象的状态会随时间变化？` : '点击上方卡片选择仿真世界居民。\n任务要求包含锥桶、行人、其他车辆、限速路标和交通信号灯。';
+  }
+  renderDesign();
+
+  function runSensor() {
+    const d = Number($('sensorDistance').value);
+    if (!Number.isFinite(d) || d < 0 || d > 150) { $('sensorOutput').textContent = '请输入 0～150 m 的有效距离。'; return; }
+    const detected = d <= 80;
+    $('sensorMemory').textContent = `sensor_range = 80.0 m\nrange_ptr ──→ sensor_range\n*range_ptr = 80.0 m\n\nego_speed_kmh 初值 = 0.0 km/h\nspeed_controller_ref ──→ ego_speed_kmh`;
+    $('sensorOutput').textContent = `detected_distance = ${d.toFixed(1)} m\n比较：${d.toFixed(1)} <= 80.0 → ${detected ? 'true' : 'false'}\n${detected ? '通过引用将 ego_speed_kmh 改为 30.0 km/h' : '不执行速度赋值，仍为 0.0 km/h'}\n障碍物示意 X = 20.0 + ${d.toFixed(1)} = ${(20 + d).toFixed(1)} m`;
+  }
+  $('sensorRun').addEventListener('click', runSensor);
+  $('sensorReset').addEventListener('click', () => { $('sensorDistance').value = '35'; runSensor(); });
+  runSensor();
+
+  const obstacles = [{x:48,lane:1},{x:42,lane:0},{x:75,lane:2},{x:34,lane:1}];
+  function runGrid() {
+    const lane = Number($('egoLane').value), x = Number($('egoX').value), speed = Number($('egoSpeed').value);
+    if (!Number.isFinite(x) || x < 0 || x > 100 || !Number.isFinite(speed) || speed < 0 || speed > 120) { $('gridOutput').textContent = '请输入有效主车位置（0～100 m）和速度（0～120 km/h）。'; return; }
+    const nearest = [Infinity,Infinity,Infinity];
+    obstacles.forEach(o => { const d = o.x - x; if (d >= 0 && d < nearest[o.lane]) nearest[o.lane] = d; });
+    $('gridRows').replaceChildren(...nearest.map((distance, index) => {
+      const row = document.createElement('tr'); if (index === lane) row.className = 'active';
+      [String(index), Number.isFinite(distance) ? distance.toFixed(1) : '9999（无目标）','0.0'].forEach(value => { const cell = document.createElement('td'); cell.textContent = value; row.append(cell); });
+      return row;
+    }));
+    const d = nearest[lane]; const decel = d < 20; const startMps = speed / 3.6;
+    const nextMps = Math.max(0, startMps + (decel ? -2 : 2) * 0.1);
+    const nextX = x + nextMps * 0.1;
+    $('gridOutput').textContent = `当前车道：${lane}\n最近障碍距离：${Number.isFinite(d) ? d.toFixed(1) + ' m' : '无前方目标'}\n判断：距离 < 20 m → ${decel ? '减速' : '加速'}\n速度：${speed.toFixed(2)} → ${(nextMps * 3.6).toFixed(2)} km/h\n位置：${x.toFixed(2)} → ${nextX.toFixed(2)} m\n\n单步计算按给定条件判断并换算单位。`;
+  }
+  $('gridRun').addEventListener('click', runGrid); runGrid();
+
+  const models = [
+    {name:'锥桶', fields:'type=CONE；position；其余字段使用默认状态', behavior:'静态占道；保持原位置。'},
+    {name:'行人', fields:'type=PEDESTRIAN；position；speed_kmh；direction', behavior:'沿道路横向移动，达到边界后折返。'},
+    {name:'其他车辆', fields:'type=OTHER_VEHICLE；position；speed_kmh；direction', behavior:'按速度和方向沿车道纵向移动。'},
+    {name:'限速路标', fields:'type=ROAD_SIGN；position；speed_limit_kmh', behavior:'路侧静态对象，限速值供后续决策读取。'},
+    {name:'交通信号灯', fields:'type=TRAFFIC_LIGHT；position；light_state；time_since_last_change', behavior:'按计时切换红、黄、绿状态。'}
+  ];
+  function selectModel(index) {
+    $('modelCards').replaceChildren(...models.map((model, i) => {
+      const button = document.createElement('button'); button.type = 'button'; button.className = 'object-card' + (i === index ? ' selected' : '');
+      const strong = document.createElement('strong'); strong.textContent = model.name;
+      const small = document.createElement('small'); small.textContent = model.behavior;
+      button.append(strong,small); button.addEventListener('click', () => selectModel(i)); return button;
+    }));
+    $('modelFields').textContent = `Point { double x; double y; }\nVehicle { Point position; double speed_kmh; int lane_index; }\n\nObstacle\n${models[index].fields}`;
+    $('modelBehavior').textContent = `${models[index].name}\n${models[index].behavior}\n\n本阶段由结构体与枚举表达；尚未引入继承。`;
+  }
+  selectModel(0);
+
+  const sampleScene = $('sceneText').value;
+  function parseScene() {
+    const input = $('sceneText').value;
+    if (input.length > 5000) { $('sceneOutput').textContent = '教学页最多处理 5000 个字符。'; return; }
+    const known = new Set(['Cone','Pedestrian','OtherVehicle','RoadSign','TrafficLight']);
+    const result = [];
+    input.split(/\r?\n/).forEach((line, index) => {
+      const trimmed = line.trim(); if (!trimmed || trimmed.startsWith('#')) return;
+      const parts = trimmed.split(/\s+/); const x = Number(parts[1]), y = Number(parts[2]);
+      if (!known.has(parts[0])) { result.push(`第 ${index+1} 行：忽略未知障碍物类型 ${parts[0]}`); return; }
+      if (parts.length < 3 || !Number.isFinite(x) || !Number.isFinite(y)) { result.push(`第 ${index+1} 行：坐标缺失或格式错误（网页补充校验）`); return; }
+      result.push(`第 ${index+1} 行：${parts[0]} @ (${x}, ${y})${parts.length > 3 ? ' | ' + parts.slice(3).join(' ') : ''}`);
+    });
+    const count = result.filter(line => /：(?:Cone|Pedestrian|OtherVehicle|RoadSign|TrafficLight) @/.test(line)).length;
+    $('sceneOutput').textContent = `${result.join('\n') || '没有可用场景对象。'}\n\n加载 ${count} 个对象（网页文本副本）。`;
+  }
+  $('loadScene').addEventListener('click', parseScene);
+  $('resetScene').addEventListener('click', () => { $('sceneText').value = sampleScene; parseScene(); });
+  parseScene();
+
+  const perception = [
+    {name:'Cone',x:35,lane:1}, {name:'Pedestrian',x:70,lane:0}, {name:'OtherVehicle',x:92,lane:2},
+    {name:'RoadSign',x:10,lane:-1}, {name:'TrafficLight',x:115,lane:-1}
+  ];
+  let targetIndex = 0;
+  function svg(tag, attrs, text) {
+    const node = document.createElementNS('http://www.w3.org/2000/svg',tag);
+    Object.entries(attrs).forEach(([key,value]) => node.setAttribute(key,String(value)));
+    if (text !== undefined) node.textContent = text;
+    return node;
+  }
+  function renderPerception() {
+    const canvas = $('perceptionSvg'); canvas.replaceChildren();
+    canvas.append(svg('rect',{x:0,y:0,width:920,height:310,fill:'#1c2d3c'}));
+    canvas.append(svg('rect',{x:0,y:65,width:920,height:180,fill:'#334155'}));
+    [125,185].forEach(y => canvas.append(svg('line',{x1:0,y1:y,x2:920,y2:y,stroke:'#94a3b8','stroke-width':2,'stroke-dasharray':'14 14'})));
+    const egoX = 190, egoY = 155, pxPerMeter = 6;
+    canvas.append(svg('circle',{cx:egoX,cy:egoY,r:80*pxPerMeter,fill:'none',stroke:'#4ade80','stroke-width':2,opacity:.55}));
+    canvas.append(svg('circle',{cx:egoX,cy:egoY,r:5*pxPerMeter,fill:'none',stroke:'#fb7185','stroke-width':2,opacity:.85}));
+    canvas.append(svg('rect',{x:egoX-13,y:egoY-8,width:26,height:16,rx:4,fill:'#38bdf8'}));
+    canvas.append(svg('text',{x:egoX-18,y:egoY-16,fill:'#e2e8f0','font-size':13},'主车'));
+    perception.forEach((o,i) => {
+      const dx=o.x-20, dy=(o.lane-1)*3.5, distance=Math.hypot(dx,dy), visible=distance>5&&distance<80;
+      const cx=egoX+dx*pxPerMeter, cy=egoY-(o.lane-1)*60;
+      const marker=svg('circle',{cx,cy,r:i===targetIndex?10:7,fill:visible?'#4ade80':'#fbbf24',stroke:i===targetIndex?'#fff':'none','stroke-width':2});
+      marker.style.cursor='pointer'; marker.addEventListener('click',()=>{targetIndex=i;$('targetSelect').value=String(i);renderPerception();}); canvas.append(marker);
+      canvas.append(svg('text',{x:Math.min(cx+12,835),y:cy-10,fill:'#f1f5f9','font-size':12},o.name));
+    });
+    const target=perception[targetIndex], longitudinal=target.x-20, lateral=(target.lane-1)*3.5, distance=Math.hypot(longitudinal,lateral);
+    $('perceptionResult').textContent = `${target.name}\n主车坐标：(20 m, 车道 1)\n目标坐标：(${target.x} m, 车道 ${target.lane})\n相对纵向：${longitudinal.toFixed(1)} m\n相对横向：${lateral.toFixed(1)} m\n欧氏距离：${distance.toFixed(2)} m\n筛选：5 m < 距离 < 80 m → ${distance>5&&distance<80?'保留':'不保留'}\n\n说明：按给定距离条件筛选对象；请留意主车后方的路侧对象。`;
+  }
+  $('targetSelect').replaceChildren(...perception.map((o,i)=>{ const opt=document.createElement('option');opt.value=String(i);opt.textContent=o.name;return opt; }));
+  $('targetSelect').addEventListener('change',()=>{targetIndex=Number($('targetSelect').value);renderPerception();});
+  $('perceptionReset').addEventListener('click',()=>{targetIndex=0;$('targetSelect').value='0';$('qaAnswer').textContent='';renderPerception();});
+  $('qaCheck').addEventListener('click',()=>{$('qaAnswer').textContent='因为 y 存的是车道编号，不是米；乘以 3.5 m/车道后才能与纵向米数一起计算距离。';});
+  renderPerception();
+})();
+</script>
+</body>
+</html>

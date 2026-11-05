@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>模板实例化</title><link rel="stylesheet" href="../机制通用样式.css"></head><body><main>
+<div class="eyebrow">函数 · 数字资源 · 编译期泛型</div><h1>模板实例化：同一算法如何用于三种距离</h1>
+<p class="lead">用同一函数模板处理 int、float、double 三种输入，观察模板实参推导与不同类型的实例化。网页展示编译期规则模型。</p>
+<nav><a href="../资源目录.html">返回资源目录</a></nav>
+<section class="panel"><h2>推导 T 并比较两段距离</h2><div class="toolbar"><label>实参类型<select id="type"><option value="int">int</option><option value="float">float</option><option value="double">double</option></select></label><label>距离 1<input id="d1" type="number" value="50" step="any"></label><label>距离 2<input id="d2" type="number" value="35" step="any"></label><button class="btn primary" id="run">实例化并比较</button><button class="btn" id="sample">恢复源码 int 示例</button></div>
+<div class="grid"><div><div class="code"><div class="codehead">示例工程/main.cpp · 实际函数模板</div><pre>template &lt;typename T&gt;
+T find_closest(T dist1, T dist2) {
+    return (dist1 &lt; dist2) ? dist1 : dist2;
+}
+// 两个实参必须能推导出同一个 T，且 T 支持 &lt; 比较。</pre></div><div class="notice">源码注释说“支持 &gt; 的类型”，但实际表达式使用 <code>&lt;</code>；以代码为准。相等时三目运算选择第二个实参，数值结果仍相同。</div></div>
+<div><div class="display"><h3>推导结果</h3><div id="signature"></div></div><div id="trace" class="terminal" aria-live="polite"></div></div></div></section>
+<section class="panel"><h2>判断题</h2><p>直接调用 <code>find_closest(50, 42.5f)</code>，不显式指定 T，能否按本模板顺利推导？</p><div class="quiz"><button class="btn" data-answer="wrong">能，总会自动选 double</button><button class="btn" data-answer="right">不能，两个实参推导出冲突的 T</button></div><div id="feedback" class="feedback" aria-live="polite"></div></section>
+<p class="small">int 输入限定为常见 32 位范围；float 数值使用浏览器 <code>Math.fround</code> 作 binary32 舍入示意。超出该模型范围的输入会被拒绝；C++ 的真实类型检查与代码生成仍由编译器完成。</p>
+</main><script>
+(()=>{'use strict';const $=id=>document.getElementById(id),samples={int:[50,35],float:[42.5,42.8],double:[88.12345,88.12354]};
+function run(){const type=$('type').value,a=Number($('d1').value),b=Number($('d2').value),intValid=x=>Number.isInteger(x)&&x>=-2147483648&&x<=2147483647;if($('d1').value===''||$('d2').value===''||!Number.isFinite(a)||!Number.isFinite(b)||(type==='int'&&(!intValid(a)||!intValid(b)))||(type==='float'&&(!Number.isFinite(Math.fround(a))||!Number.isFinite(Math.fround(b))))){$('signature').textContent='输入超出本页类型模型：int 需在 32 位范围内，float 需能表示有限值。';$('trace').textContent='未执行比较。';return}
+const x=type==='float'?Math.fround(a):a,y=type==='float'?Math.fround(b):b,first=x<y,result=first?x:y;$('signature').textContent=type+' find_closest('+type+' dist1, '+type+' dist2)';$('trace').textContent='T = '+type+'\n实参：'+x+' 与 '+y+'\n比较：'+x+' < '+y+' → '+first+'\n返回：'+result+(x===y?'（相等时按源码选择第二实参）':'')+'\nfloat 值按 binary32 舍入作教学模型。'}
+$('run').onclick=run;$('type').onchange=()=>{const v=samples[$('type').value];$('d1').value=v[0];$('d2').value=v[1];run()};$('sample').onclick=()=>{$('type').value='int';$('d1').value=50;$('d2').value=35;run()};
+document.querySelectorAll('[data-answer]').forEach(b=>b.onclick=()=>{const ok=b.dataset.answer==='right';$('feedback').textContent=ok?'正确：一个实参推导 int，另一个推导 float；可显式转换或指定 T。':'两个形参都写作 T，自动推导需要一致类型。';$('feedback').className='feedback '+(ok?'good':'bad')});run()})();
+</script></body></html>

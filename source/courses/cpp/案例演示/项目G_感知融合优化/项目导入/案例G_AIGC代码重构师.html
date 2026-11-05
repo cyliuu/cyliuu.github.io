@@ -1,0 +1,215 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>案例 G · AIGC代码重构师</title>
+<link rel="stylesheet" href="../../../机制通用样式.css"><link rel="stylesheet" href="../../../AI协作案例/AI案例样式.css"><link rel="stylesheet" href="../../../案例统一样式.css"></head><body class="case-document"><main class="case-page">
+<div class="eyebrow">项目 G · 项目导入 · AIGC 案例 G</div>
+<h1>AIGC代码重构师</h1>
+<p class="lead">抽取传感器公共接口，比较重构前后的重复代码与统一调用方式。</p>
+<nav class="case-nav" aria-label="案例导航"><a href="../../../项目演示/项目G.html">返回项目 G</a><a href="../../../资源目录.html#ai-G">返回资源总目录</a></nav><section class="case-meta" aria-label="案例知识与相关资源"><div class="case-meta-group"><span class="case-meta-label">对应知识点</span><div class="case-meta-items"><span class="case-tag">知识点 97 · 面向对象特性</span></div></div><div class="case-meta-group"><span class="case-meta-label">相关机制页</span><div class="case-meta-items"><a class="case-mechanism" href="../../../面向对象/虚函数与动态绑定.html">虚函数与动态绑定</a></div></div></section>
+<section class="panel"><h2>案例任务与源码核对</h2><h3>案例背景</h3><p>在开发复杂的软件系统时，我们常常需要处理多种功能相似但实现各异的组件，例如不同类型的传感器（激光雷达、毫米波雷达）或数据解析器。如果为每一种组件都编写一个完全独立的类，就会导致大量逻辑重复的代码。这种设计不仅增加了代码量，也使得未来的维护和扩展（例如增加一种新的传感器）变得异常困难和容易出错。为了追求更卓越、更具扩展性的软件设计，我们必须引入面向对象的核心特性——封装、继承和多态。在本案例中，你将扮演一名“代码重构师”，借助 AIGC 的智慧，分析两段功能相似但独立的传感器代码，并提出一个使用继承进行重构的优化方案。</p><h3>任务要求</h3><p>使用 AIGC 工具分析两个功能相似但独立实现的传感器类 <code>LidarSensor</code> 和 <code>RadarSensor</code>，明确指出 <code>get_status()</code>、<code>reset()</code> 等重复代码；要求其以资深软件架构师视角提出基于继承的重构方案，并分析如何用 <code>Sensor</code> 基类提取共性、以虚函数实现多态和可扩展性。</p><div class="notice"><blockquote>[提示] 本案例包含后续将学习的继承、虚函数、多态和智能指针等内容。此时不要求掌握全部语法，重点比较重构前后的公共接口、重复代码和调用方式。</blockquote></div></section>
+<section class="panel"><h2>逐步推演</h2><div class="ai-step-box"><h3 id="aiStepTitle"></h3><p id="aiStepText"></p><div class="ai-step-evidence" id="aiStepEvidence"></div><span id="aiStepCount" class="small"></span></div><div class="toolbar"><button class="btn" id="aiPrev">上一步</button><button class="btn primary" id="aiNext">下一步</button><button class="btn" id="aiReset">重置</button></div></section>
+<section class="panel"><h2>先判断</h2><p>e_G 的 RadarSensor 没有重写 reset 时会怎样？</p><div class="quiz"><button class="btn" data-ai-choice="0">调用 Sensor 的通用 reset</button><button class="btn" data-ai-choice="1">编译必然失败</button><button class="btn" data-ai-choice="2">跳过整个传感器</button></div><div class="ai-result" id="aiFeedback" aria-live="polite"></div></section>
+<section class="panel ai-book"><h2>案例原始资料</h2><p class="small">以下为案例的提示、代码与运行分析；其中展示的 AIGC 输出不是本网页实时生成。</p><details><summary>案例代码、提示与输入</summary><p>本案例的“代码”是我们输入给 AIGC 的提示（Prompt）。首先，向 AIGC 提供以下两段功能相似但独立实现的传感器代码，并要求它分析问题、提出重构方案：</p>
+<pre><code>// 激光雷达传感器
+
+class LidarSensor {
+public:
+    void initialize() { /* ...复杂的初始化逻辑... */ }
+    void reset() { /* ...重置逻辑... */ }
+    std::string get_status() { return &quot;Lidar OK&quot;; }
+    void process_point_cloud() { /* ...处理点云数据... */ }
+};
+
+// 毫米波雷达传感器
+class RadarSensor {
+public:
+    void initialize() { /* ...与Lidar相似但不同的初始化逻辑... */ }
+    void reset() { /* ...与Lidar完全相同的重置逻辑... */ }
+    std::string get_status() { return &quot;Radar OK&quot;; }
+    void process_radar_echo() { /* ...处理雷达回波... */ }
+};</code></pre></details><details><summary>运行效果与分析</summary><p>AIGC 生成的 C++ 重构方案代码（示例）如下：</p>
+<pre><code>#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+#include &lt;memory&gt;
+
+// 创建一个抽象的Sensor基类
+class Sensor {
+public:
+    // 提供一个虚析构函数，这是作为基类的良好实践
+    virtual ~Sensor() {}
+
+    // 纯虚函数，强制所有派生类必须实现自己的初始化逻辑
+    virtual void initialize() = 0;
+
+    // 虚函数，提供一个默认的、可被重写的重置逻辑
+    virtual void reset() {
+        std::cout &lt;&lt; &quot;  -&gt; 执行通用的重置逻辑...&quot; &lt;&lt; std::endl;
+    }
+
+    // 纯虚函数，强制所有派生类必须报告自己的状态
+    virtual std::string get_status() const = 0;
+
+    // 纯虚函数，定义统一的数据处理接口
+    virtual void process_data() = 0;
+};
+
+// LidarSensor 继承自 Sensor
+class LidarSensor : public Sensor {
+public:
+    void initialize() override {
+        std::cout &lt;&lt; &quot;初始化Lidar传感器...&quot; &lt;&lt; std::endl;
+    }
+
+    std::string get_status() const override {
+        return &quot;Lidar OK&quot;;
+    }
+
+    void process_data() override {
+        std::cout &lt;&lt; &quot;  -&gt; 正在处理激光点云数据...&quot; &lt;&lt; std::endl;
+    }
+};
+
+// RadarSensor 继承自 Sensor
+class RadarSensor : public Sensor {
+public:
+    void initialize() override {
+        std::cout &lt;&lt; &quot;初始化Radar传感器...&quot; &lt;&lt; std::endl;
+    }
+
+    std::string get_status() const override {
+        return &quot;Radar OK&quot;;
+    }
+
+    void process_data() override {
+        std::cout &lt;&lt; &quot;  -&gt; 正在处理毫米波雷达回波...&quot; &lt;&lt; std::endl;
+    }
+
+    // 注意：RadarSensor没有重写reset()，它将自动使用基类提供的通用版本
+};
+
+// 用于测试的 main 函数
+int main() {
+    // 使用智能指针和基类指针来管理不同的传感器对象
+    std::vector&lt;std::unique_ptr&lt;Sensor&gt;&gt; sensors;
+    sensors.push_back(std::make_unique&lt;LidarSensor&gt;());
+    sensors.push_back(std::make_unique&lt;RadarSensor&gt;());
+
+    // 多态的应用：通过统一的接口，处理不同类型的传感器
+    for (const auto&amp; sensor : sensors) {
+        sensor-&gt;initialize();
+        sensor-&gt;process_data();
+        sensor-&gt;reset();
+        std::cout &lt;&lt; &quot;传感器状态: &quot; &lt;&lt; sensor-&gt;get_status() &lt;&lt; std::endl;
+        std::cout &lt;&lt; &quot;--------------------&quot; &lt;&lt; std::endl;
+    }
+
+    return 0;
+}</code></pre>
+<p>程序运行输出：</p>
+<pre><code>初始化Lidar传感器...
+  -&gt; 正在处理激光点云数据...
+  -&gt; 执行通用的重置逻辑...
+传感器状态: Lidar OK
+--------------------
+初始化Radar传感器...
+  -&gt; 正在处理毫米波雷达回波...
+  -&gt; 执行通用的重置逻辑...
+传感器状态: Radar OK
+--------------------</code></pre>
+<p>现象分析：通过创建一个 <code>Sensor</code> 基类，将所有传感器共有的行为（如 <code>initialize</code>、<code>reset</code>、<code>get_status</code>、<code>process_data</code>）的接口都集中到了基类中；对于像 <code>reset</code> 这样逻辑完全一样的功能，直接在基类中实现，供所有子类复用（继承）。而在 <code>main</code> 函数中使用 <code>std::vector&lt;std::unique_ptr&lt;Sensor&gt;&gt;</code> 统一管理不同类型的传感器，运行时根据指针实际指向的对象调用对应的 <code>process_data</code> 版本（多态）。这正是虚函数和动态绑定的威力。</p>
+<blockquote>[提示] 案例中出现的 <code>std::unique_ptr</code>、<code>std::make_unique</code> 是 C++ 的智能指针，属于“黑盒”工具，用于自动管理动态内存，其原理将在后续深入，这里先拿来用。</blockquote></details></section>
+<section class="panel ai-source"><h2>代码工程对照</h2><p class="ai-source-path">cpp_simulation/simulation_examples/e_G/</p><p class="small">e_G 提供重构前后两个可运行版本。原始资料目标是抽取 Sensor 公共接口，通过基类统一调用两种传感器。</p><details><summary>variant_1/main.cpp</summary><pre>// 重构前版本：两个独立类具有重复接口
+
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+class LidarSensor {
+public:
+    void initialize() { std::cout &lt;&lt; &quot;初始化Lidar传感器...&quot; &lt;&lt; std::endl; }
+    void reset() { std::cout &lt;&lt; &quot;重置Lidar传感器...&quot; &lt;&lt; std::endl; }
+    std::string get_status() const { return &quot;Lidar OK&quot;; }
+    void process_point_cloud() { std::cout &lt;&lt; &quot;处理激光点云数据...&quot; &lt;&lt; std::endl; }
+};
+
+class RadarSensor {
+public:
+    void initialize() { std::cout &lt;&lt; &quot;初始化Radar传感器...&quot; &lt;&lt; std::endl; }
+    void reset() { std::cout &lt;&lt; &quot;重置Radar传感器...&quot; &lt;&lt; std::endl; }
+    std::string get_status() const { return &quot;Radar OK&quot;; }
+    void process_radar_echo() { std::cout &lt;&lt; &quot;处理毫米波雷达回波...&quot; &lt;&lt; std::endl; }
+};
+
+int main() {
+    LidarSensor lidar;
+    RadarSensor radar;
+    lidar.initialize();
+    lidar.process_point_cloud();
+    radar.initialize();
+    radar.process_radar_echo();
+    return 0;
+}
+</pre></details>
+<details><summary>variant_2/main.cpp</summary><pre>// 重构后版本：以统一的 Sensor 接口消除重复
+
+#include &lt;iostream&gt;
+#include &lt;memory&gt;
+#include &lt;string&gt;
+#include &lt;vector&gt;
+
+class Sensor {
+public:
+    virtual ~Sensor() = default;
+    virtual void initialize() = 0;
+    virtual void reset() {
+        std::cout &lt;&lt; &quot;  -&gt; 执行通用的重置逻辑...&quot; &lt;&lt; std::endl;
+    }
+    virtual std::string get_status() const = 0;
+    virtual void process_data() = 0;
+};
+
+class LidarSensor final : public Sensor {
+public:
+    void initialize() override { std::cout &lt;&lt; &quot;初始化Lidar传感器...&quot; &lt;&lt; std::endl; }
+    std::string get_status() const override { return &quot;Lidar OK&quot;; }
+    void process_data() override { std::cout &lt;&lt; &quot;  -&gt; 正在处理激光点云数据...&quot; &lt;&lt; std::endl; }
+};
+
+class RadarSensor final : public Sensor {
+public:
+    void initialize() override { std::cout &lt;&lt; &quot;初始化Radar传感器...&quot; &lt;&lt; std::endl; }
+    std::string get_status() const override { return &quot;Radar OK&quot;; }
+    void process_data() override { std::cout &lt;&lt; &quot;  -&gt; 正在处理毫米波雷达回波...&quot; &lt;&lt; std::endl; }
+};
+
+int main() {
+    std::vector&lt;std::unique_ptr&lt;Sensor&gt;&gt; sensors;
+    sensors.push_back(std::make_unique&lt;LidarSensor&gt;());
+    sensors.push_back(std::make_unique&lt;RadarSensor&gt;());
+
+    for (const auto&amp; sensor : sensors) {
+        sensor-&gt;initialize();
+        sensor-&gt;process_data();
+        sensor-&gt;reset();
+        std::cout &lt;&lt; &quot;传感器状态: &quot; &lt;&lt; sensor-&gt;get_status() &lt;&lt; &quot;\n--------------------&quot; &lt;&lt; std::endl;
+    }
+    return 0;
+}
+</pre></details>
+<details><summary>README.md</summary><pre># e_G：AIGC代码重构师
+
+- 案例编号：案例G
+- 归属：项目7 感知融合优化
+- 覆盖知识点：知识点97
+
+## 工程化补全
+
+`e_G_before_refactor` 将案例中的两段重复传感器代码补为可运行版本；`e_G_after_refactor` 采用案例给出的 `Sensor` 基类与多态方案。两者分别构建，便于观察重构前后的差异。
+
+## 实施步骤
+
+1. 检查本目录的源码、输入文件、外部资源和工程补全说明。
+2. 若存在 `CMakeLists.txt`，先独立配置本目录，再构建对应目标。
+3. 运行生成的程序并核对输出；阅读、推导或操作类案例直接按目录说明完成。
+
+</pre></details></section>
+</main><script>window.aiCaseData={"steps": [{"title": "找重复", "text": "重构前 LidarSensor 和 RadarSensor 各自实现初始化、重置和状态查询。", "evidence": "LidarSensor / RadarSensor：独立的相似接口"}, {"title": "抽取公共接口", "text": "重构后 Sensor 声明虚析构和虚函数，并提供通用 reset。", "evidence": "Sensor::initialize · reset · get_status · process_data"}, {"title": "统一调用", "text": "main 用 vector\u003cunique_ptr\u003cSensor>> 保存两种对象，经基类接口调用。", "evidence": "sensor->initialize(); sensor->process_data(); sensor->reset();"}], "quiz": {"correct": 0, "right": "正确。RadarSensor 继承可用的基类 reset 实现。", "wrong": "请看 e_G/variant_2/main.cpp 的 Sensor::reset。"}};</script><script src="../../../AI协作案例/AI案例交互.js"></script></body></html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>深拷贝与浅拷贝 · 对象内存实验</title>
+  <style>
+    :root{--bg:#f6f8fa;--card:#fff;--text:#24292f;--muted:#57606a;--line:#d0d7de;--blue:#0969da;--green:#1a7f37;--red:#cf222e;--code:#0d1117}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button{font:inherit;cursor:pointer}
+    main{width:min(1160px,calc(100% - 28px));margin:28px auto 54px}.eyebrow{font-size:.88rem;color:var(--blue);font-weight:700;letter-spacing:.05em}h1{font-size:clamp(1.65rem,3vw,2.3rem);line-height:1.25;margin:5px 0 10px}h2{font-size:1.18rem;margin:0 0 10px}h3{font-size:1rem;margin:0 0 8px}p{margin:0 0 12px}.lead,.small{color:var(--muted)}.small{font-size:.9rem}
+    nav{display:flex;flex-wrap:wrap;gap:9px;margin:18px 0 22px}a{color:var(--blue)}nav a{background:#fff;border:1px solid var(--line);border-radius:8px;padding:7px 11px;text-decoration:none}nav a:hover{text-decoration:underline}
+    .panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;box-shadow:0 3px 12px #1b1f240a}.toolbar{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin:14px 0}.btn{border:1px solid var(--line);border-radius:7px;background:#fff;padding:8px 13px;color:var(--text);font-weight:600}.btn:hover:not(:disabled){border-color:var(--blue);color:var(--blue)}.btn.active,.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}.btn:disabled{opacity:.5;cursor:not-allowed}
+    .stepbar{display:flex;flex-wrap:wrap;gap:7px;margin:12px 0 18px}.stepbar span{border:1px solid var(--line);border-radius:999px;padding:4px 9px;color:var(--muted);font-size:.82rem}.stepbar .active{border-color:var(--blue);background:#ddf4ff;color:#0550ae;font-weight:700}
+    .grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}.code{background:var(--code);color:#c9d1d9;border-radius:9px;overflow:hidden}.codehead{color:#8b949e;border-bottom:1px solid #30363d;padding:9px 13px;font-size:.82rem}.code pre{margin:0;padding:10px 0;overflow-x:auto;font-size:.84rem;line-height:1.75}.line{display:block;padding:0 13px;white-space:pre}.line.active{background:#1f3a55;border-left:3px solid #58a6ff;padding-left:10px;color:#fff}.line .n{display:inline-block;color:#8b949e;width:2em;user-select:none}
+    .mem{display:grid;gap:11px}.obj,.heap{border:1px solid var(--line);border-radius:9px;padding:12px;background:#fff}.obj strong{display:block;color:var(--blue)}.pointer{font-family:ui-monospace,Consolas,monospace;background:#eaeef2;border-radius:5px;padding:2px 5px}.heap{background:#f6f8fa}.heapbox{display:inline-block;border:2px solid #54aeff;border-radius:7px;background:#ddf4ff;padding:7px 10px;margin:4px 6px 4px 0;font-family:ui-monospace,Consolas,monospace;font-size:.86rem}.heapbox.danger{border-color:#ff8182;background:#ffebe9}.heapbox.deleted{border-style:dashed;color:var(--muted);background:#fff}.flag{font-size:.8rem;color:var(--muted)}.notice{margin-top:15px;border-left:4px solid var(--blue);background:#f6f8fa;border-radius:5px;padding:10px 13px}.notice.bad{border-color:var(--red);background:#fff0ee}.notice.good{border-color:var(--green);background:#dafbe1}.below{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}.feedback{min-height:1.6em;margin-top:8px;font-weight:600}.feedback.good{color:var(--green)}.feedback.bad{color:var(--red)}
+    /* 与原有内存系列保持浅色实验台的字体和部件比例。 */
+    body{padding:40px 20px}main{width:min(1200px,100%);margin:0 auto}.eyebrow{text-align:center;font-size:12px;letter-spacing:0}
+    h1{text-align:center;font-size:24px;font-weight:600;margin:2px 0 12px}.lead{max-width:900px;margin:0 auto;text-align:center;font-size:14px}
+    nav{justify-content:center;margin:14px 0 20px;font-size:13px}.panel{padding:24px;box-shadow:0 8px 24px rgba(140,149,159,.15)}
+    .code{background:#fff;color:#24292f;border:1px solid var(--line)}.codehead{background:#f6f8fa;border-bottom:1px solid var(--line);color:var(--muted)}
+    .code pre{font-size:14px;line-height:1.8}.line.active{background:#f6f8fa;border-left-color:var(--blue);color:var(--text);font-weight:700}.line .n{color:#8c959f}
+    .obj{border:2px dashed var(--line);min-height:95px}.heap{border:2px dashed #d4a72c;background:#fafbfc;min-height:145px}
+    .btn{padding:10px 20px;font-size:14px;border-radius:6px}.below{font-size:14px}
+    @media(max-width:800px){body{padding:16px 10px}.grid,.below{grid-template-columns:1fr}.panel{padding:15px}main{width:100%}}
+  </style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">面向对象 · 数字资源 · 内存分析</div>
+  <h1>深拷贝与浅拷贝：两辆车会指向同一串 VIN 吗？</h1>
+  <p class="lead">用持有动态字符数组的简单对象比较深拷贝与浅拷贝。逐步观察两个对象是否共享同一数组，以及修改和析构时的后果；危险路径只作图解。</p>
+  <nav aria-label="相关资源"><a href="../项目演示/项目F.html">返回项目 F</a><a href="../指针与引用/数组分配与释放.html">new[] 与 delete[]</a><a href="../资源目录.html">返回资源总目录</a></nav>
+  <section class="panel">
+    <h2>对象内存实验</h2>
+    <div class="toolbar" role="group" aria-label="选择拷贝方式"><button class="btn active" id="deepBtn" aria-pressed="true">源码：深拷贝</button><button class="btn" id="shallowBtn" aria-pressed="false">假设：浅拷贝</button></div>
+    <div class="toolbar"><button class="btn" id="prevBtn">上一步</button><button class="btn primary" id="nextBtn">下一步</button><button class="btn" id="resetBtn">重置</button></div>
+    <div class="stepbar" id="steps" aria-label="执行步骤"></div>
+    <div class="grid">
+      <div class="code"><div class="codehead" id="codehead">示例工程/main.cpp · 关键语句</div><pre id="source"></pre></div>
+      <div class="mem"><div class="obj"><strong>prototype_car</strong><div id="prototype"></div></div><div class="obj"><strong>cloned_car</strong><div id="clone"></div></div><div class="heap"><h3>堆内存（地址均为示意）</h3><div id="heap"></div></div></div>
+    </div>
+    <div class="notice" id="explain" aria-live="polite"></div>
+  </section>
+  <div class="below">
+    <section class="panel"><h2>先预测，再看结果</h2><p>如果拷贝构造仅执行 <code>vin = other.vin;</code>，随后原车调用 <code>set_vin()</code> 释放旧数组，会发生什么？</p><button class="btn" data-answer="wrong">副本仍安全持有旧 VIN</button><button class="btn" data-answer="right">副本指针悬空，不能再解引用</button><div class="feedback" id="feedback" aria-live="polite"></div></section>
+    <section class="panel"><h2>读图边界</h2><p>源码的拷贝构造为副本调用 <code>new char[strlen(other.vin)+1]</code>，再 <code>strcpy</code>；两个对象各自持有数组。浅拷贝路径是假设性错误代码，只用于解释共享地址的风险。</p><p class="small">示意地址 A/B/C 并非实际地址；内存释放后不会读取其内容。该示意不等同于浏览器执行 C++，也不预言未定义行为的固定结果。</p></section>
+  </div>
+</main>
+<script>
+(() => {
+  'use strict';
+  const $=id=>document.getElementById(id);
+  const steps=['创建原型车','克隆车辆','修改原车 VIN','离开 main，逆序析构'];
+  const code={deep:[
+    'Vehicle prototype_car("VIN-PROTOTYPE-001");',
+    'Vehicle cloned_car = prototype_car;',
+    'vin = new char[strlen(other.vin) + 1];',
+    'strcpy(vin, other.vin);',
+    'prototype_car.set_vin("VIN-MODIFIED-999");',
+    'return 0; // cloned_car、prototype_car 依次析构'
+  ],shallow:[
+    'Vehicle prototype_car("VIN-PROTOTYPE-001");',
+    'Vehicle cloned_car = prototype_car;',
+    'vin = other.vin; // 假设性错误写法，非源码',
+    'prototype_car.set_vin("VIN-MODIFIED-999");',
+    'return 0; // 不实际运行此错误路径'
+  ]};
+  let mode='deep',step=0;
+  function block(label,value,kind='') {const box=document.createElement('span');box.className='heapbox '+kind;box.textContent=`${label}  ${value}`;return box}
+  function render(){
+    $('deepBtn').classList.toggle('active',mode==='deep');$('shallowBtn').classList.toggle('active',mode==='shallow');
+    $('deepBtn').setAttribute('aria-pressed',String(mode==='deep'));$('shallowBtn').setAttribute('aria-pressed',String(mode==='shallow'));
+    $('prevBtn').disabled=step===0;$('nextBtn').disabled=step===steps.length-1;
+    $('steps').replaceChildren(...steps.map((v,i)=>{const e=document.createElement('span');e.textContent=`${i+1}. ${v}`;if(i===step)e.className='active';return e}));
+    const active=mode==='deep'?[[0],[1,2,3],[4],[5]]:[[0],[1,2],[3],[4]];
+    $('codehead').textContent=mode==='deep'?'示例工程/main.cpp · 源码关键语句':'错误浅拷贝假设 · 非示例代码';
+    $('source').replaceChildren(...code[mode].map((v,i)=>{const row=document.createElement('span');row.className='line'+(active[step].includes(i)?' active':'');const n=document.createElement('span');n.className='n';n.textContent=String(i+1);row.append(n,document.createTextNode(v));return row}));
+    const proto=step<2?'A':'C';const clone=mode==='deep'?'B':'A';
+    $('prototype').textContent=step===3?(mode==='deep'?'作用域结束；对象已析构':'假设性错误路径：不继续执行析构'): `vin → ${proto}；${step<2?'VIN-PROTOTYPE-001':'VIN-MODIFIED-999'}`;
+    $('clone').textContent=step===0?'尚未创建':step===3?(mode==='deep'?'作用域结束；对象已析构':'假设性错误路径：不继续执行析构'):`vin → ${clone}；${mode==='deep'?'VIN-PROTOTYPE-001':step===1?'VIN-PROTOTYPE-001':'悬空指针（不可读取）'}`;
+    const heap=$('heap');heap.replaceChildren();
+    if(step===3){heap.append(block('A','已由 set_vin 释放','deleted'));if(mode==='deep'){heap.append(block('B','已释放','deleted'));heap.append(block('C','已释放','deleted'))}else heap.append(block('C','后续释放不模拟'))}
+    else if(step===0){heap.append(block('A','VIN-PROTOTYPE-001'))}
+    else if(step===1){heap.append(block('A','VIN-PROTOTYPE-001'));if(mode==='deep')heap.append(block('B','VIN-PROTOTYPE-001'))}
+    else {heap.append(block('A','已由 set_vin 释放','deleted'));if(mode==='deep')heap.append(block('B','VIN-PROTOTYPE-001'));heap.append(block('C','VIN-MODIFIED-999'));if(mode==='shallow')heap.append(block('副本','指向已释放的 A','danger'))}
+    const messages={deep:[
+      '普通构造为 prototype_car 的 vin 分配数组 A，并复制初始 VIN。',
+      '源码中的拷贝构造分配独立数组 B，再复制字符；两个对象内容相同，但不是同一块内存。',
+      'set_vin 先释放 A，再为原车分配 C；副本仍拥有 B，显示旧 VIN 不受影响。',
+      '局部对象按构造的相反顺序析构：先 cloned_car 释放 B，再 prototype_car 释放 C。'
+    ],shallow:[
+      '原车持有数组 A。下面将假设错误地只复制指针值。',
+      '两个 vin 都指向 A；此时尚未发生深拷贝。',
+      'set_vin 释放 A 并让原车指向新数组 C；副本仍保存 A 的旧地址，已悬空。绝不能读取副本 VIN。',
+      '若真实运行此错误实现，副本析构可能再次 delete[] 已释放的 A，属于未定义行为。此处仅显示风险，不模拟固定输出。'
+    ]};
+    $('explain').className='notice '+(mode==='shallow'&&step>=2?'bad':mode==='deep'&&step>=1?'good':'');
+    $('explain').textContent=messages[mode][step];
+  }
+  $('deepBtn').onclick=()=>{mode='deep';step=0;render()};$('shallowBtn').onclick=()=>{mode='shallow';step=0;render()};
+  $('prevBtn').onclick=()=>{if(step>0){step--;render()}};$('nextBtn').onclick=()=>{if(step<steps.length-1){step++;render()}};$('resetBtn').onclick=()=>{step=0;render()};
+  document.querySelectorAll('[data-answer]').forEach(b=>b.onclick=()=>{const right=b.dataset.answer==='right';$('feedback').className='feedback '+(right?'good':'bad');$('feedback').textContent=right?'正确。旧数组已经释放，副本的旧指针不能用于显示或析构。':'请注意 set_vin 会先 delete[] 旧数组 A；共享 A 的副本因此悬空。'});
+  render();
+})();
+</script>
+</body>
+</html>

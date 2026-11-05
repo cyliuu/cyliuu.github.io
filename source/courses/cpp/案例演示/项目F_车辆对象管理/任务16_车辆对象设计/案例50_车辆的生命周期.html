@@ -1,0 +1,88 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>案例 50 · 车辆的生命周期</title><style>:root{--bg:#f6f8fa;--text:#24292f;--muted:#57606a;--line:#d0d7de;--blue:#0969da;--green:#1a7f37;--red:#cf222e}*{box-sizing:border-box}body{margin:0;padding:40px 20px;background:var(--bg);color:var(--text);font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button{font:inherit;cursor:pointer}main{max-width:1200px;margin:auto}.eyebrow{font-size:12px;color:var(--blue);font-weight:700;text-align:center}h1{text-align:center;font-size:24px;font-weight:600;margin:2px 0 12px}h2{font-size:1.18rem;margin:0 0 12px}h3{font-size:1rem;margin:0 0 8px}p{margin:0 0 12px}.lead{max-width:900px;margin:auto;text-align:center;color:var(--muted);font-size:14px}nav{display:flex;justify-content:center;flex-wrap:wrap;gap:9px;margin:14px 0 20px;font-size:13px}a{color:var(--blue)}nav a{border:1px solid var(--line);background:#fff;padding:7px 11px;border-radius:8px;text-decoration:none}.panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px;box-shadow:0 8px 24px rgba(140,149,159,.15);margin-bottom:16px}.grid{display:grid;grid-template-columns:1.08fr 1fr;gap:22px}.code{border:1px solid var(--line);border-radius:8px;overflow:hidden}.codehead{padding:9px 14px;background:#f6f8fa;border-bottom:1px solid var(--line);color:var(--muted);font-size:13px}.code pre{margin:0;padding:10px 14px;overflow:auto;max-height:540px;font:14px/1.8 ui-monospace,SFMono-Regular,Consolas,monospace}.file{border-top:1px solid var(--line)}.file:first-child{border-top:0}.file summary{padding:8px 14px;cursor:pointer;font-size:13px;color:var(--blue);font-weight:600}.btn{padding:10px 20px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--text);font-size:14px;font-weight:600}.btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}.controls{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 18px}.choice{display:block;width:100%;text-align:left;margin:7px 0}.choice.correct{border-color:var(--green);background:#dafbe1}.choice.wrong{border-color:var(--red);background:#ffebe9}.note{border-left:4px solid var(--blue);background:#f6f8fa;padding:10px 13px;margin-top:13px}.note.good{border-color:var(--green)}.note.bad{border-color:var(--red)}.terminal{background:#24292f;color:#57ab5a;border-radius:8px;padding:16px;white-space:pre-wrap;font:13px/1.6 ui-monospace,Consolas,monospace;min-height:125px;margin-top:16px}.book-text{white-space:pre-line;font-size:14px;color:var(--muted)}.chips{display:flex;gap:6px;flex-wrap:wrap}.chip{display:inline-block;border:1px solid var(--line);background:#f6f8fa;border-radius:6px;padding:3px 7px;font-size:13px}.small{color:var(--muted);font-size:14px}button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--blue);outline-offset:2px}@media(max-width:760px){body{padding:16px 10px}.grid{grid-template-columns:1fr}.panel{padding:15px}}.experiment-controls{align-items:end}.experiment-controls label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}.experiment-controls input,.experiment-controls select{min-width:130px;max-width:210px;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--text);font:14px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.experiment-controls input:focus-visible,.experiment-controls select:focus-visible{outline:2px solid var(--blue);outline-offset:2px}</style><link rel="stylesheet" href="../../../案例统一样式.css"></head><body class="case-document"><main class="case-page">
+<div class="eyebrow">项目 F · 任务 16 · 案例 50</div><h1>车辆的生命周期</h1><p class="lead">创建局部车辆对象并离开作用域，观察构造、成员操作与析构的先后顺序。</p><nav class="case-nav" aria-label="案例导航"><a href="../../../项目演示/项目F.html">返回项目 F</a><a href="../../../资源目录.html#case-50">返回资源总目录</a></nav><section class="case-meta" aria-label="案例知识与相关资源"><div class="case-meta-group"><span class="case-meta-label">对应知识点</span><div class="case-meta-items"><span class="case-tag">知识点 84 · 对象构造与析构</span></div></div><div class="case-meta-group"><span class="case-meta-label">相关机制页</span><div class="case-meta-items"><a class="case-mechanism" href="../../../面向对象/类与对象生命周期.html">类与对象生命周期</a></div></div></section>
+<section class="panel"><h2>案例任务与源码核对</h2><div class="grid"><div><h3>情境背景</h3><div class="book-text">在软件开发中，当我们定义一个“类”来描述现实世界的事物时，一个核心问题随之而来：如何保证每一个根据这个类创建出来的“对象”，在它“诞生”的那一刻就处于一个安全、有效的初始状态？例如，一辆新车被“制造”出来时，它的引擎应该是熄火状态，速度应该为 0，油箱或许是满的。如果依赖程序员每次都手动调用一个初始化函数，很容易因遗漏而产生状态不确定的对象，为程序埋下隐患。为了从机制上解决这个问题，C++ 提供了一种特殊的成员函数——构造函数 (Constructor)，它会在对象被创建时自动执行，专门用于初始化。相应地，当一个对象的生命周期结束时，析构函数 (Destructor) 会被自动执行，用于完成必要的清理工作，如释放资源、保存状态等。这两种函数共同构成了对象完整的“生命周期管理”机制，是面向对象编程的基石。</div><h3 style="margin-top:18px">案例要求</h3><div class="book-text">为 Vehicle 类添加 private bool is_running，并用构造函数将 speed 初始化为 0.0、is_running 初始化为 false 后输出车辆处于熄火状态的消息；再用析构函数输出对象已销毁的消息。在 main 的不同作用域中创建对象，观察两类函数随对象创建和销毁自动执行的过程。</div></div><div><div class="note"><strong>源码核对重点：</strong>自动存储期对象在进入相应作用域构造，离开时按生命周期规则析构；网页只展示顺序，不实际调用 C++ 对象。</div></div></div></section>
+<section class="panel"><h2>先预测，再验证</h2><div class="grid"><div><h3>局部 Vehicle 对象何时分别调用构造与析构？</h3><div id="choices"><button class="btn choice" data-choice="0">进入作用域时构造，离开作用域时析构</button><button class="btn choice" data-choice="1">析构先于构造</button><button class="btn choice" data-choice="2">仅程序启动时调用一次</button></div><div id="feedback" class="note" aria-live="polite">请选择一种判断，查看依据。</div><div class="controls"><button class="btn primary" id="next">推演下一步</button><button class="btn" id="reset">重新开始</button></div><div id="trace" class="terminal" aria-live="polite">等待推演。网页展示源码逻辑，不在浏览器执行 C++ 程序。</div></div><div class="code"><div class="codehead">工程原始文件 · 点击文件名展开</div><details class="file" open><summary>ee_50/main.cpp</summary><pre>// 使用构造函数和析构函数管理车辆对象的生命周期
+
+#include &lt;iostream&gt;
+
+class Vehicle {
+public:
+    // 构造函数 (Constructor)
+    //    - 函数名与类名完全相同
+    //    - 没有返回类型
+    //    - 在对象创建时自动被调用
+    Vehicle() {
+        speed = 0.0;
+        is_running = false;
+        std::cout &lt;&lt; &quot;[构造函数]: 一辆新车已创建, 引擎熄火, 速度为 0。&quot; &lt;&lt; std::endl;
+    }
+
+    // 析构函数 (Destructor)
+    //    - 函数名是波浪号(~)后跟类名
+    //    - 没有返回类型，也没有参数
+    //    - 在对象生命周期结束时（如离开作用域）自动被调用
+    ~Vehicle() {
+        std::cout &lt;&lt; &quot;[析构函数]: 车辆对象生命周期结束, 已被销毁。&quot; &lt;&lt; std::endl;
+    }
+
+    // 公共成员函数 - 对象的&quot;行为&quot;
+    void start_engine() {
+        is_running = true;
+        std::cout &lt;&lt; &quot;[行为]: 引擎已启动。&quot; &lt;&lt; std::endl;
+    }
+
+    void stop_engine() {
+        is_running = false;
+        std::cout &lt;&lt; &quot;[行为]: 引擎已熄火。&quot; &lt;&lt; std::endl;
+    }
+
+    // 获取当前速度
+    double get_speed() {
+        return speed;
+    }
+
+    // 获取运行状态
+    bool get_is_running() {
+        return is_running;
+    }
+
+private:
+    // 私有数据成员 - 对象的&quot;属性&quot;
+    double speed;
+    bool is_running;
+};
+
+// 程序入口观察对象的创建和销毁
+int main() {
+    std::cout &lt;&lt; &quot;--- main函数开始 ---&quot; &lt;&lt; std::endl;
+
+    { // 创建一个新的作用域来观察对象的生命周期
+        std::cout &lt;&lt; &quot;  -&gt; 进入新的作用域, 准备创建 my_car 对象...&quot; &lt;&lt; std::endl;
+
+        // 当这行代码执行时, Vehicle 的构造函数会自动被调用
+        Vehicle my_car; 
+
+        // 验证一下初始状态
+        std::cout &lt;&lt; &quot;  -&gt; 验证初始状态: 车辆运行中? &quot; 
+                  &lt;&lt; (my_car.get_is_running() ? &quot;是&quot; : &quot;否&quot;) &lt;&lt; std::endl;
+
+        my_car.start_engine(); // 启动引擎
+
+        std::cout &lt;&lt; &quot;  -&gt; 准备离开作用域...&quot; &lt;&lt; std::endl;
+    } // 当代码执行到这个右花括号, my_car 对象的生命周期结束, 析构函数会自动被调用
+
+    std::cout &lt;&lt; &quot;--- main函数结束 ---&quot; &lt;&lt; std::endl;
+
+    return 0;
+}
+</pre></details><details class="file"><summary>ee_50/CMakeLists.txt</summary><pre>cmake_minimum_required(VERSION 3.16)
+project(ee_50 LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+add_executable(ee_50 main.cpp)
+</pre></details></div></div></section>
+<section class="panel"><h2>条件变更实验</h2><p><strong>先预测：</strong>把局部 Vehicle 放入一个更内层的花括号作用域。</p><div class="controls"><button class="btn primary" id="revealVariant">核对变式结果</button><button class="btn" id="resetVariant">重新预测</button></div><div class="terminal" id="variantResult" aria-live="polite">先根据源码与条件判断，再揭示结果。</div></section><section class="panel"><h2>改条件，再推演 · 改变局部对象数量</h2><p class="small">修改当前案例的条件，先预测输出，再核对源码规则。属于浏览器教学模型，不会修改或执行原 C++ 工程。</p><div class="controls experiment-controls"><label>内层作用域对象数<input id="exp-count" type="number" min="1" max="4" step="1" value="1"></label><button class="btn primary" id="runExperiment" type="button">按新条件推演</button><button class="btn" id="resetExperiment" type="button">恢复初始条件</button></div><div id="experimentResult" class="terminal" aria-live="polite">先预测，再点击“按新条件推演”核对。</div></section><p class="small">教学说明：选择题与步骤推演是依据源码编写的浏览器交互，不等于实际编译、链接、运行图形库或 Shell 脚本。涉及本机文件、设备、第三方库或浮点舍入时，以源码和实际运行环境为准。</p>
+</main><script>const lesson={"correct":0,"explanation":"自动存储期对象在进入相应作用域构造，离开时按生命周期规则析构；网页只展示顺序，不实际调用 C++ 对象。","steps":["进入作用域，构造默认状态。","在作用域内使用对象。","作用域结束，析构函数执行。"]};(()=>{'use strict';const $=id=>document.getElementById(id);let step=0;function reset(){step=0;$('feedback').textContent='请选择一种判断，查看依据。';$('feedback').className='note';$('trace').textContent='等待推演。网页展示源码逻辑，不在浏览器执行 C++ 程序。';document.querySelectorAll('[data-choice]').forEach(b=>{b.classList.remove('correct','wrong');b.disabled=false});$('next').disabled=false}document.querySelectorAll('[data-choice]').forEach(b=>b.onclick=()=>{const i=Number(b.dataset.choice),ok=i===lesson.correct;$('feedback').textContent=(ok?'判断正确。':'需要修正。')+lesson.explanation;$('feedback').className='note '+(ok?'good':'bad');document.querySelectorAll('[data-choice]').forEach(x=>{x.disabled=true;x.classList.toggle('correct',Number(x.dataset.choice)===lesson.correct);x.classList.toggle('wrong',x===b&&!ok)})});$('next').onclick=()=>{step=Math.min(step+1,lesson.steps.length);$('trace').textContent=lesson.steps.slice(0,step).map((x,i)=>String(i+1)+'. '+x).join('\n');$('next').disabled=step===lesson.steps.length};$('reset').onclick=reset;})();</script><script>(()=>{"use strict";const v=["把局部 Vehicle 放入一个更内层的花括号作用域。","进入时构造；离开内层作用域时立即析构，而不必等 main 结束。","自动存储期对象的生命周期与其作用域关联。"];const result=document.getElementById("variantResult");document.getElementById("revealVariant").onclick=()=>{result.textContent="推演结果："+v[1]+"\n依据："+v[2]};document.getElementById("resetVariant").onclick=()=>{result.textContent="先根据源码与条件判断，再揭示结果。"}})();</script><script>(()=>{"use strict";const fields=[{"label":"内层作用域对象数","id":"count","kind":"number","value":1,"min":1,"max":4,"step":1}];const calculate=v=>`进入内层作用域创建 ${v.count} 个局部 Vehicle：各自执行构造并初始化 speed=0、is_running=false；离开作用域时执行 ${v.count} 次析构，顺序与构造相反。原 main 只创建 1 个，这里是改变声明数量后的推演。`;const result=document.getElementById("experimentResult");for(const field of fields){document.getElementById("exp-"+field.id).oninput=()=>{result.textContent="条件已变化，请先预测，再点击按钮核对。"}}document.getElementById("runExperiment").onclick=()=>{const values={};for(const field of fields){const input=document.getElementById("exp-"+field.id);if(field.kind==="number"){const value=Number(input.value);const offset=(value-field.min)/field.step;if(input.value.trim()===""||!Number.isFinite(value)||value<field.min||value>field.max||Math.abs(offset-Math.round(offset))>1e-8){result.textContent="请填写范围和步长内的有效数值："+field.label;return}values[field.id]=value}else{if(!field.options.some(option=>option[0]===input.value)){result.textContent="请选择有效选项："+field.label;return}values[field.id]=input.value}}result.textContent=calculate(values)};document.getElementById("resetExperiment").onclick=()=>{for(const field of fields){document.getElementById("exp-"+field.id).value=String(field.kind==="number"?field.value:field.options[0][0])}result.textContent="先预测，再点击“按新条件推演”核对。"}})();</script></body></html>

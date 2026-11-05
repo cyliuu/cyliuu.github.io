@@ -1,0 +1,32 @@
+title: "Cyliuu's Learning Blog"
+subtitle: Machine Learning and Computer Vision
+author: Cyliuu
+language: zh-CN
+timezone: Asia/Shanghai
+url: https://cyliuu.github.io
+root: /
+permalink: :year/:month/:day/:title/
+theme: volantis
+source_dir: source
+public_dir: public
+skip_render:
+  - courses/cpp/**
+  - courses/**/*.html
+  - assets/**
+index_generator:
+  path: blog
+  per_page: 8
+  order_by: -date
+archive_dir: archives
+category_dir: categories
+tag_dir: tags
+per_page: 10
+highlight:
+  enable: false
+markdown:
+  render:
+    html: true
+    breaks: true
+    typographer: false
+  plugins:
+    - markdown-it-mathjax3

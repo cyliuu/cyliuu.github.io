@@ -1,0 +1,29 @@
+.overflow-simulator{padding:0;overflow:hidden}
+.overflow-controls{display:flex;align-items:end;flex-wrap:wrap;gap:10px;padding:20px;background:#f6f8fa;border-bottom:1px solid var(--line)}
+.overflow-controls label{gap:5px}.overflow-controls select{min-width:145px}
+.overflow-expression{flex:1 1 220px}.overflow-expression input{width:100%;min-width:150px;font:15px/1.4 ui-monospace,Consolas,monospace}
+.overflow-controls .btn{white-space:nowrap;flex-shrink:0;padding:9px 15px}
+.overflow-display{text-align:center;padding:24px 20px 26px}
+.overflow-range{display:inline-block;background:#f6f8fa;border:1px solid var(--line);border-radius:999px;padding:5px 14px;font-size:13px;color:var(--muted);font-weight:600}
+.overflow-label{color:var(--muted);font-size:13px;margin:16px 0 2px}
+.overflow-value{font:800 clamp(32px,7vw,55px)/1.15 ui-monospace,Consolas,monospace;overflow-wrap:anywhere;color:var(--green)}
+.overflow-value.negative{color:var(--red)}
+.overflow-exact{font:600 clamp(18px,3.5vw,27px)/1.3 ui-monospace,Consolas,monospace;overflow-wrap:anywhere;color:var(--text)}
+.overflow-warning{min-height:1.6em;margin:14px auto 4px;color:var(--red);font-size:14px;font-weight:700;max-width:900px}
+@keyframes overflow-warning-in{0%{opacity:.25;transform:translateY(4px)}100%{opacity:1;transform:translateY(0)}}
+.overflow-warning.flash{animation:overflow-warning-in .35s ease-out}
+.overflow-meter{height:14px;background:#eaeef2;border-radius:999px;overflow:hidden;margin:18px auto 24px;max-width:950px}
+.overflow-meter-fill{height:100%;width:0;background:#2da44e;transition:width .35s,background-color .25s}.overflow-meter-fill.warning{background:#cf222e}
+.overflow-bits{display:flex;justify-content:center;flex-wrap:wrap;gap:13px;margin:13px auto;padding:16px;background:#f6f8fa;border:1px solid var(--line);border-radius:10px;max-width:1050px}
+.overflow-byte{display:flex;gap:4px;flex-wrap:nowrap}.overflow-bit{display:flex;flex-direction:column;align-items:center;gap:3px}
+.overflow-digit{display:grid;place-items:center;width:32px;height:42px;border:2px solid var(--line);border-radius:6px;background:#fff;font:700 17px ui-monospace,Consolas,monospace}
+.overflow-digit.sign{border-color:#e3a008;background:#fff8e8;color:#9a6700}.overflow-digit.sign.negative{border-color:var(--red);background:#ffebe9;color:var(--red)}
+.overflow-index{font:600 10px/1.2 ui-monospace,Consolas,monospace;color:var(--muted)}
+@keyframes overflow-flash{0%{background:#b6e3ff;border-color:var(--blue)}100%{background:#fff}}
+.overflow-digit.changed{animation:overflow-flash .7s ease-out}
+.overflow-note{max-width:950px;margin:12px auto 0;text-align:left}
+.overflow-readout{white-space:pre-line;text-align:left;max-width:950px;margin:12px auto 0}
+[aria-label="C++ 运算规则核对"] .code+.code{margin-top:12px}
+[aria-label="C++ 运算规则核对"] .code pre{white-space:pre-wrap;overflow-wrap:anywhere}
+[aria-label="C++ 运算规则核对"] .display{white-space:pre-line}
+@media(max-width:600px){.overflow-controls{padding:15px}.overflow-display{padding:18px 12px}.overflow-bits{gap:8px;padding:10px}.overflow-byte{gap:2px}.overflow-digit{width:28px;height:37px;font-size:15px}.overflow-index{font-size:9px}}

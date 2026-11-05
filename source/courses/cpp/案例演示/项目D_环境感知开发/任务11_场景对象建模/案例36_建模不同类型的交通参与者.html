@@ -1,0 +1,80 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>案例 36 · 建模不同类型的交通参与者</title><style>:root{--bg:#f6f8fa;--text:#24292f;--muted:#57606a;--line:#d0d7de;--blue:#0969da;--green:#1a7f37;--red:#cf222e}*{box-sizing:border-box}body{margin:0;padding:40px 20px;background:var(--bg);color:var(--text);font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button{font:inherit;cursor:pointer}main{max-width:1200px;margin:auto}.eyebrow{font-size:12px;color:var(--blue);font-weight:700;text-align:center}h1{text-align:center;font-size:24px;font-weight:600;margin:2px 0 12px}h2{font-size:1.18rem;margin:0 0 12px}h3{font-size:1rem;margin:0 0 8px}p{margin:0 0 12px}.lead{max-width:900px;margin:auto;text-align:center;color:var(--muted);font-size:14px}nav{display:flex;justify-content:center;flex-wrap:wrap;gap:9px;margin:14px 0 20px;font-size:13px}a{color:var(--blue)}nav a{border:1px solid var(--line);background:#fff;padding:7px 11px;border-radius:8px;text-decoration:none}.panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px;box-shadow:0 8px 24px rgba(140,149,159,.15);margin-bottom:16px}.grid{display:grid;grid-template-columns:1.08fr 1fr;gap:22px}.code{border:1px solid var(--line);border-radius:8px;overflow:hidden}.codehead{padding:9px 14px;background:#f6f8fa;border-bottom:1px solid var(--line);color:var(--muted);font-size:13px}.code pre{margin:0;padding:10px 14px;overflow:auto;max-height:540px;font:14px/1.8 ui-monospace,SFMono-Regular,Consolas,monospace}.file{border-top:1px solid var(--line)}.file:first-child{border-top:0}.file summary{padding:8px 14px;cursor:pointer;font-size:13px;color:var(--blue);font-weight:600}.btn{padding:10px 20px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--text);font-size:14px;font-weight:600}.btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}.controls{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 18px}.choice{display:block;width:100%;text-align:left;margin:7px 0}.choice.correct{border-color:var(--green);background:#dafbe1}.choice.wrong{border-color:var(--red);background:#ffebe9}.note{border-left:4px solid var(--blue);background:#f6f8fa;padding:10px 13px;margin-top:13px}.note.good{border-color:var(--green)}.note.bad{border-color:var(--red)}.terminal{background:#24292f;color:#57ab5a;border-radius:8px;padding:16px;white-space:pre-wrap;font:13px/1.6 ui-monospace,Consolas,monospace;min-height:125px;margin-top:16px}.book-text{white-space:pre-line;font-size:14px;color:var(--muted)}.chips{display:flex;gap:6px;flex-wrap:wrap}.chip{display:inline-block;border:1px solid var(--line);background:#f6f8fa;border-radius:6px;padding:3px 7px;font-size:13px}.small{color:var(--muted);font-size:14px}button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--blue);outline-offset:2px}@media(max-width:760px){body{padding:16px 10px}.grid{grid-template-columns:1fr}.panel{padding:15px}}.experiment-controls{align-items:end}.experiment-controls label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}.experiment-controls input,.experiment-controls select{min-width:130px;max-width:210px;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--text);font:14px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.experiment-controls input:focus-visible,.experiment-controls select:focus-visible{outline:2px solid var(--blue);outline-offset:2px}</style><link rel="stylesheet" href="../../../案例统一样式.css"></head><body class="case-document"><main class="case-page">
+<div class="eyebrow">项目 D · 任务 11 · 案例 36</div><h1>建模不同类型的交通参与者</h1><p class="lead">切换交通参与者类型，比较通用字段、类型标签和各类型专属数据的读取方式。</p><nav class="case-nav" aria-label="案例导航"><a href="../../../项目演示/项目D.html">返回项目 D</a><a href="../../../资源目录.html#case-36">返回资源总目录</a></nav><section class="case-meta" aria-label="案例知识与相关资源"><div class="case-meta-group"><span class="case-meta-label">对应知识点</span><div class="case-meta-items"><span class="case-tag">知识点 60 · 联合与枚举</span></div></div><div class="case-meta-group"><span class="case-meta-label">相关机制页</span><div class="case-meta-items"><span class="case-empty">暂无独立机制页</span></div></div></section>
+<section class="panel"><h2>案例任务与源码核对</h2><div class="grid"><div><h3>情境背景</h3><div class="book-text">在对真实交通环境进行软件建模时，我们需要处理多种不同类型的参与者：除了车辆，还包含行人、骑行者，甚至静态的路锥等。这些参与者虽然都是“物体”，但各自拥有独特的属性：车辆有行驶速度，行人有步行速度，而路锥则是静止的。如果我们为每一种参与者都定义一个独立的结构体，当类型增多时，代码会变得冗杂。更重要的是，在很多场景下，一个物体在某一时刻只能是其中一种类型。为了设计一个既能表示多种类型、又能在内存使用上做到极致高效的统一数据结构，我们需要学习两种新的 C++ 工具：枚举（enum），用于给类型打上清晰的“标签”；以及联合（union），一位节省内存的“空间魔术师”。</div><h3 style="margin-top:18px">案例要求</h3><div class="book-text">设计并实现一个名为 TrafficParticipant 的单一数据结构，使其能够灵活地表示不同类型的交通参与者，并做到内存使用最优化。定义类型：使用 enum class 定义一个 ObjectType，包含 VEHICLE（车辆）、PEDESTRIAN（行人）、CYCLIST（骑行者）三种类型。定义数据：所有参与者都有一个 int id;，车辆有 float speed;（行驶速度），行人有 float walking_speed;（步行速度），骑行者有 float cycling_speed;（骑行速度）。核心要求是，使用 union 来存储上述三种不同的速度值（因为一个参与者在同一时刻只会有一种速度），然后将 ObjectType 和这个 union 组合在一个 struct 中。在 main 函数中创建至少两个 TrafficParticipant 变量（例如一个车辆和一个行人），分别为它们设置类型和对应的特定数据，并打印出来。</div></div><div><div class="note"><strong>源码核对重点：</strong>union 共用存储；标签说明当前实际存放的类型，读取错误成员可能产生无效语义或未定义行为。</div></div></div></section>
+<section class="panel"><h2>先预测，再验证</h2><div class="grid"><div><h3>带枚举标签的 union 表示不同交通参与者时，应读取哪个成员？</h3><div id="choices"><button class="btn choice" data-choice="0">任意成员都能安全读</button><button class="btn choice" data-choice="1">与当前标签对应的活动成员</button><button class="btn choice" data-choice="2">总是第一个成员</button></div><div id="feedback" class="note" aria-live="polite">请选择一种判断，查看依据。</div><div class="controls"><button class="btn primary" id="next">推演下一步</button><button class="btn" id="reset">重新开始</button></div><div id="trace" class="terminal" aria-live="polite">等待推演。网页展示源码逻辑，不在浏览器执行 C++ 程序。</div></div><div class="code"><div class="codehead">工程原始文件 · 点击文件名展开</div><details class="file" open><summary>ee_36/main.cpp</summary><pre>// 结合enum, union, struct 建模不同类型的交通参与者
+
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+// 使用 enum class 定义一个强类型的枚举 ObjectType
+//    它为不同的参与者类型提供了清晰、安全的名称
+enum class ObjectType {
+    VEHICLE,
+    PEDESTRIAN,
+    CYCLIST
+};
+
+// 使用 union 定义一个数据联合 ParticipantData
+//    它的所有成员共享同一块内存空间
+union ParticipantData {
+    float speed;
+    float walking_speed;
+    float cycling_speed;
+};
+
+// 使用 struct 定义最终的交通参与者结构
+//    它将类型标签(type)和共享的数据(data_union)聚合在一起
+struct TrafficParticipant {
+    int id;
+    ObjectType type;
+    ParticipantData data_union;
+};
+
+int main() {
+    // 创建并初始化一个车辆对象
+    TrafficParticipant vehicle;
+    vehicle.id = 101;
+    // 记录交通参与者的类型
+    vehicle.type = ObjectType::VEHICLE;
+    // 根据类型给 union 中对应的成员赋值
+    vehicle.data_union.speed = 88.5f;
+
+    // 创建并初始化一个行人对象
+    TrafficParticipant pedestrian;
+    pedestrian.id = 202;
+    pedestrian.type = ObjectType::PEDESTRIAN;
+    pedestrian.data_union.walking_speed = 1.2f;
+
+    // 打印信息进行验证
+    std::cout &lt;&lt; &quot;--- 交通参与者信息 ---&quot; &lt;&lt; std::endl;
+
+    // 打印车辆信息
+    std::cout &lt;&lt; &quot;对象ID: &quot; &lt;&lt; vehicle.id &lt;&lt; std::endl;
+    // 使用 switch (或者 if-else) 来根据类型解释 union 中的数据
+    if (vehicle.type == ObjectType::VEHICLE) {
+        std::cout &lt;&lt; &quot;  类型: 车辆&quot; &lt;&lt; std::endl;
+        std::cout &lt;&lt; &quot;  行驶速度: &quot; &lt;&lt; vehicle.data_union.speed &lt;&lt; &quot; km/h&quot; &lt;&lt; std::endl;
+    }
+
+    std::cout &lt;&lt; &quot;------------------------&quot; &lt;&lt; std::endl;
+
+    // 打印行人信息
+    std::cout &lt;&lt; &quot;对象ID: &quot; &lt;&lt; pedestrian.id &lt;&lt; std::endl;
+    if (pedestrian.type == ObjectType::PEDESTRIAN) {
+        std::cout &lt;&lt; &quot;  类型: 行人&quot; &lt;&lt; std::endl;
+        std::cout &lt;&lt; &quot;  步行速度: &quot; &lt;&lt; pedestrian.data_union.walking_speed &lt;&lt; &quot; m/s&quot; &lt;&lt; std::endl;
+    }
+
+    return 0;
+}
+</pre></details><details class="file"><summary>ee_36/CMakeLists.txt</summary><pre>cmake_minimum_required(VERSION 3.16)
+project(ee_36 LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+add_executable(ee_36 main.cpp)
+</pre></details></div></div></section>
+<section class="panel"><h2>条件变更实验</h2><p><strong>先预测：</strong>枚举标签改为 Pedestrian，同时写入行人成员。</p><div class="controls"><button class="btn primary" id="revealVariant">核对变式结果</button><button class="btn" id="resetVariant">重新预测</button></div><div class="terminal" id="variantResult" aria-live="polite">先根据源码与条件判断，再揭示结果。</div></section><section class="panel"><h2>改条件，再推演 · 切换 union 活动成员</h2><p class="small">修改当前案例的条件，先预测输出，再核对源码规则。属于浏览器教学模型，不会修改或执行原 C++ 工程。</p><div class="controls experiment-controls"><label>枚举标签<select id="exp-tag"><option value="Vehicle">Vehicle</option><option value="Pedestrian">Pedestrian</option><option value="Cyclist">Cyclist</option></select></label><label>读取成员<select id="exp-read"><option value="Vehicle">Vehicle</option><option value="Pedestrian">Pedestrian</option><option value="Cyclist">Cyclist</option></select></label><button class="btn primary" id="runExperiment" type="button">按新条件推演</button><button class="btn" id="resetExperiment" type="button">恢复初始条件</button></div><div id="experimentResult" class="terminal" aria-live="polite">先预测，再点击“按新条件推演”核对。</div></section><p class="small">教学说明：选择题与步骤推演是依据源码编写的浏览器交互，不等于实际编译、链接、运行图形库或 Shell 脚本。涉及本机文件、设备、第三方库或浮点舍入时，以源码和实际运行环境为准。</p>
+</main><script>const lesson={"correct":1,"explanation":"union 共用存储；标签说明当前实际存放的类型，读取错误成员可能产生无效语义或未定义行为。","steps":["写入具体类型的数据，并记录枚举标签。","判断标签属于车辆、行人还是骑行者。","只读取与活动对象匹配的成员。"]};(()=>{'use strict';const $=id=>document.getElementById(id);let step=0;function reset(){step=0;$('feedback').textContent='请选择一种判断，查看依据。';$('feedback').className='note';$('trace').textContent='等待推演。网页展示源码逻辑，不在浏览器执行 C++ 程序。';document.querySelectorAll('[data-choice]').forEach(b=>{b.classList.remove('correct','wrong');b.disabled=false});$('next').disabled=false}document.querySelectorAll('[data-choice]').forEach(b=>b.onclick=()=>{const i=Number(b.dataset.choice),ok=i===lesson.correct;$('feedback').textContent=(ok?'判断正确。':'需要修正。')+lesson.explanation;$('feedback').className='note '+(ok?'good':'bad');document.querySelectorAll('[data-choice]').forEach(x=>{x.disabled=true;x.classList.toggle('correct',Number(x.dataset.choice)===lesson.correct);x.classList.toggle('wrong',x===b&&!ok)})});$('next').onclick=()=>{step=Math.min(step+1,lesson.steps.length);$('trace').textContent=lesson.steps.slice(0,step).map((x,i)=>String(i+1)+'. '+x).join('\n');$('next').disabled=step===lesson.steps.length};$('reset').onclick=reset;})();</script><script>(()=>{"use strict";const v=["枚举标签改为 Pedestrian，同时写入行人成员。","读取时应选择 union 中的行人成员，而不是车辆成员。","标签与活动成员必须保持一致。"];const result=document.getElementById("variantResult");document.getElementById("revealVariant").onclick=()=>{result.textContent="推演结果："+v[1]+"\n依据："+v[2]};document.getElementById("resetVariant").onclick=()=>{result.textContent="先根据源码与条件判断，再揭示结果。"}})();</script><script>(()=>{"use strict";const fields=[{"label":"枚举标签","id":"tag","kind":"select","options":[["Vehicle","Vehicle"],["Pedestrian","Pedestrian"],["Cyclist","Cyclist"]]},{"label":"读取成员","id":"read","kind":"select","options":[["Vehicle","Vehicle"],["Pedestrian","Pedestrian"],["Cyclist","Cyclist"]]}];const calculate=v=>v.tag===v.read?`标签与活动成员同为 ${v.tag}，可按此成员解释数据。`:`标签为 ${v.tag}，却尝试按 ${v.read} 读取；不能把共用存储误当成三个同时有效的对象。`;const result=document.getElementById("experimentResult");for(const field of fields){document.getElementById("exp-"+field.id).oninput=()=>{result.textContent="条件已变化，请先预测，再点击按钮核对。"}}document.getElementById("runExperiment").onclick=()=>{const values={};for(const field of fields){const input=document.getElementById("exp-"+field.id);if(field.kind==="number"){const value=Number(input.value);const offset=(value-field.min)/field.step;if(input.value.trim()===""||!Number.isFinite(value)||value<field.min||value>field.max||Math.abs(offset-Math.round(offset))>1e-8){result.textContent="请填写范围和步长内的有效数值："+field.label;return}values[field.id]=value}else{if(!field.options.some(option=>option[0]===input.value)){result.textContent="请选择有效选项："+field.label;return}values[field.id]=input.value}}result.textContent=calculate(values)};document.getElementById("resetExperiment").onclick=()=>{for(const field of fields){document.getElementById("exp-"+field.id).value=String(field.kind==="number"?field.value:field.options[0][0])}result.textContent="先预测，再点击“按新条件推演”核对。"}})();</script></body></html>

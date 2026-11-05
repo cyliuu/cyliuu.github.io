@@ -1,0 +1,94 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>案例 D · AIGC数据结构优化师</title>
+<link rel="stylesheet" href="../../../机制通用样式.css"><link rel="stylesheet" href="../../../AI协作案例/AI案例样式.css"><link rel="stylesheet" href="../../../案例统一样式.css"></head><body class="case-document"><main class="case-page">
+<div class="eyebrow">项目 D · 项目导入 · AIGC 案例 D</div>
+<h1>AIGC数据结构优化师</h1>
+<p class="lead">比较通用字段与类型专属字段，规划车辆和行人数据的组织方式。</p>
+<nav class="case-nav" aria-label="案例导航"><a href="../../../项目演示/项目D.html">返回项目 D</a><a href="../../../资源目录.html#ai-D">返回资源总目录</a></nav><section class="case-meta" aria-label="案例知识与相关资源"><div class="case-meta-group"><span class="case-meta-label">对应知识点</span><div class="case-meta-items"><span class="case-tag">知识点 51 · 数据类型</span></div></div><div class="case-meta-group"><span class="case-meta-label">相关机制页</span><div class="case-meta-items"><span class="case-empty">暂无独立机制页</span></div></div></section>
+<section class="panel"><h2>案例任务与源码核对</h2><h3>案例背景</h3><p>复杂的车载软件需要对丰富多彩的真实交通环境进行建模。在这个世界里，存在各种不同类型的实体：有些是动态的，如移动的车辆和行人；有些是静态的，如固定的路障。这些障碍物虽然都有共同的属性（比如位置），但也各自拥有独特的、关键的信息：车辆有相对本车的行驶速度，而行人则可能有横向移动的趋势。如果我们为每一种属性都定义一个独立的变量（例如 <code>vehicle_x</code>、<code>vehicle_speed</code>、<code>pedestrian_x</code>、<code>pedestrian_lateral_speed</code>），代码将迅速变得混乱且难以扩展。在正式学习如何用 C++ 构建复杂数据结构之前，我们将扮演一名“系统设计师”，并向我们的“AI 技术顾问”（AIGC 工具）请教：面对这样一个复杂的数据建模需求，有没有一种更优雅、更高效的组织方式？</p><h3>任务要求</h3><p>通过与 AIGC 工具互动，探索并设计一个优化的、能表示多种交通参与者的数据结构。向任意一款 AIGC 工具，用自然语言清晰地描述你的数据建模需求，需求应至少包含：需要表示多种不同类型的障碍物，例如<strong>车辆 (Vehicle)</strong> 和<strong>行人 (Pedestrian)</strong>；它们都有共同的属性，例如<strong>位置</strong>；它们各自有独特的属性，车辆有**相对速度 (<code>relative_speed</code>)<strong>，行人有</strong>横向移动速度 (<code>lateral_speed</code>)**。然后要求 AIGC 为你优化这个 C++ 数据结构，使其能更有效地存储不同类型障碍物的特定信息，并分析 AIGC 的回答，观察它是如何利用你尚未学习的 C++ 工具（如 <code>enum</code>、<code>struct</code>、<code>union</code>）来解决这个问题的。</p><div class="notice"><blockquote>[提示] 本案例包含后续将学习的 <code>enum</code>、<code>struct</code> 和 <code>union</code> 等内容。此时不要求掌握全部语法，重点比较处理前后的数据组织方式。</blockquote></div></section>
+<section class="panel"><h2>逐步推演</h2><div class="ai-step-box"><h3 id="aiStepTitle"></h3><p id="aiStepText"></p><div class="ai-step-evidence" id="aiStepEvidence"></div><span id="aiStepCount" class="small"></span></div><div class="toolbar"><button class="btn" id="aiPrev">上一步</button><button class="btn primary" id="aiNext">下一步</button><button class="btn" id="aiReset">重置</button></div></section>
+<section class="panel"><h2>先判断</h2><p>对 e_D 中的行人对象，应读取哪个专属字段？</p><div class="quiz"><button class="btn" data-ai-choice="0">relative_speed</button><button class="btn" data-ai-choice="1">lateral_speed</button><button class="btn" data-ai-choice="2">两个字段同时读取</button></div><div class="ai-result" id="aiFeedback" aria-live="polite"></div></section>
+<section class="panel ai-book"><h2>案例原始资料</h2><p class="small">以下为案例的提示、代码与运行分析；其中展示的 AIGC 输出不是本网页实时生成。</p><details><summary>案例代码、提示与输入</summary><p>本案例的“代码”是我们输入给 AIGC 的<strong>提示（Prompt）</strong>，以及 AIGC 返回的<strong>设计方案</strong>。输入给 AIGC 的提示如下：</p>
+<blockquote>你好，请扮演一名资深的 C++ 系统架构师。我正在为一个自动驾驶仿真系统设计数据结构，需要你的帮助。<br><br><strong>我的需求是</strong>：<br><br>1. 我需要一个统一的数据结构来表示场景中所有的障碍物。<br>2. 障碍物有不同的类型，主要有 <strong>车辆 (Vehicle)</strong> 和 <strong>行人 (Pedestrian)</strong>。<br>3. 所有障碍物都有一些共同的数据，比如 ID 和二维坐标 (x, y)。<br>4. 不同类型的障碍物还有各自独特的数据：<strong>车辆</strong>需要存储它的**相对速度 (<code>relative_speed</code>)<strong>，是一个浮点数；</strong>行人<strong>需要存储它的</strong>横向移动速度 (<code>lateral_speed</code>)**，也是一个浮点数。<br><br>请为我设计一个优化的 C++ 数据结构，它应该既能清晰地表示不同类型的障碍物，又能在内存使用上尽可能高效。</blockquote></details><details><summary>运行效果与分析</summary><p>AIGC 生成的解决方案（示例）如下：</p>
+<pre><code>// 好的，作为一名C++系统架构师，我推荐使用&quot;标签化联合体&quot; (Tagged Union) 的设计模式来解决你的问题
+
+// 这种设计既清晰又高效
+
+#include &lt;cstdint&gt; // 为了使用 int32_t 等定长类型
+
+// 使用强类型枚举 (enum class) 来定义障碍物的类型&quot;标签&quot;
+// 这比使用普通的整数或宏更安全、更清晰
+enum class ObstacleType : std::uint8_t {
+    VEHICLE,
+    PEDESTRIAN
+};
+
+// 使用联合 (union) 来存储特定类型的数据
+// union 的所有成员共享同一块内存，因为一个障碍物不可能同时是车辆又是行人，
+// 这样可以极大地节省内存
+union SpecificData {
+    float relative_speed;  // 用于车辆
+    float lateral_speed;   // 用于行人
+};
+
+// 使用结构体 (struct) 将通用数据、类型标签和特定数据聚合在一起
+struct Obstacle {
+    std::int32_t id;        // 通用数据：ID
+    float x, y;             // 通用数据：位置坐标
+
+    ObstacleType type;      // 关键的类型标签
+    SpecificData data;      // 存储特定数据的联合体
+};</code></pre>
+<p>现象分析：AIGC 提供了一个非常专业和标准的解决方案。通过分析它的回答，我们可以提前了解到 <code>enum class</code> 是一种专门用来定义“类型标签”的工具，让代码更具可读性；<code>union</code> 是一种能让多个变量共享同一块内存的“空间魔术师”，非常适合存储互斥的数据；<code>struct</code> 是一个强大的“收纳盒”，能将 <code>enum</code> 标签和 <code>union</code> 数据完美地组合在一起，形成一个统一、完整的数据结构。这个方案完美地解决了我们的需求，并为我们接下来的学习指明了清晰的方向。</p></details></section>
+<section class="panel ai-source"><h2>代码工程对照</h2><p class="ai-source-path">cpp_simulation/simulation_examples/e_D/</p><p class="small">原始资料给出 enum class、struct、union 的设计片段；e_D/main.cpp 补了车辆与行人对象以便运行核对。</p><details><summary>main.cpp</summary><pre>// 使用标签化联合体表达不同的数据类型
+
+#include &lt;cstdint&gt;
+#include &lt;iostream&gt;
+
+enum class ObstacleType : std::uint8_t {
+    VEHICLE,
+    PEDESTRIAN
+};
+
+union SpecificData {
+    float relative_speed;
+    float lateral_speed;
+};
+
+struct Obstacle {
+    std::int32_t id;
+    float x;
+    float y;
+    ObstacleType type;
+    SpecificData data;
+};
+
+int main() {
+    Obstacle vehicle{1, 12.5f, 1.0f, ObstacleType::VEHICLE, {8.2f}};
+    Obstacle pedestrian{2, 6.0f, -0.5f, ObstacleType::PEDESTRIAN, {1.3f}};
+
+    std::cout &lt;&lt; &quot;Vehicle &quot; &lt;&lt; vehicle.id &lt;&lt; &quot;: relative speed = &quot;
+              &lt;&lt; vehicle.data.relative_speed &lt;&lt; &quot; m/s&quot; &lt;&lt; std::endl;
+    std::cout &lt;&lt; &quot;Pedestrian &quot; &lt;&lt; pedestrian.id &lt;&lt; &quot;: lateral speed = &quot;
+              &lt;&lt; pedestrian.data.lateral_speed &lt;&lt; &quot; m/s&quot; &lt;&lt; std::endl;
+    return 0;
+}
+</pre></details>
+<details><summary>README.md</summary><pre># e_D：AIGC数据结构优化师
+
+- 案例编号：案例D
+- 归属：项目4 环境感知开发
+- 覆盖知识点：知识点51
+
+## 工程化补全
+
+案例给出的是标签化联合体的设计片段。为使案例可验证，`main.cpp` 保持该结构并创建车辆、行人各一个，按类型标签读取对应联合体成员；目标 `e_D` 不依赖其他案例或第三方库。
+
+## 实施步骤
+
+1. 检查本目录的源码、输入文件、外部资源和工程补全说明。
+2. 若存在 `CMakeLists.txt`，先独立配置本目录，再构建对应目标。
+3. 运行生成的程序并核对输出；阅读、推导或操作类案例直接按目录说明完成。
+
+</pre></details></section>
+</main><script>window.aiCaseData={"steps": [{"title": "识别通用字段", "text": "Obstacle 保存 ID、坐标和类型标签。", "evidence": "id · x · y · ObstacleType type"}, {"title": "车辆专属字段", "text": "车辆标签为 VEHICLE，读取 relative_speed；工程值为 8.2 m/s。", "evidence": "vehicle.data.relative_speed"}, {"title": "行人专属字段", "text": "行人标签为 PEDESTRIAN，读取 lateral_speed；工程值为 1.3 m/s。", "evidence": "pedestrian.data.lateral_speed"}], "quiz": {"correct": 1, "right": "正确。按类型标签读取对应的联合体成员。", "wrong": "请核对 e_D/main.cpp 的 pedestrian 声明与输出语句。"}};</script><script src="../../../AI协作案例/AI案例交互.js"></script></body></html>

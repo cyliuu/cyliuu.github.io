@@ -1,0 +1,123 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>拓展案例 G1 · 使用SIMD优化点云数据处理</title><style>:root{--bg:#f6f8fa;--text:#24292f;--muted:#57606a;--line:#d0d7de;--blue:#0969da;--green:#1a7f37;--red:#cf222e}*{box-sizing:border-box}body{margin:0;padding:40px 20px;background:var(--bg);color:var(--text);font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button{font:inherit;cursor:pointer}main{max-width:1200px;margin:auto}.eyebrow{font-size:12px;color:var(--blue);font-weight:700;text-align:center}h1{text-align:center;font-size:24px;font-weight:600;margin:2px 0 12px}h2{font-size:1.18rem;margin:0 0 12px}h3{font-size:1rem;margin:0 0 8px}p{margin:0 0 12px}.lead{max-width:900px;margin:auto;text-align:center;color:var(--muted);font-size:14px}nav{display:flex;justify-content:center;flex-wrap:wrap;gap:9px;margin:14px 0 20px;font-size:13px}a{color:var(--blue)}nav a{border:1px solid var(--line);background:#fff;padding:7px 11px;border-radius:8px;text-decoration:none}.panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px;box-shadow:0 8px 24px rgba(140,149,159,.15);margin-bottom:16px}.grid{display:grid;grid-template-columns:1.08fr 1fr;gap:22px}.code{border:1px solid var(--line);border-radius:8px;overflow:hidden}.codehead{padding:9px 14px;background:#f6f8fa;border-bottom:1px solid var(--line);color:var(--muted);font-size:13px}.code pre{margin:0;padding:10px 14px;overflow:auto;max-height:540px;font:14px/1.8 ui-monospace,SFMono-Regular,Consolas,monospace}.file{border-top:1px solid var(--line)}.file:first-child{border-top:0}.file summary{padding:8px 14px;cursor:pointer;font-size:13px;color:var(--blue);font-weight:600}.btn{padding:10px 20px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--text);font-size:14px;font-weight:600}.btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}.controls{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 18px}.choice{display:block;width:100%;text-align:left;margin:7px 0}.choice.correct{border-color:var(--green);background:#dafbe1}.choice.wrong{border-color:var(--red);background:#ffebe9}.note{border-left:4px solid var(--blue);background:#f6f8fa;padding:10px 13px;margin-top:13px}.note.good{border-color:var(--green)}.note.bad{border-color:var(--red)}.terminal{background:#24292f;color:#57ab5a;border-radius:8px;padding:16px;white-space:pre-wrap;font:13px/1.6 ui-monospace,Consolas,monospace;min-height:125px;margin-top:16px}.book-text{white-space:pre-line;font-size:14px;color:var(--muted)}.chips{display:flex;gap:6px;flex-wrap:wrap}.chip{display:inline-block;border:1px solid var(--line);background:#f6f8fa;border-radius:6px;padding:3px 7px;font-size:13px}.small{color:var(--muted);font-size:14px}button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--blue);outline-offset:2px}@media(max-width:760px){body{padding:16px 10px}.grid{grid-template-columns:1fr}.panel{padding:15px}}.experiment-controls{align-items:end}.experiment-controls label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}.experiment-controls input,.experiment-controls select{min-width:130px;max-width:210px;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--text);font:14px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.experiment-controls input:focus-visible,.experiment-controls select:focus-visible{outline:2px solid var(--blue);outline-offset:2px}</style><link rel="stylesheet" href="../../../案例统一样式.css"></head><body class="case-document"><main class="case-page">
+<div class="eyebrow">项目 G · 项目实战 · 拓展案例 G1</div><h1>使用SIMD优化点云数据处理</h1><p class="lead">比较逐点计算与四点一组的向量处理，观察剩余点如何交给标量尾部。</p><nav class="case-nav" aria-label="案例导航"><a href="../../../项目演示/项目G.html">返回项目 G</a><a href="../../../资源目录.html#case-G1">返回资源总目录</a></nav><section class="case-meta" aria-label="案例知识与相关资源"><div class="case-meta-group"><span class="case-meta-label">对应知识点</span><div class="case-meta-items"><span class="case-tag">知识点 105 · 性能分析</span><span class="case-tag">知识点 106 · 指令集</span></div></div><div class="case-meta-group"><span class="case-meta-label">相关机制页</span><div class="case-meta-items"><a class="case-mechanism" href="../../../并发与性能/SIMD标量与向量计算.html">SIMD 标量与向量计算</a></div></div></section>
+<section class="panel"><h2>案例任务与源码核对</h2><div class="grid"><div><h3>情境背景</h3><div class="book-text">激光雷达是许多高级智能系统的核心传感器，它通过发射激光束感知周围环境，生成由数百万个三维点组成的“点云”数据。对这些海量点云数据进行实时处理（如坐标变换、滤波、聚类）是实现环境感知和建图定位功能的关键。然而，逐点进行数学运算的传统编程方式，在面对每秒数百万甚至上千万个点时，会成为整个系统的性能瓶颈。现代 CPU 提供了一种强大的并行计算技术——单指令多数据流（SIMD），允许 CPU 在一个时钟周期内使用一条指令同时对多个数据执行相同的操作，可将计算密集型的循环操作性能提升数倍。</div><h3 style="margin-top:18px">案例要求</h3><div class="book-text">对大量三维点云执行整体平移，分别实现标准 C++ 循环和跨平台 SIMD 版本并比较效率。定义含 float x, y, z 与 padding 的 16 字节对齐 Point；translate_points_scalar 用普通 for 循环逐点平移，translate_points_simd 按处理器架构使用 ARM NEON 或 x86 SSE 每次处理 4 个点，并为其他架构提供标量回退。生成大规模点云，分别计时并验证两种实现的坐标结果一致，不预设固定加速倍数。</div></div><div><div class="note"><strong>源码核对重点：</strong>源码按平台选 ARM NEON、x86 SSE 或标量回退，并处理不足一组的尾部；加速效果必须以实测为准。</div></div></div></section>
+<section class="panel"><h2>先预测，再验证</h2><div class="grid"><div><h3>SIMD 点云处理针对 4 点一组，点数不是 4 的倍数时需要什么？</h3><div id="choices"><button class="btn choice" data-choice="0">忽略剩余点</button><button class="btn choice" data-choice="1">向量化批次后做标量尾部处理</button><button class="btn choice" data-choice="2">保证编译器自动纠正结果</button></div><div id="feedback" class="note" aria-live="polite">请选择一种判断，查看依据。</div><div class="controls"><button class="btn primary" id="next">推演下一步</button><button class="btn" id="reset">重新开始</button></div><div id="trace" class="terminal" aria-live="polite">等待推演。网页展示源码逻辑，不在浏览器执行 C++ 程序。</div></div><div class="code"><div class="codehead">工程原始文件 · 点击文件名展开</div><details class="file" open><summary>eee_G1/main.cpp</summary><pre>#include &lt;cmath&gt;
+#include &lt;chrono&gt;
+#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+#if defined(__aarch64__) || defined(__ARM_NEON) || defined(__ARM_NEON__)
+#include &lt;arm_neon.h&gt;
+#define USE_NEON
+#elif defined(__SSE__)
+#include &lt;immintrin.h&gt;
+#define USE_SSE
+#endif
+
+// 16字节结构与128位寄存器宽度一致
+struct alignas(16) Point {
+    float x, y, z, padding;
+};
+
+void translate_points_scalar(std::vector&lt;Point&gt;&amp; points, float tx, float ty, float tz) {
+    for (Point&amp; point : points) {
+        point.x += tx;
+        point.y += ty;
+        point.z += tz;
+    }
+}
+
+void translate_points_simd(std::vector&lt;Point&gt;&amp; points, float tx, float ty, float tz) {
+#if defined(USE_NEON)
+    const float32x4_t offset_x = vdupq_n_f32(tx);
+    const float32x4_t offset_y = vdupq_n_f32(ty);
+    const float32x4_t offset_z = vdupq_n_f32(tz);
+    std::size_t index = 0;
+    for (; index + 3 &lt; points.size(); index += 4) {
+        // 交错加载得到4个x、4个y、4个z和4个padding
+        float32x4x4_t values = vld4q_f32(&amp;points[index].x);
+        values.val[0] = vaddq_f32(values.val[0], offset_x);
+        values.val[1] = vaddq_f32(values.val[1], offset_y);
+        values.val[2] = vaddq_f32(values.val[2], offset_z);
+        vst4q_f32(&amp;points[index].x, values);
+    }
+#elif defined(USE_SSE)
+    const __m128 offset_x = _mm_set1_ps(tx);
+    const __m128 offset_y = _mm_set1_ps(ty);
+    const __m128 offset_z = _mm_set1_ps(tz);
+    std::size_t index = 0;
+    for (; index + 3 &lt; points.size(); index += 4) {
+        __m128 point0 = _mm_load_ps(&amp;points[index].x);
+        __m128 point1 = _mm_load_ps(&amp;points[index + 1].x);
+        __m128 point2 = _mm_load_ps(&amp;points[index + 2].x);
+        __m128 point3 = _mm_load_ps(&amp;points[index + 3].x);
+        _MM_TRANSPOSE4_PS(point0, point1, point2, point3);
+        point0 = _mm_add_ps(point0, offset_x);
+        point1 = _mm_add_ps(point1, offset_y);
+        point2 = _mm_add_ps(point2, offset_z);
+        _MM_TRANSPOSE4_PS(point0, point1, point2, point3);
+        _mm_store_ps(&amp;points[index].x, point0);
+        _mm_store_ps(&amp;points[index + 1].x, point1);
+        _mm_store_ps(&amp;points[index + 2].x, point2);
+        _mm_store_ps(&amp;points[index + 3].x, point3);
+    }
+#else
+    std::size_t index = 0;
+#endif
+    // 处理不足4个的尾部元素，或在不支持内建函数的平台执行标量回退
+    for (; index &lt; points.size(); ++index) {
+        points[index].x += tx;
+        points[index].y += ty;
+        points[index].z += tz;
+    }
+}
+
+int main() {
+    const std::size_t point_count = 500000;
+    std::vector&lt;Point&gt; scalar_points(point_count);
+
+    for (std::size_t index = 0; index &lt; point_count; ++index) {
+        const float value = static_cast&lt;float&gt;(index) * 0.01f;
+        scalar_points[index] = {value, value * 2.0f, value * 3.0f, 0.0f};
+    }
+    std::vector&lt;Point&gt; simd_points = scalar_points;
+
+    auto start_scalar = std::chrono::high_resolution_clock::now();
+    translate_points_scalar(scalar_points, 1.5f, -2.5f, 3.0f);
+    auto end_scalar = std::chrono::high_resolution_clock::now();
+
+    auto start_simd = std::chrono::high_resolution_clock::now();
+    translate_points_simd(simd_points, 1.5f, -2.5f, 3.0f);
+    auto end_simd = std::chrono::high_resolution_clock::now();
+
+    bool results_match = true;
+    for (std::size_t index = 0; index &lt; point_count; ++index) {
+        if (std::fabs(scalar_points[index].x - simd_points[index].x) &gt; 0.0001f ||
+            std::fabs(scalar_points[index].y - simd_points[index].y) &gt; 0.0001f ||
+            std::fabs(scalar_points[index].z - simd_points[index].z) &gt; 0.0001f) {
+            results_match = false;
+            break;
+        }
+    }
+
+    const double scalar_ms = std::chrono::duration&lt;double, std::milli&gt;(
+        end_scalar - start_scalar).count();
+    const double simd_ms = std::chrono::duration&lt;double, std::milli&gt;(
+        end_simd - start_simd).count();
+    std::cout &lt;&lt; &quot;标量耗时: &quot; &lt;&lt; scalar_ms &lt;&lt; &quot; ms\n&quot;
+              &lt;&lt; &quot;SIMD耗时: &quot; &lt;&lt; simd_ms &lt;&lt; &quot; ms\n&quot;
+              &lt;&lt; &quot;结果校验: &quot; &lt;&lt; (results_match ? &quot;一致&quot; : &quot;不一致&quot;) &lt;&lt; std::endl;
+
+    return results_match ? 0 : 1;
+}
+</pre></details><details class="file"><summary>eee_G1/CMakeLists.txt</summary><pre>cmake_minimum_required(VERSION 3.16)
+project(eee_G1 LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+add_executable(eee_G1 main.cpp)
+</pre></details></div></div></section>
+<section class="panel"><h2>条件变更实验</h2><p><strong>先预测：</strong>点云数量设为 7，平台具备源码支持的 SIMD 路径。</p><div class="controls"><button class="btn primary" id="revealVariant">核对变式结果</button><button class="btn" id="resetVariant">重新预测</button></div><div class="terminal" id="variantResult" aria-live="polite">先根据源码与条件判断，再揭示结果。</div></section><section class="panel"><h2>改条件，再推演 · 改变待处理点数</h2><p class="small">修改当前案例的条件，先预测输出，再核对源码规则。属于浏览器教学模型，不会修改或执行原 C++ 工程。</p><div class="controls experiment-controls"><label>点数<input id="exp-count" type="number" min="0" max="100" step="1" value="11"></label><label>x 偏移<input id="exp-tx" type="number" min="-20" max="20" step="0.1" value="1.5"></label><button class="btn primary" id="runExperiment" type="button">按新条件推演</button><button class="btn" id="resetExperiment" type="button">恢复初始条件</button></div><div id="experimentResult" class="terminal" aria-live="polite">先预测，再点击“按新条件推演”核对。</div></section><p class="small">教学说明：选择题与步骤推演是依据源码编写的浏览器交互，不等于实际编译、链接、运行图形库或 Shell 脚本。涉及本机文件、设备、第三方库或浮点舍入时，以源码和实际运行环境为准。</p>
+</main><script>const lesson={"correct":1,"explanation":"源码按平台选 ARM NEON、x86 SSE 或标量回退，并处理不足一组的尾部；加速效果必须以实测为准。","steps":["选择可用平台路径与对齐条件。","完整的 4 点批次走 SIMD。","剩余 1–3 点走尾部处理，核对与标量结果一致。"]};(()=>{'use strict';const $=id=>document.getElementById(id);let step=0;function reset(){step=0;$('feedback').textContent='请选择一种判断，查看依据。';$('feedback').className='note';$('trace').textContent='等待推演。网页展示源码逻辑，不在浏览器执行 C++ 程序。';document.querySelectorAll('[data-choice]').forEach(b=>{b.classList.remove('correct','wrong');b.disabled=false});$('next').disabled=false}document.querySelectorAll('[data-choice]').forEach(b=>b.onclick=()=>{const i=Number(b.dataset.choice),ok=i===lesson.correct;$('feedback').textContent=(ok?'判断正确。':'需要修正。')+lesson.explanation;$('feedback').className='note '+(ok?'good':'bad');document.querySelectorAll('[data-choice]').forEach(x=>{x.disabled=true;x.classList.toggle('correct',Number(x.dataset.choice)===lesson.correct);x.classList.toggle('wrong',x===b&&!ok)})});$('next').onclick=()=>{step=Math.min(step+1,lesson.steps.length);$('trace').textContent=lesson.steps.slice(0,step).map((x,i)=>String(i+1)+'. '+x).join('\n');$('next').disabled=step===lesson.steps.length};$('reset').onclick=reset;})();</script><script>(()=>{"use strict";const v=["点云数量设为 7，平台具备源码支持的 SIMD 路径。","先处理一组 4 点，余下 3 点进入标量尾部。","平台不支持时全部走标量回退；耗时必须实测。"];const result=document.getElementById("variantResult");document.getElementById("revealVariant").onclick=()=>{result.textContent="推演结果："+v[1]+"\n依据："+v[2]};document.getElementById("resetVariant").onclick=()=>{result.textContent="先根据源码与条件判断，再揭示结果。"}})();</script><script>(()=>{"use strict";const fields=[{"label":"点数","id":"count","kind":"number","value":11,"min":0,"max":100,"step":1},{"label":"x 偏移","id":"tx","kind":"number","value":1.5,"min":-20,"max":20,"step":0.1}];const calculate=v=>`共 ${v.count} 个点：${Math.floor(v.count/4)} 组完整的 4 点批次，${v.count%4} 个尾部点。支持 NEON/SSE 时完整批次走向量化；否则全部标量处理。每个点的 x 加 ${v.tx}，实际耗时仍须在目标机器测量。`;const result=document.getElementById("experimentResult");for(const field of fields){document.getElementById("exp-"+field.id).oninput=()=>{result.textContent="条件已变化，请先预测，再点击按钮核对。"}}document.getElementById("runExperiment").onclick=()=>{const values={};for(const field of fields){const input=document.getElementById("exp-"+field.id);if(field.kind==="number"){const value=Number(input.value);const offset=(value-field.min)/field.step;if(input.value.trim()===""||!Number.isFinite(value)||value<field.min||value>field.max||Math.abs(offset-Math.round(offset))>1e-8){result.textContent="请填写范围和步长内的有效数值："+field.label;return}values[field.id]=value}else{if(!field.options.some(option=>option[0]===input.value)){result.textContent="请选择有效选项："+field.label;return}values[field.id]=input.value}}result.textContent=calculate(values)};document.getElementById("resetExperiment").onclick=()=>{for(const field of fields){document.getElementById("exp-"+field.id).value=String(field.kind==="number"?field.value:field.options[0][0])}result.textContent="先预测，再点击“按新条件推演”核对。"}})();</script></body></html>

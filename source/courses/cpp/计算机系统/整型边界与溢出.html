@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>整型边界与溢出实验</title><link rel="stylesheet" href="../机制通用样式.css"><link rel="stylesheet" href="整型边界表盘.css"></head><body><main>
+<div class="eyebrow">计算机系统 · 数字资源 · 整型边界</div><h1>整型边界与溢出</h1>
+<p class="lead">选择位宽和读法，输入整数表达式，再用加数按钮观察范围、十进制读数、进度条与逐位变化。下方用独立代码片段核对 C++ 类型规则。</p>
+<nav><a href="../资源目录.html">返回资源目录</a></nav>
+<section class="panel overflow-simulator" aria-label="整型溢出模拟器">
+  <div class="overflow-controls">
+    <label>位宽与类型<select id="visualBits"><option value="8">char（8 位模型）</option><option value="16">short（16 位模型）</option><option value="32" selected>int（32 位模型）</option></select></label>
+    <label>读法<select id="visualKind"><option value="signed" selected>有符号（补码）</option><option value="unsigned">无符号</option></select></label>
+    <label class="overflow-expression">整数或表达式<input id="visualStart" type="text" value="56789 * 56789" maxlength="120" spellcheck="false" inputmode="text" placeholder="例如 56789 * 56789"></label>
+    <button class="btn primary" id="visualApply" type="button">计算</button>
+    <button class="btn" data-add="1" type="button">+ 1</button>
+    <button class="btn" data-add="5" type="button">+ 5</button>
+    <button class="btn" data-add="10" type="button">+ 10</button>
+    <button class="btn" id="visualReset" type="button">恢复初始示例</button>
+  </div>
+  <div class="overflow-display">
+    <div id="visualRange" class="overflow-range" aria-live="polite"></div>
+    <div class="overflow-label">固定位图的十进制读数</div>
+    <div id="visualValue" class="overflow-value" aria-live="polite"></div>
+    <div class="overflow-label">精确数学累计值</div>
+    <div id="visualExact" class="overflow-exact"></div>
+    <div id="visualWarning" class="overflow-warning" role="status" aria-live="polite"></div>
+    <div class="overflow-meter"><div id="visualMeter" class="overflow-meter-fill"></div></div>
+    <h2>机内二进制位图</h2>
+    <div id="visualCells" class="overflow-bits" aria-label="按字节分组的二进制位和位序号"></div>
+    <div id="visualRead" class="overflow-readout notice" aria-live="polite"></div>
+    <div id="visualCxxNote" class="overflow-note small"></div>
+  </div>
+</section>
+<section class="panel" aria-label="C++ 运算规则核对"><h2>C++ 运算规则核对</h2>
+<p>本区读取上方表盘的当前数据，用独立的加法代码核对 C++ 类型规则。</p>
+<div class="grid"><div>
+<div class="code"><div class="codehead">有符号与无符号加法</div><pre>int a = 2147483647;
+int sum = a + 1;
+// 若 int 为 32 位，数学和超出 int 范围；
+// 标准 C++ 对这次有符号加法不规定结果。
+
+unsigned char byte = 250;
+byte = static_cast&lt;unsigned char&gt;(byte + 10);
+// 若 unsigned char 为 8 位，赋值转换后的值为 4。</pre></div>
+<div class="code"><div class="codehead">char 与 int 相加</div><pre>char letter = 'B';
+int offset = 2;
+char next = static_cast&lt;char&gt;(letter + offset);
+// char 参与加法时通常先提升为 int；赋值时再转回 char。
+// 在 ASCII 字符编码中，'B' + 2 对应 'D'。</pre></div>
+</div><div><div id="cxxRuleSummary" class="display" aria-live="polite"></div><div id="cxxRuleTrace" class="terminal" aria-live="polite"></div><div class="notice">表盘显示的是数学值和固定位图读数。要判断一条 C++ 表达式，仍需逐项核对操作数类型、每一步中间运算、整数提升及最终赋值转换。</div></div></div></section>
+<section class="panel"><h2>判断题</h2><p>若 <code>int</code> 加法发生有符号溢出，能否在标准 C++ 中保证得到补码回绕值？</p><div class="quiz"><button class="btn" data-answer="wrong">能，所有编译器都保证</button><button class="btn" data-answer="right">不能，有符号溢出是未定义行为</button></div><div id="feedback" class="feedback" aria-live="polite"></div></section>
+<p class="small">固定宽度位图只是解释表示方式，不等于对有符号溢出的实际运行预测。本页不模拟窄有符号类型的整数提升、赋值转换，也不替代真实编译器测试。</p>
+</main><script>
+(()=>{'use strict';const feedback=document.getElementById('feedback');document.querySelectorAll('[data-answer]').forEach(button=>button.onclick=()=>{const ok=button.dataset.answer==='right';feedback.textContent=ok?'正确：补码位图是表示模型，不构成有符号溢出的标准语义。':'C++ 有符号溢出是未定义行为；无符号类型转换才按模 2^N 归一。';feedback.className='feedback '+(ok?'good':'bad')})})();
+</script><script src="整型边界表盘.js"></script></body></html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>案例46 · 动态决策回调</title>
+<style>
+:root{--bg:#f6f8fa;--text:#24292f;--muted:#57606a;--line:#d0d7de;--blue:#0969da;--green:#1a7f37;--red:#cf222e}*{box-sizing:border-box}body{margin:0;padding:40px 20px;background:var(--bg);color:var(--text);font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,input{font:inherit}button{cursor:pointer}main{max-width:1200px;margin:auto}.eyebrow{font-size:12px;color:var(--blue);font-weight:700;text-align:center}h1{text-align:center;font-size:24px;font-weight:600;margin:2px 0 12px}h2{font-size:1.18rem;margin:0 0 12px}h3{font-size:1rem;margin:0 0 8px}p{margin:0 0 12px}.lead{max-width:900px;margin:auto;text-align:center;color:var(--muted);font-size:14px}nav{display:flex;justify-content:center;flex-wrap:wrap;gap:9px;margin:14px 0 20px;font-size:13px}a{color:var(--blue)}nav a{border:1px solid var(--line);background:#fff;padding:7px 11px;border-radius:8px;text-decoration:none}nav a:hover{text-decoration:underline}.panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px;box-shadow:0 8px 24px rgba(140,149,159,.15)}.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:end;margin:12px 0 18px}.controls label{font-size:14px;font-weight:600}.controls input{display:block;width:120px;margin-top:4px;padding:7px;border:1px solid var(--line);border-radius:6px}.btn{padding:10px 20px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--text);font-size:14px;font-weight:600}.btn.primary,.btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}.btn:hover:not(.active){border-color:var(--blue)}.grid{display:grid;grid-template-columns:1.08fr 1fr;gap:22px}.code{border:1px solid var(--line);border-radius:8px;overflow:hidden}.codehead{padding:9px 14px;background:#f6f8fa;border-bottom:1px solid var(--line);color:var(--muted);font-size:13px}.code pre{margin:0;padding:10px 0;overflow-x:auto;font:14px/1.8 ui-monospace,SFMono-Regular,Consolas,monospace}.line{display:block;padding:0 14px;white-space:pre}.line.active{padding-left:11px;border-left:3px solid var(--blue);background:#f6f8fa;font-weight:700}.n{display:inline-block;width:2em;color:#8c959f;user-select:none}.flow{border:2px dashed var(--line);padding:14px;border-radius:8px;background:#fafbfc;font:14px/1.8 ui-monospace,Consolas,monospace;white-space:pre-wrap;min-height:120px}.flow.ready{border-color:#2da44e;background:#dafbe1}.note{border-left:4px solid var(--blue);background:#f6f8fa;padding:10px 13px;margin-top:13px}.terminal{background:#24292f;color:#57ab5a;border-radius:8px;padding:16px;white-space:pre-wrap;font:13px/1.6 ui-monospace,Consolas,monospace;min-height:125px;margin-top:16px}.feedback{min-height:1.5em;margin-top:8px;font-weight:700}.feedback.good{color:var(--green)}.feedback.bad{color:var(--red)}.small{color:var(--muted);font-size:14px}@media(max-width:760px){body{padding:16px 10px}.grid{grid-template-columns:1fr}.panel{padding:15px}}
+</style><link rel="stylesheet" href="../../../案例统一样式.css"></head><body class="case-document"><main class="case-page">
+<div class="eyebrow">项目 E · 任务 14 · 案例 46</div><h1>动态决策回调</h1>
+<p class="lead">切换驾驶模式，预测函数指针指向的策略，再核对统一调用的实际效果。</p>
+<nav class="case-nav" aria-label="案例导航"><a href="../../../项目演示/项目E.html">返回项目 E</a><a href="../../../资源目录.html#case-46">返回资源总目录</a></nav><section class="case-meta" aria-label="案例知识与相关资源"><div class="case-meta-group"><span class="case-meta-label">对应知识点</span><div class="case-meta-items"><span class="case-tag">知识点 76 · 函数指针与引用</span></div></div><div class="case-meta-group"><span class="case-meta-label">相关机制页</span><div class="case-meta-items"><a class="case-mechanism" href="../../../函数/函数调用机制.html">函数调用机制</a></div></div></section>
+<section class="panel"><h2>驾驶模式与函数指针</h2>
+<div class="controls"><label for="mode">输入模式（E / S / 其他）<input id="mode" value="E" maxlength="1" autocomplete="off" aria-describedby="modeTip"></label><button class="btn primary" id="assign">① 根据输入赋值</button><button class="btn" id="call" disabled>② 调用 throttle_strategy()</button><button class="btn" id="reset">重置</button></div>
+<p id="modeTip" class="small">源码使用 <code>std::cin &gt;&gt; char</code>：E/e 选择经济模式，S/s 选择运动模式，其他字符使用默认经济策略。网页只读取一个字符。</p>
+<div class="grid"><div class="code"><div class="codehead">ee_46/main.cpp · 关键代码（保留原判断和调用）</div><pre id="source"></pre></div><div><h3>先预测指向</h3><div class="controls" role="group" aria-label="预测函数指针"><button class="btn" data-predict="gentle">gentle_throttle</button><button class="btn" data-predict="aggressive">aggressive_throttle</button></div><div id="feedback" class="feedback" aria-live="polite"></div><h3>指针状态</h3><div id="flow" class="flow" aria-live="polite">throttle_strategy : 未赋值
+先输入模式并作预测。</div><div class="note">函数指针的类型是 <code>void (*)()</code>。两种策略都没有形参、没有返回值，所以可赋给同一个指针；调用表达式不因所选模式而改变。</div></div></div>
+<div id="terminal" class="terminal" aria-label="控制台输出示意">--- 驾驶模式选择 ---
+请输入模式 (E - 经济模式， S - 运动模式):</div>
+</section><p class="small" style="margin-top:15px">这是根据案例源码复现的分派过程，不在浏览器执行 C++。源码对无效字符会提示并选择经济模式；本页没有增加不存在的第三种油门策略。</p>
+</main><script>
+(()=>{'use strict';const $=id=>document.getElementById(id);
+const lines=[
+'void gentle_throttle() {',
+'  std::cout << "执行经济模式：平缓加速，优化燃油效率。" << std::endl;',
+'}',
+'void aggressive_throttle() {',
+'  std::cout << "执行运动模式：急加速！提供最大动力响应。" << std::endl;',
+'}',
+'void (*throttle_strategy)();',
+'if (mode_selection == \'E\' || mode_selection == \'e\') {',
+'  throttle_strategy = gentle_throttle;',
+'} else if (mode_selection == \'S\' || mode_selection == \'s\') {',
+'  throttle_strategy = aggressive_throttle;',
+'} else {',
+'  std::cout << "无效模式，使用默认策略。" << std::endl;',
+'  throttle_strategy = gentle_throttle;',
+'}',
+'throttle_strategy();'];
+let choice=null,stage=0,mode='',target='';
+function paint(){const active=stage===0?[]:stage===1?(target==='aggressive'?[9,10]:mode==='E'||mode==='e'?[7,8]:[12,13]):target==='aggressive'?[3,4,15]:[0,1,15];$('source').replaceChildren(...lines.map((s,i)=>{const row=document.createElement('span');row.className='line'+(active.includes(i)?' active':'');const n=document.createElement('span');n.className='n';n.textContent=String(i+1);row.append(n,document.createTextNode(s));return row}));document.querySelectorAll('[data-predict]').forEach(b=>b.classList.toggle('active',b.dataset.predict===choice));}
+function setFeedback(){if(!choice){$('feedback').textContent='请先预测指向哪个函数。';$('feedback').className='feedback bad';return false}const ok=choice===target;$('feedback').className='feedback '+(ok?'good':'bad');$('feedback').textContent=ok?'预测正确：赋值给函数指针的正是该策略函数。':`预测有偏差：实际指向 ${target}_throttle。`;return true}
+document.querySelectorAll('[data-predict]').forEach(b=>b.onclick=()=>{choice=b.dataset.predict;paint();if(stage>0)setFeedback()});
+$('assign').onclick=()=>{const raw=$('mode').value;mode=raw.slice(0,1);if(!mode){$('feedback').className='feedback bad';$('feedback').textContent='请输入一个字符；源码等待输入，不会继续赋值。';return}target=mode==='S'||mode==='s'?'aggressive':'gentle';stage=1;paint();setFeedback();$('call').disabled=false;$('flow').className='flow ready';$('flow').textContent=`输入字符: ${mode}\n分支: ${target==='aggressive'?'S/s → 运动模式':mode==='E'||mode==='e'?'E/e → 经济模式':'其他 → 默认经济模式'}\n\nthrottle_strategy ──→ ${target}_throttle`;$('terminal').textContent=`--- 驾驶模式选择 ---\n请输入模式 (E - 经济模式， S - 运动模式): ${mode}\n${target==='gentle'&&!['E','e'].includes(mode)?'无效模式，使用默认策略。\n':''}\n--- 执行当前油门策略 ---`};
+$('call').onclick=()=>{if(stage<1)return;stage=2;paint();$('terminal').textContent+=`\n${target==='aggressive'?'执行运动模式：急加速！提供最大动力响应。':'执行经济模式：平缓加速，优化燃油效率。'}`;$('call').disabled=true;$('flow').textContent+=`\n\n统一调用 throttle_strategy() → ${target}_throttle()`};
+$('reset').onclick=()=>{choice=null;stage=0;mode='';target='';$('mode').value='E';$('call').disabled=true;$('feedback').textContent='';$('feedback').className='feedback';$('flow').className='flow';$('flow').textContent='throttle_strategy : 未赋值\n先输入模式并作预测。';$('terminal').textContent='--- 驾驶模式选择 ---\n请输入模式 (E - 经济模式， S - 运动模式):';paint()};paint();
+})();
+</script></body></html>

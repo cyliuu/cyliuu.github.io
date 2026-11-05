@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>位运算与状态掩码 · 八位车况实验</title><link rel="stylesheet" href="../机制通用样式.css"></head><body><main>
+<div class="eyebrow">计算机系统 · 数字资源 · 位级操作</div><h1>位运算与状态掩码：八位车况实验</h1>
+<p class="lead">用自定义八位状态字观察按位与、或、异或及清位操作。位含义由本实验明确规定，不对应外部通信协议。</p>
+<nav><a href="../资源目录.html">返回资源目录</a></nav>
+<section class="panel"><h2>设置、清除、翻转状态位</h2>
+<div class="toolbar"><label>原始状态（00～FF）<input id="value" type="text" value="05" maxlength="4"></label><label>选择 bit 位<select id="bit"></select></label><button class="btn primary" id="set">置 1（|）</button><button class="btn" id="clear">清 0（&amp; ~）</button><button class="btn" id="toggle">翻转（^）</button><button class="btn" id="reset">恢复 0x05</button></div>
+<div class="grid"><div><div class="code"><div class="codehead">固定八位无符号状态 · 教学协议</div><pre>uint8_t mask = 1u &lt;&lt; bit;
+state |= mask;           // 设置
+state &amp;= ~mask;          // 清除，最终保留八位
+state ^= mask;           // 翻转
+bool on = (state &amp; mask) != 0;</pre></div><div class="notice">bit0 安全带、bit1 车门、bit2 发动机、bit3 雨刷；bit4～7 为保留位。这是本页自定义练习数据，不是示例 的报文定义。</div></div>
+<div><div class="display"><h3>从最高位到最低位</h3><div id="bits" class="tiles"></div></div><div id="trace" class="terminal" aria-live="polite"></div></div></div></section>
+<section class="panel"><h2>先预测</h2><p>原状态 0x05（bit2 与 bit0 为 1），选择 bit1 并执行“设置”，结果是？</p><div class="quiz"><button class="btn" data-answer="wrong">0x01</button><button class="btn" data-answer="right">0x07</button><button class="btn" data-answer="wrong">0x04</button></div><div id="feedback" class="feedback" aria-live="polite"></div><p class="small">按位与用于检测，不会自动修改原值。取反后的中间表达式可能经过整型提升，本页结果按八位无符号状态保留。</p></section>
+<p class="small">本页可离线运行，但网页只模拟自定义位协议，不在浏览器执行 C++。</p>
+</main><script>
+(()=>{'use strict';const $=id=>document.getElementById(id),names=['安全带','车门','发动机','雨刷','保留4','保留5','保留6','保留7'];
+for(let i=0;i<8;i++){const option=document.createElement('option');option.value=String(i);option.textContent='bit'+i+' · '+names[i];$('bit').append(option)}
+function read(){const raw=$('value').value.trim().replace(/^0x/i,'');return /^[0-9a-f]{1,2}$/i.test(raw)?parseInt(raw,16):null}
+function draw(message){const n=read(),bit=Number($('bit').value);if(n===null){$('bits').textContent='请输入 00～FF 的十六进制字节。';$('trace').textContent='输入无效，未修改状态。';return}
+$('bits').replaceChildren(...Array.from({length:8},(_,j)=>{const i=7-j,t=document.createElement('div');t.className='tile'+(n&(1<<i)?' on':'')+(bit===i?' selected':'');t.textContent='bit'+i+'\n'+(n>>i&1);t.title=names[i];return t}));
+const mask=1<<bit;$('trace').textContent='状态 0x'+n.toString(16).toUpperCase().padStart(2,'0')+' = '+n.toString(2).padStart(8,'0')+'\n选中掩码 0x'+mask.toString(16).toUpperCase().padStart(2,'0')+' = '+mask.toString(2).padStart(8,'0')+'\n(state & mask) != 0 → '+Boolean(n&mask)+'\n'+message}
+function operate(op){const n=read();if(n===null){draw('');return}const bit=Number($('bit').value),mask=1<<bit;const next=op==='set'?n|mask:op==='clear'?n&(~mask&255):n^mask;$('value').value=next.toString(16).toUpperCase().padStart(2,'0');draw('本次：'+op+' bit'+bit+'；结果限制在八位。')}
+$('set').onclick=()=>operate('set');$('clear').onclick=()=>operate('clear');$('toggle').onclick=()=>operate('toggle');$('reset').onclick=()=>{$('value').value='05';$('bit').value='1';draw('已恢复初值。')};$('value').oninput=()=>draw('输入变更后重新计算。');$('bit').onchange=()=>draw('更换检查位。');
+document.querySelectorAll('[data-answer]').forEach(b=>b.onclick=()=>{const ok=b.dataset.answer==='right';$('feedback').textContent=ok?'正确：0000 0101 | 0000 0010 = 0000 0111。':'设置 bit1 使用按位或，不会清掉原来为 1 的 bit0 与 bit2。';$('feedback').className='feedback '+(ok?'good':'bad')});$('bit').value='1';draw('点击操作按钮观察位模式变化。')})();
+</script></body></html>

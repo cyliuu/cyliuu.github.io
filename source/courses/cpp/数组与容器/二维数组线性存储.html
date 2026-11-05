@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>二维数组线性存储</title><link rel="stylesheet" href="../机制通用样式.css"><style>#grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));max-width:420px}#grid .tile{min-width:0}</style></head><body><main>
+<div class="eyebrow">数组与容器 · 数字资源 · 连续布局</div><h1>二维数组线性存储：行列怎样变成偏移</h1>
+<p class="lead">比较一维数组模拟矩阵与真正的二维数组：选择行列后计算线性下标和相对字节偏移。地址只作示意。</p>
+<nav><a href="../资源目录.html">返回资源目录</a></nav>
+<section class="panel"><h2>选择行列与场景</h2><div class="toolbar"><label>场景<select id="preset"><option value="3">3×3 标定矩阵</option><option value="4">4×4 红外网格</option></select></label><label>行（从 0 起）<input id="row" type="number" min="0" max="2" value="1"></label><label>列（从 0 起）<input id="col" type="number" min="0" max="2" value="2"></label><button class="btn primary" id="locate">定位元素</button><button class="btn" id="reset">恢复示例</button></div>
+<div class="grid"><div><div class="code"><div class="codehead">行优先顺序 · 元素大小按场景计算</div><pre>const double camera_matrix[9] = { /* 示例 */ };
+// 虚拟的 (row,col) 映射到一维数组
+index = row * 3 + col;
+const int ir_grid[4][4] = { /* 示例 */ };
+// ir_grid[row][col] 是真正二维下标</pre></div><div class="notice">C++ 内建二维数组按行连续排列。示例 是手工按行展开的一维 double 数组，示例 是 int 二维数组；本页以常见平台 double 8 字节、int 4 字节作为偏移示意，实际尺寸需用 <code>sizeof</code> 核对。越界访问不执行。</div></div>
+<div><div class="display"><h3>二维网格（点击格子定位）</h3><div id="grid" class="tiles"></div><h3 style="margin-top:12px">按行展开的一维序列</h3><div id="linear" class="tiles"></div></div><div id="trace" class="terminal" aria-live="polite"></div></div></div></section>
+<section class="panel"><h2>判断题</h2><p>3×3 网格的 (row=1,col=2) 在按行展开后是第几个零基元素？</p><div class="quiz"><button class="btn" data-answer="wrong">3</button><button class="btn" data-answer="right">5</button><button class="btn" data-answer="wrong">7</button></div><div id="feedback" class="feedback" aria-live="polite"></div></section>
+<p class="small">本页只展示相对偏移，不读取浏览器或 C++ 程序的真实内存地址。</p>
+</main><script>
+(()=>{'use strict';const $=id=>document.getElementById(id);
+function draw(){const n=Number($('preset').value),r=Number($('row').value),c=Number($('col').value),bytes=n===3?8:4;$('row').max=String(n-1);$('col').max=String(n-1);$('grid').style.gridTemplateColumns='repeat('+n+',minmax(0,1fr))';
+if(!Number.isInteger(r)||!Number.isInteger(c)||r<0||c<0||r>=n||c>=n){$('trace').textContent='行或列超出 0～'+(n-1)+'；越界索引不访问。';$('grid').textContent='请输入合法行列。';$('linear').textContent='';return}
+const idx=r*n+c;function tile(i,caption,clickable){const x=document.createElement(clickable?'button':'div');x.className='tile'+(i===idx?' selected on':'');x.textContent=caption;x.title='线性下标 '+i;if(clickable)x.onclick=()=>{$('row').value=String(Math.floor(i/n));$('col').value=String(i%n);draw()};return x}
+$('grid').replaceChildren(...Array.from({length:n*n},(_,i)=>tile(i,'('+Math.floor(i/n)+','+(i%n)+')',true)));
+$('linear').replaceChildren(...Array.from({length:n*n},(_,i)=>tile(i,String(i),false)));
+$('trace').textContent='行 '+r+' × 每行 '+n+' 项 + 列 '+c+' = 线性下标 '+idx+'\n本教学平台按每项 '+bytes+' 字节示意：相对首元素偏移 '+(idx*bytes)+' 字节。\n选择的格子与线性序列第 '+idx+' 项对应。'}
+$('locate').onclick=draw;$('preset').onchange=()=>{$('row').value='0';$('col').value='0';draw()};$('reset').onclick=()=>{$('preset').value='3';$('row').value='1';$('col').value='2';draw()};
+document.querySelectorAll('[data-answer]').forEach(b=>b.onclick=()=>{const ok=b.dataset.answer==='right';$('feedback').textContent=ok?'正确：1×3+2=5。':'使用 row×列数+col 计算。';$('feedback').className='feedback '+(ok?'good':'bad')});draw()})();
+</script></body></html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>拓展案例 H1 · 使用SFML绘制静态仿真场景</title><style>:root{--bg:#f6f8fa;--text:#24292f;--muted:#57606a;--line:#d0d7de;--blue:#0969da;--green:#1a7f37;--red:#cf222e}*{box-sizing:border-box}body{margin:0;padding:40px 20px;background:var(--bg);color:var(--text);font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button{font:inherit;cursor:pointer}main{max-width:1200px;margin:auto}.eyebrow{font-size:12px;color:var(--blue);font-weight:700;text-align:center}h1{text-align:center;font-size:24px;font-weight:600;margin:2px 0 12px}h2{font-size:1.18rem;margin:0 0 12px}h3{font-size:1rem;margin:0 0 8px}p{margin:0 0 12px}.lead{max-width:900px;margin:auto;text-align:center;color:var(--muted);font-size:14px}nav{display:flex;justify-content:center;flex-wrap:wrap;gap:9px;margin:14px 0 20px;font-size:13px}a{color:var(--blue)}nav a{border:1px solid var(--line);background:#fff;padding:7px 11px;border-radius:8px;text-decoration:none}.panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px;box-shadow:0 8px 24px rgba(140,149,159,.15);margin-bottom:16px}.grid{display:grid;grid-template-columns:1.08fr 1fr;gap:22px}.code{border:1px solid var(--line);border-radius:8px;overflow:hidden}.codehead{padding:9px 14px;background:#f6f8fa;border-bottom:1px solid var(--line);color:var(--muted);font-size:13px}.code pre{margin:0;padding:10px 14px;overflow:auto;max-height:540px;font:14px/1.8 ui-monospace,SFMono-Regular,Consolas,monospace}.file{border-top:1px solid var(--line)}.file:first-child{border-top:0}.file summary{padding:8px 14px;cursor:pointer;font-size:13px;color:var(--blue);font-weight:600}.btn{padding:10px 20px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--text);font-size:14px;font-weight:600}.btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}.controls{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 18px}.choice{display:block;width:100%;text-align:left;margin:7px 0}.choice.correct{border-color:var(--green);background:#dafbe1}.choice.wrong{border-color:var(--red);background:#ffebe9}.note{border-left:4px solid var(--blue);background:#f6f8fa;padding:10px 13px;margin-top:13px}.note.good{border-color:var(--green)}.note.bad{border-color:var(--red)}.terminal{background:#24292f;color:#57ab5a;border-radius:8px;padding:16px;white-space:pre-wrap;font:13px/1.6 ui-monospace,Consolas,monospace;min-height:125px;margin-top:16px}.book-text{white-space:pre-line;font-size:14px;color:var(--muted)}.chips{display:flex;gap:6px;flex-wrap:wrap}.chip{display:inline-block;border:1px solid var(--line);background:#f6f8fa;border-radius:6px;padding:3px 7px;font-size:13px}.small{color:var(--muted);font-size:14px}button:focus-visible,a:focus-visible,summary:focus-visible{outline:2px solid var(--blue);outline-offset:2px}@media(max-width:760px){body{padding:16px 10px}.grid{grid-template-columns:1fr}.panel{padding:15px}}.experiment-controls{align-items:end}.experiment-controls label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}.experiment-controls input,.experiment-controls select{min-width:130px;max-width:210px;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--text);font:14px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.experiment-controls input:focus-visible,.experiment-controls select:focus-visible{outline:2px solid var(--blue);outline-offset:2px}</style><link rel="stylesheet" href="../../../案例统一样式.css"></head><body class="case-document"><main class="case-page">
+<div class="eyebrow">项目 H · 项目实战 · 拓展案例 H1</div><h1>使用SFML绘制静态仿真场景</h1><p class="lead">构建静态交通场景，观察窗口、图形对象与文字状态的绘制顺序。</p><nav class="case-nav" aria-label="案例导航"><a href="../../../项目演示/项目H.html">返回项目 H</a><a href="../../../资源目录.html#case-H1">返回资源总目录</a></nav><section class="case-meta" aria-label="案例知识与相关资源"><div class="case-meta-group"><span class="case-meta-label">对应知识点</span><div class="case-meta-items"><span class="case-tag">知识点 117 · 需求分析（GUI）</span><span class="case-tag">知识点 118 · 算法设计（GUI）</span><span class="case-tag">知识点 119 · 程序编码（GUI）</span><span class="case-tag">知识点 120 · 功能测试（GUI）</span></div></div><div class="case-meta-group"><span class="case-meta-label">相关机制页</span><div class="case-meta-items"><span class="case-empty">暂无独立机制页</span></div></div></section>
+<section class="panel"><h2>案例任务与源码核对</h2><div class="grid"><div><h3>情境背景</h3><div class="book-text">在复杂的工程与科学计算领域，原始的数据和日志虽然精确，但往往缺乏直观性。仿真是连接理论与现实的桥梁，而一个优秀的图形用户界面（GUI），则是将仿真过程中海量、动态的数据转化为人类能够直观理解和分析的图像的关键。它能让工程师一眼就看出系统的运行状态、潜在问题以及算法的实际效果。从命令行到图形界面，是从“读报告”到“看现场”的飞跃。本案例将是我们进入 GUI 编程世界的第一次实践，我们将学习使用一个强大而简洁的 C++ 多媒体库——SFML，来创建一个真正的窗口，并在其中用图形和文字来“导演”一出静态的场景剧，为后续实现完整、动态的图形化仿真系统打下坚实的基础。</div><h3 style="margin-top:18px">案例要求</h3><div class="book-text">编写一个使用 SFML 静态展示简化交通场景的程序：创建标题为 &quot;Static Simulation Scene&quot; 的 800x600 窗口，用绿色 sf::CircleShape 表示主车、红色 sf::RectangleShape 表示前方障碍物，加载字体后以 sf::Text 在左上角显示如“速度：50 km/h”的车辆状态，并在主循环中正确处理关闭窗口事件。</div></div><div><div class="note"><strong>源码核对重点：</strong>当前源码建立窗口并绘制两个形状与状态文字，处理关闭事件；页面为结构示意，不伪称浏览器运行了 SFML。</div></div></div></section>
+<section class="panel"><h2>先预测，再验证</h2><div class="grid"><div><h3>SFML 静态场景包含哪些源码对象与交互？</h3><div id="choices"><button class="btn choice" data-choice="0">800×600 窗口、绿色主车、红色障碍物和关闭事件</button><button class="btn choice" data-choice="1">浏览器里真实执行 SFML 渲染循环</button><button class="btn choice" data-choice="2">自动驾驶物理碰撞模拟</button></div><div id="feedback" class="note" aria-live="polite">请选择一种判断，查看依据。</div><div class="controls"><button class="btn primary" id="next">推演下一步</button><button class="btn" id="reset">重新开始</button></div><div id="trace" class="terminal" aria-live="polite">等待推演。网页展示源码逻辑，不在浏览器执行 C++ 程序。</div></div><div class="code"><div class="codehead">工程原始文件 · 点击文件名展开</div><details class="file" open><summary>eee_H1/main.cpp</summary><pre>// 使用 SFML 绘制静态道路、车辆与障碍物
+
+#include &lt;SFML/Graphics.hpp&gt;
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+
+#ifndef FONT_FILE_PATH
+#define FONT_FILE_PATH &quot;arial.ttf&quot;
+#endif
+
+int main() {
+    // 创建仿真窗口
+    sf::RenderWindow window(sf::VideoMode(800, 600), &quot;Static Simulation Scene&quot;);
+
+    // 绿色圆形表示主车
+    sf::CircleShape ego_vehicle(30.f); // 半径为30像素
+    ego_vehicle.setFillColor(sf::Color::Green);
+    ego_vehicle.setPosition(100.f, 250.f); // 设置在窗口中的位置
+
+    // 红色矩形表示障碍物
+    sf::RectangleShape obstacle(sf::Vector2f(50.f, 50.f)); // 50x50像素的正方形
+    obstacle.setFillColor(sf::Color::Red);
+    obstacle.setPosition(500.f, 250.f);
+
+    // 加载字体并准备状态文本
+    sf::Font font;
+    if (!font.loadFromFile(FONT_FILE_PATH)) {
+        std::cerr &lt;&lt; &quot;Error: Could not load font &#39;&quot; &lt;&lt; FONT_FILE_PATH
+                  &lt;&lt; &quot;&#39;&quot; &lt;&lt; std::endl;
+        return -1;
+    }
+
+    sf::Text status_text;
+    status_text.setFont(font);
+    status_text.setString(&quot;速度: 50 km/h\n模式: 自动驾驶&quot;);
+    status_text.setCharacterSize(24); // 字体大小
+    status_text.setFillColor(sf::Color::White);
+    status_text.setPosition(10.f, 10.f); // 左上角位置
+
+    // 事件处理与渲染循环
+    while (window.isOpen()) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed) {
+                window.close();
+            }
+        }
+
+        window.clear(sf::Color(50, 50, 50));
+
+        window.draw(ego_vehicle);
+        window.draw(obstacle);
+        window.draw(status_text);
+
+        window.display();
+    }
+
+    return 0;
+}
+</pre></details><details class="file"><summary>eee_H1/CMakeLists.txt</summary><pre>cmake_minimum_required(VERSION 3.16)
+project(eee_H1 LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+find_package(SFML 2.5 QUIET COMPONENTS graphics window system)
+
+if(NOT SFML_FOUND)
+    message(STATUS &quot;SFML unavailable: skipping optional eee_H1 target&quot;)
+    return()
+endif()
+
+add_executable(eee_H1 main.cpp)
+target_link_libraries(eee_H1 PRIVATE sfml-graphics sfml-window sfml-system)
+target_compile_definitions(eee_H1 PRIVATE
+    FONT_FILE_PATH=&quot;${CMAKE_CURRENT_SOURCE_DIR}/arial.ttf&quot;)
+</pre></details></div></div></section>
+<section class="panel"><h2>条件变更实验</h2><p><strong>先预测：</strong>字体文件 arial.ttf 无法从 FONT_FILE_PATH 加载。</p><div class="controls"><button class="btn primary" id="revealVariant">核对变式结果</button><button class="btn" id="resetVariant">重新预测</button></div><div class="terminal" id="variantResult" aria-live="polite">先根据源码与条件判断，再揭示结果。</div></section><section class="panel"><h2>改条件，再推演 · 检查静态场景的资源前提</h2><p class="small">修改当前案例的条件，先预测输出，再核对源码规则。属于浏览器教学模型，不会修改或执行原 C++ 工程。</p><div class="controls experiment-controls"><label>字体文件<select id="exp-font"><option value="found">可加载 arial.ttf</option><option value="missing">字体缺失</option></select></label><label>关闭事件<select id="exp-close"><option value="no">尚未关闭</option><option value="yes">收到 Closed</option></select></label><button class="btn primary" id="runExperiment" type="button">按新条件推演</button><button class="btn" id="resetExperiment" type="button">恢复初始条件</button></div><div id="experimentResult" class="terminal" aria-live="polite">先预测，再点击“按新条件推演”核对。</div></section><p class="small">教学说明：选择题与步骤推演是依据源码编写的浏览器交互，不等于实际编译、链接、运行图形库或 Shell 脚本。涉及本机文件、设备、第三方库或浮点舍入时，以源码和实际运行环境为准。</p>
+</main><script>const lesson={"correct":0,"explanation":"当前源码建立窗口并绘制两个形状与状态文字，处理关闭事件；页面为结构示意，不伪称浏览器运行了 SFML。","steps":["创建 800×600 RenderWindow 与字体/文本资源。","每帧清屏后绘制主车、障碍物和状态。","处理窗口关闭事件；缺少字体或资源时需检查路径。"]};(()=>{'use strict';const $=id=>document.getElementById(id);let step=0;function reset(){step=0;$('feedback').textContent='请选择一种判断，查看依据。';$('feedback').className='note';$('trace').textContent='等待推演。网页展示源码逻辑，不在浏览器执行 C++ 程序。';document.querySelectorAll('[data-choice]').forEach(b=>{b.classList.remove('correct','wrong');b.disabled=false});$('next').disabled=false}document.querySelectorAll('[data-choice]').forEach(b=>b.onclick=()=>{const i=Number(b.dataset.choice),ok=i===lesson.correct;$('feedback').textContent=(ok?'判断正确。':'需要修正。')+lesson.explanation;$('feedback').className='note '+(ok?'good':'bad');document.querySelectorAll('[data-choice]').forEach(x=>{x.disabled=true;x.classList.toggle('correct',Number(x.dataset.choice)===lesson.correct);x.classList.toggle('wrong',x===b&&!ok)})});$('next').onclick=()=>{step=Math.min(step+1,lesson.steps.length);$('trace').textContent=lesson.steps.slice(0,step).map((x,i)=>String(i+1)+'. '+x).join('\n');$('next').disabled=step===lesson.steps.length};$('reset').onclick=reset;})();</script><script>(()=>{"use strict";const v=["字体文件 arial.ttf 无法从 FONT_FILE_PATH 加载。","源码打印错误并提前返回；不会进入完整的绘制循环。","SFML 文本依赖字体资源，网页示意不等于运行 SFML GUI。"];const result=document.getElementById("variantResult");document.getElementById("revealVariant").onclick=()=>{result.textContent="推演结果："+v[1]+"\n依据："+v[2]};document.getElementById("resetVariant").onclick=()=>{result.textContent="先根据源码与条件判断，再揭示结果。"}})();</script><script>(()=>{"use strict";const fields=[{"label":"字体文件","id":"font","kind":"select","options":[["found","可加载 arial.ttf"],["missing","字体缺失"]]},{"label":"关闭事件","id":"close","kind":"select","options":[["no","尚未关闭"],["yes","收到 Closed"]]}];const calculate=v=>v.font==='missing'?'字体加载失败：源码输出错误并返回 -1，不进入渲染循环。':v.close==='yes'?'字体已加载；收到 Closed 事件后 window.close()，循环结束。':'字体已加载；窗口持续绘制绿色圆形主车、红色矩形障碍物和状态文字。网页并未运行 SFML。';const result=document.getElementById("experimentResult");for(const field of fields){document.getElementById("exp-"+field.id).oninput=()=>{result.textContent="条件已变化，请先预测，再点击按钮核对。"}}document.getElementById("runExperiment").onclick=()=>{const values={};for(const field of fields){const input=document.getElementById("exp-"+field.id);if(field.kind==="number"){const value=Number(input.value);const offset=(value-field.min)/field.step;if(input.value.trim()===""||!Number.isFinite(value)||value<field.min||value>field.max||Math.abs(offset-Math.round(offset))>1e-8){result.textContent="请填写范围和步长内的有效数值："+field.label;return}values[field.id]=value}else{if(!field.options.some(option=>option[0]===input.value)){result.textContent="请选择有效选项："+field.label;return}values[field.id]=input.value}}result.textContent=calculate(values)};document.getElementById("resetExperiment").onclick=()=>{for(const field of fields){document.getElementById("exp-"+field.id).value=String(field.kind==="number"?field.value:field.options[0][0])}result.textContent="先预测，再点击“按新条件推演”核对。"}})();</script></body></html>

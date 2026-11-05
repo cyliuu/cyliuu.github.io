@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>C++ 课程门户网站 · 案例与知识机制</title>
+<style>
+:root{--bg:#0f172a;--card:rgba(30,41,59,.7);--primary:#38bdf8;--accent:#818cf8;--text:#f1f5f9;--muted:#cbd5e1}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font:16px/1.6 "Segoe UI",system-ui,sans-serif}main{width:90%;max-width:1000px;margin:2rem auto 60px}.panel{background:var(--card);border:1px solid #ffffff1a;border-radius:1.5rem;padding:2rem;margin-bottom:16px}h1{color:var(--primary);font-size:1.8rem;margin:0 0 10px}h2{color:var(--primary);font-size:1.25rem;margin:0}h3{font-size:1rem;color:#a5b4fc;margin:22px 0 8px}h4{display:inline;font-size:1rem;font-weight:600;margin:0 0 0 9px}.lead{color:var(--muted);font-size:.95rem;margin:0 0 16px}a{color:#7dd3fc;text-decoration:none}a:hover{text-decoration:underline}a:focus-visible{outline:2px solid #7dd3fc;outline-offset:3px;border-radius:3px}.stats{display:flex;gap:9px;flex-wrap:wrap;margin:14px 0}.stat{background:#1e293b;border:1px solid #475569;border-radius:10px;padding:7px 12px;font-size:.9rem}.stat strong{color:#f8fafc}.jump{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}.jump button{min-width:58px;text-align:center;background:#312e81;border:1px solid #6366f1;color:#e0e7ff;border-radius:9px;padding:5px 10px;font:inherit;font-weight:700;cursor:pointer}.jump button:hover,.jump button[aria-pressed="true"]{background:#4f46e5;border-color:#a5b4fc;color:#fff}.jump button:focus-visible{outline:2px solid #7dd3fc;outline-offset:3px}.empty{color:#cbd5e1;text-align:center}.site-version{color:#94a3b8;text-align:right;font-size:.82rem;padding:0 4px 18px}.note{border-left:3px solid #475569;border-radius:4px;background:#1e293b;color:#cbd5e1;padding:8px 11px;font-size:.88rem;margin:12px 0}.search{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:16px 0 3px}.search input{flex:1 1 320px;min-width:0;background:#1e293b;border:1px solid #64748b;border-radius:9px;color:#f8fafc;padding:9px 12px;font:inherit}.search input::placeholder{color:#94a3b8}.search button{background:#312e81;border:1px solid #818cf8;border-radius:9px;color:#e0e7ff;padding:9px 13px;font:inherit;cursor:pointer}.search input:focus-visible,.search button:focus-visible{outline:2px solid #7dd3fc;outline-offset:2px}.search-status{color:#cbd5e1;font-size:.9rem;margin:5px 0 0}.project-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px}.project-count{color:#94a3b8;font-size:.88rem;margin:4px 0 0}.case{border-top:1px solid #ffffff20;padding:13px 0 14px}.case-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:8px}.case-number{color:#7dd3fc;font-weight:700;white-space:nowrap}.state{font-size:.75rem;border-radius:999px;padding:2px 9px;white-space:nowrap}.ready{background:#064e3b;color:#a7f3d0}.pending{background:#334155;color:#cbd5e1}.case-line{display:grid;grid-template-columns:102px 1fr;gap:8px;margin:5px 0;font-size:.86rem;align-items:start}.case-line strong{color:#a5b4fc;font-weight:600}.chips,.links{display:flex;gap:5px 11px;flex-wrap:wrap}.chip{background:#1e293b;border:1px solid #475569;border-radius:6px;padding:1px 7px;color:#e2e8f0}.muted{color:#94a3b8}.open{font-weight:700}code{font:inherit;color:#cbd5e1;overflow-wrap:anywhere}.project[hidden],.task[hidden],.case[hidden],.empty[hidden]{display:none}@media(max-width:730px){main{width:calc(100% - 18px);margin-top:16px}.panel{padding:17px}.project-head,.case-head{display:block}.project-head>a{display:inline-block;margin-top:4px}.state{display:inline-block;margin-top:5px}.case-line{grid-template-columns:1fr;gap:2px}}
+</style></head><body><main>
+<section class="panel" id="all-projects"><h1>C++ 课程门户网站</h1><p class="lead">按项目与任务浏览 AIGC 案例、普通案例、拓展案例及相关知识资源。</p><div class="stats"><span class="stat">知识点 <strong>120</strong></span><span class="stat">知识机制 <strong>26</strong></span><span class="stat">AIGC 案例 <strong>8</strong></span><span class="stat">普通案例 <strong>64</strong></span><span class="stat">拓展案例 <strong>16</strong></span></div><p><a class="open" href="AI协作案例/目录.html">浏览 AIGC 案例 A—H →</a></p><div class="search"><input id="caseSearch" type="search" aria-label="检索案例编号、名称或知识点" placeholder="检索案例编号、名称或知识点，例如 25、指针、知识点 52"><button id="clearSearch" type="button">清除检索</button></div><p class="search-status" id="searchStatus" role="status" aria-live="polite">显示全部 88 个案例</p><nav class="jump" aria-label="按项目筛选"><button type="button" data-project="all" aria-pressed="true">全部项目</button><button type="button" data-project="A" aria-pressed="false">项目 A</button><button type="button" data-project="B" aria-pressed="false">项目 B</button><button type="button" data-project="C" aria-pressed="false">项目 C</button><button type="button" data-project="D" aria-pressed="false">项目 D</button><button type="button" data-project="E" aria-pressed="false">项目 E</button><button type="button" data-project="F" aria-pressed="false">项目 F</button><button type="button" data-project="G" aria-pressed="false">项目 G</button><button type="button" data-project="H" aria-pressed="false">项目 H</button></nav></section><section class="panel empty" id="emptyState" hidden>当前条件没有匹配的案例，请调整检索词或项目筛选。</section>
+<section class="panel project" id="project-A"><div class="project-head"><h2>项目 A · 开发环境搭建</h2><a href="项目演示/项目A.html">打开项目 A 总页 →</a></div><p class="project-count">AIGC 案例 1 · 普通案例 4 · 拓展案例 2</p><div class="case-line project-knowledge"><strong>项目/任务知识点</strong><div class="chips"><span class="chip">知识点 1 · C++就业岗位</span><span class="chip">知识点 2 · C++应用领域</span><span class="chip">知识点 9 · 汇编体系</span><span class="chip">知识点 16 · Makefile</span></div></div><h3>项目导入</h3><article class="case" id="ai-A"><div class="case-head"><div><span class="case-number">AIGC 案例 A</span><h4>AIGC开源项目探索官</h4></div><span class="state ready">有交互页</span></div><div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 3 · 程序设计语言</span></div></div><div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div><div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目A_开发环境搭建/项目导入/案例A_AIGC开源项目探索官.html">打开案例演示 →</a></div></div></article><div class="task"><h3>任务 01 · 通信数据解析-进制转换</h3><article class="case" id="case-1">
+    <div class="case-head"><div><span class="case-number">案例 01</span><h4>解析氛围灯颜色</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 4 · 计算机系统原理</span><span class="chip">知识点 5 · 计算机数据存储</span><span class="chip">知识点 6 · 进制转换与运算</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目A_开发环境搭建/任务01_通信数据解析/案例01_解析氛围灯颜色.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-2">
+    <div class="case-head"><div><span class="case-number">案例 02</span><h4>解码行车状态码</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 6 · 进制转换与运算</span><span class="chip">知识点 7 · 信息表示与编码</span><span class="chip">知识点 8 · 非数值信息表示</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="计算机系统/位运算与状态掩码.html">位运算与状态掩码</a><a href="计算机系统/补码全能实验室.html">补码全能实验室</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目A_开发环境搭建/任务01_通信数据解析/案例02_解码行车状态码.html">打开案例演示 →</a></div></div>
+  </article></div>
+<div class="task"><h3>任务 02 · “您好，自动驾驶”应用构建-项目构建</h3><article class="case" id="case-3">
+    <div class="case-head"><div><span class="case-number">案例 03</span><h4>车载终端欢迎横幅</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 10 · 简单项目构建方法</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="工程构建/源文件编译与链接.html">源文件编译与链接</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目A_开发环境搭建/任务02_应用构建/案例03_车载终端欢迎横幅.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-4">
+    <div class="case-head"><div><span class="case-number">案例 04</span><h4>模块化欢迎信息</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 11 · 复杂项目构建方法</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="工程构建/源文件编译与链接.html">源文件编译与链接</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目A_开发环境搭建/任务02_应用构建/案例04_模块化欢迎信息.html">打开案例演示 →</a></div></div>
+  </article></div>
+<div class="task"><h3>项目实战 · 车载启动画面定制-项目管理</h3><article class="case" id="case-A1">
+    <div class="case-head"><div><span class="case-number">拓展案例 A1</span><h4>构建跨平台项目</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 12 · 开发平台</span><span class="chip">知识点 13 · IDE配置</span><span class="chip">知识点 14 · 项目结构</span><span class="chip">知识点 15 · 项目管理</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="工程构建/源文件编译与链接.html">源文件编译与链接</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目A_开发环境搭建/项目实战/拓展案例A1_构建跨平台项目.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-A2">
+    <div class="case-head"><div><span class="case-number">拓展案例 A2</span><h4>使用CMake注入版本信息</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 17 · CMake</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="工程构建/源文件编译与链接.html">源文件编译与链接</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目A_开发环境搭建/项目实战/拓展案例A2_使用CMake注入版本信息.html">打开案例演示 →</a></div></div>
+  </article></div></section>
+<section class="panel project" id="project-B"><div class="project-head"><h2>项目 B · 信息交互设计</h2><a href="项目演示/项目B.html">打开项目 B 总页 →</a></div><p class="project-count">AIGC 案例 1 · 普通案例 10 · 拓展案例 2</p><div class="case-line project-knowledge"><strong>项目/任务知识点</strong><div class="chips"><span class="chip">知识点 26 · 定长整型数据</span><span class="chip">知识点 30 · 位运算符</span><span class="chip">知识点 32 · 类型运算符</span></div></div><h3>项目导入</h3><article class="case" id="ai-B"><div class="case-head"><div><span class="case-number">AIGC 案例 B</span><h4>AIGC代码注释官</h4></div><span class="state ready">有交互页</span></div><div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 18 · 关键字与标识符</span></div></div><div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div><div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目B_信息交互设计/项目导入/案例B_AIGC代码注释官.html">打开案例演示 →</a></div></div></article><div class="task"><h3>任务 03 · 人机交互实现-输入与输出</h3><article class="case" id="case-5">
+    <div class="case-head"><div><span class="case-number">案例 05</span><h4>实现基础人机交互</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 19 · 标准命名空间</span><span class="chip">知识点 20 · 标准输入输出</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目B_信息交互设计/任务03_人机交互/案例05_实现基础人机交互.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-6">
+    <div class="case-head"><div><span class="case-number">案例 06</span><h4>格式化输出仪表盘信息</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 20 · 标准输入输出</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目B_信息交互设计/任务03_人机交互/案例06_格式化输出仪表盘信息.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-7">
+    <div class="case-head"><div><span class="case-number">案例 07</span><h4>接收程序启动参数</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 21 · 命令行参数</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目B_信息交互设计/任务03_人机交互/案例07_接收程序启动参数.html">打开案例演示 →</a></div></div>
+  </article></div>
+<div class="task"><h3>任务 04 · 车辆状态展示-基本数据类型</h3><article class="case" id="case-8">
+    <div class="case-head"><div><span class="case-number">案例 08</span><h4>计算累计里程</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 22 · 变量</span><span class="chip">知识点 23 · 整型数据</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="计算机系统/整型边界与溢出.html">整型边界与溢出</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目B_信息交互设计/任务04_车辆状态展示/案例08_计算累计里程.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-9">
+    <div class="case-head"><div><span class="case-number">案例 09</span><h4>加密车门解锁信号</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 24 · 字符型数据</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="计算机系统/整型边界与溢出.html">整型边界与溢出</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目B_信息交互设计/任务04_车辆状态展示/案例09_加密车门解锁信号.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-10">
+    <div class="case-head"><div><span class="case-number">案例 10</span><h4>预警驾驶安全信息</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 25 · 布尔型数据</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目B_信息交互设计/任务04_车辆状态展示/案例10_预警驾驶安全信息.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-11">
+    <div class="case-head"><div><span class="case-number">案例 11</span><h4>模拟电池电量衰减</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 27 · 实型数据</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="计算机系统/浮点数精度实验.html">浮点数精度实验</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目B_信息交互设计/任务04_车辆状态展示/案例11_模拟电池电量衰减.html">打开案例演示 →</a></div></div>
+  </article></div>
+<div class="task"><h3>任务 05 · 车辆数据计算-算术运算</h3><article class="case" id="case-12">
+    <div class="case-head"><div><span class="case-number">案例 12</span><h4>油耗计算器</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 28 · 常量</span><span class="chip">知识点 29 · 算术运算符</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目B_信息交互设计/任务05_车辆数据计算/案例12_油耗计算器.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-13">
+    <div class="case-head"><div><span class="case-number">案例 13</span><h4>同时更新坐标</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 31 · 其他运算符</span><span class="chip">知识点 33 · 运算符优先级</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目B_信息交互设计/任务05_车辆数据计算/案例13_同时更新坐标.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-14">
+    <div class="case-head"><div><span class="case-number">案例 14</span><h4>计算平均处理时间</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 34 · 类型转换</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="计算机系统/浮点数精度实验.html">浮点数精度实验</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目B_信息交互设计/任务05_车辆数据计算/案例14_计算平均处理时间.html">打开案例演示 →</a></div></div>
+  </article></div>
+<div class="task"><h3>项目实战 · 信息交互模块测试-自动化测试</h3><article class="case" id="case-B1">
+    <div class="case-head"><div><span class="case-number">拓展案例 B1</span><h4>编写批处理脚本</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 35 · Bash</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目B_信息交互设计/项目实战/拓展案例B1_编写批处理脚本.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-B2">
+    <div class="case-head"><div><span class="case-number">拓展案例 B2</span><h4>批量文件处理脚本</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 36 · Shell</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目B_信息交互设计/项目实战/拓展案例B2_批量文件处理脚本.html">打开案例演示 →</a></div></div>
+  </article></div></section>
+<section class="panel project" id="project-C"><div class="project-head"><h2>项目 C · 控制逻辑模拟</h2><a href="项目演示/项目C.html">打开项目 C 总页 →</a></div><p class="project-count">AIGC 案例 1 · 普通案例 10 · 拓展案例 2</p><h3>项目导入</h3><article class="case" id="ai-C"><div class="case-head"><div><span class="case-number">AIGC 案例 C</span><h4>AIGC算法流程规划师</h4></div><span class="state ready">有交互页</span></div><div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 37 · 程序流程图</span></div></div><div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div><div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目C_控制逻辑模拟/项目导入/案例C_AIGC算法流程规划师.html">打开案例演示 →</a></div></div></article><div class="task"><h3>任务 06 · 启动流程设计-顺序结构</h3><article class="case" id="case-15">
+    <div class="case-head"><div><span class="case-number">案例 15</span><h4>车辆启动自检</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 38 · 分隔符</span><span class="chip">知识点 39 · 语句嵌套</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目C_控制逻辑模拟/任务06_启动流程/案例15_车辆启动自检.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-16">
+    <div class="case-head"><div><span class="case-number">案例 16</span><h4>理解变量作用域</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 40 · 变量作用域</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="函数/变量作用域与栈帧.html">变量作用域与栈帧</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目C_控制逻辑模拟/任务06_启动流程/案例16_理解变量作用域.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-17">
+    <div class="case-head"><div><span class="case-number">案例 17</span><h4>记录CAN总线消息数量</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 41 · 存储类型说明符</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目C_控制逻辑模拟/任务06_启动流程/案例17_记录CAN总线消息数量.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-18">
+    <div class="case-head"><div><span class="case-number">案例 18</span><h4>共享车辆配置</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 41 · 存储类型说明符</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目C_控制逻辑模拟/任务06_启动流程/案例18_共享车辆配置.html">打开案例演示 →</a></div></div>
+  </article></div>
+<div class="task"><h3>任务 07 · 驾驶行为选择-选择结构</h3><article class="case" id="case-19">
+    <div class="case-head"><div><span class="case-number">案例 19</span><h4>触发自动紧急制动</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 42 · 条件</span><span class="chip">知识点 43 · 条件语句</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目C_控制逻辑模拟/任务07_驾驶行为选择/案例19_触发自动紧急制动.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-20">
+    <div class="case-head"><div><span class="case-number">案例 20</span><h4>根据车速推荐驾驶模式</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 44 · 选择嵌套</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目C_控制逻辑模拟/任务07_驾驶行为选择/案例20_根据车速推荐驾驶模式.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-21">
+    <div class="case-head"><div><span class="case-number">案例 21</span><h4>车载多媒体控制台</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 45 · 开关语句</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目C_控制逻辑模拟/任务07_驾驶行为选择/案例21_车载多媒体控制台.html">打开案例演示 →</a></div></div>
+  </article></div>
+<div class="task"><h3>任务 08 · 驾驶状态监控-循环结构</h3><article class="case" id="case-22">
+    <div class="case-head"><div><span class="case-number">案例 22</span><h4>模拟电池充电</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 46 · 循环语句</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目C_控制逻辑模拟/任务08_驾驶状态监控/案例22_模拟电池充电.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-23">
+    <div class="case-head"><div><span class="case-number">案例 23</span><h4>打印车辆传感器矩阵</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 47 · 循环嵌套</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目C_控制逻辑模拟/任务08_驾驶状态监控/案例23_打印车辆传感器矩阵.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-24">
+    <div class="case-head"><div><span class="case-number">案例 24</span><h4>剔除数据流处理中的坏点</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 48 · 跳转语句</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目C_控制逻辑模拟/任务08_驾驶状态监控/案例24_剔除数据流处理中的坏点.html">打开案例演示 →</a></div></div>
+  </article></div>
+<div class="task"><h3>项目实战 · 控制执行模块调试-程序调试</h3><article class="case" id="case-C1">
+    <div class="case-head"><div><span class="case-number">拓展案例 C1</span><h4>诊断死循环</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 50 · 程序调试方法</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目C_控制逻辑模拟/项目实战/拓展案例C1_诊断死循环.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-C2">
+    <div class="case-head"><div><span class="case-number">拓展案例 C2</span><h4>使用断言进行前提条件检查</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 49 · 可执行文件</span><span class="chip">知识点 50 · 程序调试方法</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目C_控制逻辑模拟/项目实战/拓展案例C2_使用断言进行前提条件检查.html">打开案例演示 →</a></div></div>
+  </article></div></section>
+<section class="panel project" id="project-D"><div class="project-head"><h2>项目 D · 环境感知开发</h2><a href="项目演示/项目D.html">打开项目 D 总页 →</a></div><p class="project-count">AIGC 案例 1 · 普通案例 14 · 拓展案例 2</p><div class="case-line project-knowledge"><strong>项目/任务知识点</strong><div class="chips"><span class="chip">知识点 61 · 类型别名</span></div></div><h3>项目导入</h3><article class="case" id="ai-D"><div class="case-head"><div><span class="case-number">AIGC 案例 D</span><h4>AIGC数据结构优化师</h4></div><span class="state ready">有交互页</span></div><div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 51 · 数据类型</span></div></div><div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div><div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目D_环境感知开发/项目导入/案例D_AIGC数据结构优化师.html">打开案例演示 →</a></div></div></article><div class="task"><h3>任务 09 · 传感器数据采集-指针与引用</h3><article class="case" id="case-25">
+    <div class="case-head"><div><span class="case-number">案例 25</span><h4>通过指针校准传感器</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 52 · 指针与地址</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="指针与引用/指针与地址.html">指针与地址</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目D_环境感知开发/任务09_传感器数据采集/案例25_通过指针校准传感器.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-26">
+    <div class="case-head"><div><span class="case-number">案例 26</span><h4>用指针遍历雷达点云</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 52 · 指针与地址</span><span class="chip">知识点 56 · 指针与数组</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="指针与引用/指针与地址.html">指针与地址</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目D_环境感知开发/任务09_传感器数据采集/案例26_用指针遍历雷达点云.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-27">
+    <div class="case-head"><div><span class="case-number">案例 27</span><h4>安全传递车辆识别码</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 53 · 引用与传值</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="指针与引用/引用与传值.html">引用与传值</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目D_环境感知开发/任务09_传感器数据采集/案例27_安全传递车辆识别码.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-28">
+    <div class="case-head"><div><span class="case-number">案例 28</span><h4>动态分配行车路线</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 54 · 动态内存管理</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="指针与引用/数组分配与释放.html">new[] 与 delete[] 数组内存管理</a><a href="指针与引用/C风格动态内存与C++数组分配对照.html">C 风格动态内存与 C++ 数组分配对照</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目D_环境感知开发/任务09_传感器数据采集/案例28_动态分配行车路线.html">打开案例演示 →</a></div></div>
+  </article></div>
+<div class="task"><h3>任务 10 · 传感器数据管理-数组与容器</h3><article class="case" id="case-29">
+    <div class="case-head"><div><span class="case-number">案例 29</span><h4>存储摄像头标定系数</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 55 · 数组</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="数组与容器/二维数组线性存储.html">二维数组线性存储</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目D_环境感知开发/任务10_传感器数据管理/案例29_存储摄像头标定系数.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-30">
+    <div class="case-head"><div><span class="case-number">案例 30</span><h4>定义红外传感器网格</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 55 · 数组</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="数组与容器/二维数组线性存储.html">二维数组线性存储</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目D_环境感知开发/任务10_传感器数据管理/案例30_定义红外传感器网格.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-31">
+    <div class="case-head"><div><span class="case-number">案例 31</span><h4>获取传感器地址与指针</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 56 · 指针与数组</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="指针与引用/指针与地址.html">指针与地址</a><a href="数组与容器/二维数组线性存储.html">二维数组线性存储</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目D_环境感知开发/任务10_传感器数据管理/案例31_获取传感器地址与指针.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-32">
+    <div class="case-head"><div><span class="case-number">案例 32</span><h4>处理C风格的传感器指令</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 57 · 字符串</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="字符串/字符数组与结束符.html">字符数组与结束符</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目D_环境感知开发/任务10_传感器数据管理/案例32_处理C风格的传感器指令.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-33">
+    <div class="case-head"><div><span class="case-number">案例 33</span><h4>解析更复杂的传感器参数</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 57 · 字符串</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="字符串/字符数组与结束符.html">字符数组与结束符</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目D_环境感知开发/任务10_传感器数据管理/案例33_解析更复杂的传感器参数.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-34">
+    <div class="case-head"><div><span class="case-number">案例 34</span><h4>管理动态故障码列表</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 58 · 向量</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="数组与容器/Vector容量与扩容.html">Vector 容量与扩容</a><a href="数组与容器/简单排序算法.html">简单排序算法（故障码列表延伸）</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目D_环境感知开发/任务10_传感器数据管理/案例34_管理动态故障码列表.html">打开案例演示 →</a></div></div>
+  </article></div>
+<div class="task"><h3>任务 11 · 场景对象建模-自定义数据类型</h3><article class="case" id="case-35">
+    <div class="case-head"><div><span class="case-number">案例 35</span><h4>定义雷达目标</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 59 · 结构体</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目D_环境感知开发/任务11_场景对象建模/案例35_定义雷达目标.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-36">
+    <div class="case-head"><div><span class="case-number">案例 36</span><h4>建模不同类型的交通参与者</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 60 · 联合与枚举</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目D_环境感知开发/任务11_场景对象建模/案例36_建模不同类型的交通参与者.html">打开案例演示 →</a></div></div>
+  </article></div>
+<div class="task"><h3>任务 12 · 障碍物数据解析-文件</h3><article class="case" id="case-37">
+    <div class="case-head"><div><span class="case-number">案例 37</span><h4>读取障碍物日志文件</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 62 · 文件与流</span><span class="chip">知识点 63 · 文件路径</span><span class="chip">知识点 64 · 文件操作</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="文件与流/场景数据读写与持久化.html">场景数据读写与持久化</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目D_环境感知开发/任务12_障碍物数据解析/案例37_读取障碍物日志文件.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-38">
+    <div class="case-head"><div><span class="case-number">案例 38</span><h4>保存检测到的障碍物信息</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 62 · 文件与流</span><span class="chip">知识点 64 · 文件操作</span><span class="chip">知识点 65 · 数据持久化</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="文件与流/场景数据读写与持久化.html">场景数据读写与持久化</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目D_环境感知开发/任务12_障碍物数据解析/案例38_保存检测到的障碍物信息.html">打开案例演示 →</a></div></div>
+  </article></div>
+<div class="task"><h3>项目实战 · 感知融合模块设计-第三方库配置</h3><article class="case" id="case-D1">
+    <div class="case-head"><div><span class="case-number">拓展案例 D1</span><h4>使用Eigen库进行3D坐标变换</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 66 · Eigen库</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目D_环境感知开发/项目实战/拓展案例D1_使用Eigen库进行3D坐标变换.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-D2">
+    <div class="case-head"><div><span class="case-number">拓展案例 D2</span><h4>使用OpenCV加载并显示摄像头图像</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 67 · OpenCV库</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目D_环境感知开发/项目实战/拓展案例D2_使用OpenCV加载并显示摄像头图像.html">打开案例演示 →</a></div></div>
+  </article></div></section>
+<section class="panel project" id="project-E"><div class="project-head"><h2>项目 E · 驾驶决策开发</h2><a href="项目演示/项目E.html">打开项目 E 总页 →</a></div><p class="project-count">AIGC 案例 1 · 普通案例 10 · 拓展案例 2</p><div class="case-line project-knowledge"><strong>项目/任务知识点</strong><div class="chips"><span class="chip">知识点 81 · Python/C/C++混合编程</span></div></div><h3>项目导入</h3><article class="case" id="ai-E"><div class="case-head"><div><span class="case-number">AIGC 案例 E</span><h4>AIGC核心功能实现师</h4></div><span class="state ready">有交互页</span></div><div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 68 · 面向过程设计</span></div></div><div class="case-line"><strong>相关机制页</strong><div class="links"><a href="函数/函数调用机制.html">函数调用机制</a></div></div><div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目E_驾驶决策开发/项目导入/案例E_AIGC核心功能实现师.html">打开案例演示 →</a></div></div></article><div class="task"><h3>任务 13 · 自适应巡航模块实现-函数与参数</h3><article class="case" id="case-39">
+    <div class="case-head"><div><span class="case-number">案例 39</span><h4>模块化刹车距离计算</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 69 · 函数定义与声明</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="函数/函数调用机制.html">函数调用机制</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目E_驾驶决策开发/任务13_自适应巡航实现/案例39_模块化刹车距离计算.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-40">
+    <div class="case-head"><div><span class="case-number">案例 40</span><h4>递归预测车辆轨迹</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 70 · 函数嵌套与递归</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="函数/函数递归调用.html">函数递归调用</a><a href="函数/变量作用域与栈帧.html">变量作用域与栈帧</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目E_驾驶决策开发/任务13_自适应巡航实现/案例40_递归预测车辆轨迹.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-41">
+    <div class="case-head"><div><span class="case-number">案例 41</span><h4>通过引用归一化数据</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 71 · 函数参数</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="指针与引用/引用与传值.html">引用与传值</a><a href="函数/函数调用机制.html">函数调用机制</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目E_驾驶决策开发/任务13_自适应巡航实现/案例41_通过引用归一化数据.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-42">
+    <div class="case-head"><div><span class="case-number">案例 42</span><h4>自定义日志打印</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 72 · 默认实参</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目E_驾驶决策开发/任务13_自适应巡航实现/案例42_自定义日志打印.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-43">
+    <div class="case-head"><div><span class="case-number">案例 43</span><h4>获取速度限制</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 73 · 返回类型</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="函数/函数调用机制.html">函数调用机制</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目E_驾驶决策开发/任务13_自适应巡航实现/案例43_获取速度限制.html">打开案例演示 →</a></div></div>
+  </article></div>
+<div class="task"><h3>任务 14 · 自适应巡航模块优化-函数优化与指针</h3><article class="case" id="case-44">
+    <div class="case-head"><div><span class="case-number">案例 44</span><h4>内联的角度转换</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 74 · 内联函数</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目E_驾驶决策开发/任务14_自适应巡航优化/案例44_内联的角度转换.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-45">
+    <div class="case-head"><div><span class="case-number">案例 45</span><h4>内部辅助函数</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 75 · 特殊函数</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目E_驾驶决策开发/任务14_自适应巡航优化/案例45_内部辅助函数.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-46">
+    <div class="case-head"><div><span class="case-number">案例 46</span><h4>动态决策回调</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 76 · 函数指针与引用</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="函数/函数调用机制.html">函数调用机制</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目E_驾驶决策开发/任务14_自适应巡航优化/案例46_动态决策回调.html">打开案例演示 →</a></div></div>
+  </article></div>
+<div class="task"><h3>任务 15 · 自适应巡航模块扩展-函数重载与模板</h3><article class="case" id="case-47">
+    <div class="case-head"><div><span class="case-number">案例 47</span><h4>重载的日志函数</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 77 · 函数重载</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="函数/函数重载匹配规则.html">函数重载匹配规则</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目E_驾驶决策开发/任务15_自适应巡航扩展/案例47_重载的日志函数.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-48">
+    <div class="case-head"><div><span class="case-number">案例 48</span><h4>通用的最小距离查找</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 78 · 函数模板</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="函数/模板实例化.html">模板实例化</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目E_驾驶决策开发/任务15_自适应巡航扩展/案例48_通用的最小距离查找.html">打开案例演示 →</a></div></div>
+  </article></div>
+<div class="task"><h3>项目实战 · 规划决策模块设计-库文件开发</h3><article class="case" id="case-E1">
+    <div class="case-head"><div><span class="case-number">拓展案例 E1</span><h4>创建数学工具静态库</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 79 · 静态库与动态库</span><span class="chip">知识点 80 · 库文件开发方法</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="工程构建/源文件编译与链接.html">源文件编译与链接</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目E_驾驶决策开发/项目实战/拓展案例E1_创建数学工具静态库.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-E2">
+    <div class="case-head"><div><span class="case-number">拓展案例 E2</span><h4>使用外部库解析配置文件</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">案例补充机制 · 第三方库集成与 INI 配置读取</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目E_驾驶决策开发/项目实战/拓展案例E2_使用外部库解析配置文件.html">打开案例演示 →</a></div></div>
+  </article></div></section>
+<section class="panel project" id="project-F"><div class="project-head"><h2>项目 F · 车辆对象管理</h2><a href="项目演示/项目F.html">打开项目 F 总页 →</a></div><p class="project-count">AIGC 案例 1 · 普通案例 8 · 拓展案例 2</p><h3>项目导入</h3><article class="case" id="ai-F"><div class="case-head"><div><span class="case-number">AIGC 案例 F</span><h4>AIGC代码逻辑医生</h4></div><span class="state ready">有交互页</span></div><div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 82 · 面向对象设计</span></div></div><div class="case-line"><strong>相关机制页</strong><div class="links"><a href="面向对象/类与对象生命周期.html">类与对象生命周期</a></div></div><div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目F_车辆对象管理/项目导入/案例F_AIGC代码逻辑医生.html">打开案例演示 →</a></div></div></article><div class="task"><h3>任务 16 · 车辆对象设计-类与对象</h3><article class="case" id="case-49">
+    <div class="case-head"><div><span class="case-number">案例 49</span><h4>设计“车辆”类</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 83 · 类与对象</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="面向对象/类与对象生命周期.html">类与对象生命周期</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目F_车辆对象管理/任务16_车辆对象设计/案例49_设计“车辆”类.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-50">
+    <div class="case-head"><div><span class="case-number">案例 50</span><h4>车辆的生命周期</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 84 · 对象构造与析构</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="面向对象/类与对象生命周期.html">类与对象生命周期</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目F_车辆对象管理/任务16_车辆对象设计/案例50_车辆的生命周期.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-51">
+    <div class="case-head"><div><span class="case-number">案例 51</span><h4>克隆车辆</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 85 · 对象拷贝与赋值</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="面向对象/深拷贝与浅拷贝.html">深拷贝与浅拷贝</a><a href="面向对象/类与对象生命周期.html">类与对象生命周期</a><a href="指针与引用/数组分配与释放.html">new[] 与 delete[] 数组内存管理</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目F_车辆对象管理/任务16_车辆对象设计/案例51_克隆车辆.html">打开案例演示 →</a></div></div>
+  </article></div>
+<div class="task"><h3>任务 17 · 功能重载优化-封装与重载</h3><article class="case" id="case-52">
+    <div class="case-head"><div><span class="case-number">案例 52</span><h4>封装车辆核心数据</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 86 · 访问说明符</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目F_车辆对象管理/任务17_功能重载优化/案例52_封装车辆核心数据.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-53">
+    <div class="case-head"><div><span class="case-number">案例 53</span><h4>返回自身引用的链式操作</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 87 · 类与指针</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目F_车辆对象管理/任务17_功能重载优化/案例53_返回自身引用的链式操作.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-54">
+    <div class="case-head"><div><span class="case-number">案例 54</span><h4>车辆的唯一ID和常量方法</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 88 · 特殊成员</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目F_车辆对象管理/任务17_功能重载优化/案例54_车辆的唯一ID和常量方法.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-55">
+    <div class="case-head"><div><span class="case-number">案例 55</span><h4>诊断工具的“后门”</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 89 · 友元函数</span><span class="chip">知识点 90 · 友元类</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目F_车辆对象管理/任务17_功能重载优化/案例55_诊断工具的“后门”.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-56">
+    <div class="case-head"><div><span class="case-number">案例 56</span><h4>优雅地定义车辆操作</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 91 · 成员函数重载</span><span class="chip">知识点 92 · 运算符重载</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="函数/函数重载匹配规则.html">函数重载匹配规则</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目F_车辆对象管理/任务17_功能重载优化/案例56_优雅地定义车辆操作.html">打开案例演示 →</a></div></div>
+  </article></div>
+<div class="task"><h3>项目实战 · 车辆对象模块设计-内存优化</h3><article class="case" id="case-F1">
+    <div class="case-head"><div><span class="case-number">拓展案例 F1</span><h4>智能指针管理动态车辆对象</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 93 · 内存分析</span><span class="chip">知识点 94 · 深浅拷贝</span><span class="chip">知识点 95 · 智能指针</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="面向对象/智能指针与所有权.html">智能指针与所有权</a><a href="面向对象/深拷贝与浅拷贝.html">深拷贝与浅拷贝</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目F_车辆对象管理/项目实战/拓展案例F1_智能指针管理动态车辆对象.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-F2">
+    <div class="case-head"><div><span class="case-number">拓展案例 F2</span><h4>设计GPS数据点内存池</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 96 · 内存池</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目F_车辆对象管理/项目实战/拓展案例F2_设计GPS数据点内存池.html">打开案例演示 →</a></div></div>
+  </article></div></section>
+<section class="panel project" id="project-G"><div class="project-head"><h2>项目 G · 感知融合优化</h2><a href="项目演示/项目G.html">打开项目 G 总页 →</a></div><p class="project-count">AIGC 案例 1 · 普通案例 6 · 拓展案例 2</p><h3>项目导入</h3><article class="case" id="ai-G"><div class="case-head"><div><span class="case-number">AIGC 案例 G</span><h4>AIGC代码重构师</h4></div><span class="state ready">有交互页</span></div><div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 97 · 面向对象特性</span></div></div><div class="case-line"><strong>相关机制页</strong><div class="links"><a href="面向对象/虚函数与动态绑定.html">虚函数与动态绑定</a></div></div><div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目G_感知融合优化/项目导入/案例G_AIGC代码重构师.html">打开案例演示 →</a></div></div></article><div class="task"><h3>任务 18 · 障碍物体系构建-继承与派生</h3><article class="case" id="case-57">
+    <div class="case-head"><div><span class="case-number">案例 57</span><h4>构建障碍物基类</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 98 · 单继承类</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目G_感知融合优化/任务18_障碍物体系构建/案例57_构建障碍物基类.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-58">
+    <div class="case-head"><div><span class="case-number">案例 58</span><h4>受保护的障碍物属性</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 99 · 访问控制</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目G_感知融合优化/任务18_障碍物体系构建/案例58_受保护的障碍物属性.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-59">
+    <div class="case-head"><div><span class="case-number">案例 59</span><h4>带信号的特殊车辆</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 100 · 多继承类</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目G_感知融合优化/任务18_障碍物体系构建/案例59_带信号的特殊车辆.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-60">
+    <div class="case-head"><div><span class="case-number">案例 60</span><h4>解决摩托车的“菱形”归属</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 101 · 虚基类</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="面向对象/菱形继承与虚基类.html">菱形继承与虚基类</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目G_感知融合优化/任务18_障碍物体系构建/案例60_解决摩托车的菱形归属.html">打开案例演示 →</a></div></div>
+  </article></div>
+<div class="task"><h3>任务 19 · 传感器代码复用-多态与虚函数</h3><article class="case" id="case-61">
+    <div class="case-head"><div><span class="case-number">案例 61</span><h4>通用的传感器处理接口</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 102 · 虚函数</span><span class="chip">知识点 103 · 抽象类</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="面向对象/虚函数与动态绑定.html">虚函数与动态绑定</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目G_感知融合优化/任务19_传感器代码复用/案例61_通用的传感器处理接口.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-62">
+    <div class="case-head"><div><span class="case-number">案例 62</span><h4>通用的传感器数据缓存</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 104 · 类模板</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="函数/模板实例化.html">模板实例化</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目G_感知融合优化/任务19_传感器代码复用/案例62_通用的传感器数据缓存.html">打开案例演示 →</a></div></div>
+  </article></div>
+<div class="task"><h3>项目实战 · 感知融合模块重构-性能优化</h3><article class="case" id="case-G1">
+    <div class="case-head"><div><span class="case-number">拓展案例 G1</span><h4>使用SIMD优化点云数据处理</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 105 · 性能分析</span><span class="chip">知识点 106 · 指令集</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="并发与性能/SIMD标量与向量计算.html">SIMD 标量与向量计算</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目G_感知融合优化/项目实战/拓展案例G1_使用SIMD优化点云数据处理.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-G2">
+    <div class="case-head"><div><span class="case-number">拓展案例 G2</span><h4>多线程实现传感器数据采集与处理</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 107 · 多线程</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><a href="并发与性能/多线程数据竞争与同步.html">多线程数据竞争与同步</a></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目G_感知融合优化/项目实战/拓展案例G2_多线程采集与处理.html">打开案例演示 →</a></div></div>
+  </article></div></section>
+<section class="panel project" id="project-H"><div class="project-head"><h2>项目 H · 自动驾驶仿真系统实现</h2><a href="项目演示/项目H.html">打开项目 H 总页 →</a></div><p class="project-count">AIGC 案例 1 · 普通案例 2 · 拓展案例 2</p><h3>项目导入</h3><article class="case" id="ai-H"><div class="case-head"><div><span class="case-number">AIGC 案例 H</span><h4>AIGC系统架构师</h4></div><span class="state ready">有交互页</span></div><div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 108 · 软件设计模式</span></div></div><div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div><div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目H_自动驾驶仿真系统实现/项目导入/案例H_AIGC系统架构师.html">打开案例演示 →</a></div></div></article><div class="task"><h3>任务 20 · 自动驾驶仿真系统后端实现-系统集成</h3><article class="case" id="case-63">
+    <div class="case-head"><div><span class="case-number">案例 63</span><h4>车辆与地图的简单交互</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 109 · 需求分析</span><span class="chip">知识点 110 · 算法设计</span><span class="chip">知识点 111 · 程序编码</span><span class="chip">知识点 112 · 功能测试</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目H_自动驾驶仿真系统实现/任务20_系统后端实现/案例63_车辆与地图的简单交互.html">打开案例演示 →</a></div></div>
+  </article></div>
+<div class="task"><h3>任务 21 · 自动驾驶仿真系统前端实现-CLI可视化</h3><article class="case" id="case-64">
+    <div class="case-head"><div><span class="case-number">案例 64</span><h4>动态的命令行进度条</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 113 · 需求分析（CLI）</span><span class="chip">知识点 114 · 算法设计（CLI）</span><span class="chip">知识点 115 · 程序编码（CLI）</span><span class="chip">知识点 116 · 功能测试（CLI）</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目H_自动驾驶仿真系统实现/任务21_系统前端实现/案例64_动态的命令行进度条.html">打开案例演示 →</a></div></div>
+  </article></div>
+<div class="task"><h3>项目实战 · 基于SFML库的自动驾驶仿真系统设计-GUI可视化</h3><article class="case" id="case-H1">
+    <div class="case-head"><div><span class="case-number">拓展案例 H1</span><h4>使用SFML绘制静态仿真场景</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 117 · 需求分析（GUI）</span><span class="chip">知识点 118 · 算法设计（GUI）</span><span class="chip">知识点 119 · 程序编码（GUI）</span><span class="chip">知识点 120 · 功能测试（GUI）</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目H_自动驾驶仿真系统实现/项目实战/拓展案例H1_使用SFML绘制静态仿真场景.html">打开案例演示 →</a></div></div>
+  </article>
+<article class="case" id="case-H2">
+    <div class="case-head"><div><span class="case-number">拓展案例 H2</span><h4>使用SFML实现车辆转向灯动画</h4></div><span class="state ready">有交互页</span></div>
+    <div class="case-line"><strong>对应知识点</strong><div class="chips"><span class="chip">知识点 117 · 需求分析（GUI）</span><span class="chip">知识点 118 · 算法设计（GUI）</span><span class="chip">知识点 119 · 程序编码（GUI）</span><span class="chip">知识点 120 · 功能测试（GUI）</span></div></div>
+    <div class="case-line"><strong>相关机制页</strong><div class="links"><span class="muted">暂无独立机制页；按上方知识点学习</span></div></div>
+    <div class="case-line"><strong>案例演示</strong><div class="links"><a class="open" href="案例演示/项目H_自动驾驶仿真系统实现/项目实战/拓展案例H2_车辆转向灯动画.html">打开案例演示 →</a></div></div>
+  </article></div></section>
+<footer class="site-version">资源版本 V1.01</footer>
+</main><script>(()=>{'use strict';
+const input=document.getElementById('caseSearch');
+const status=document.getElementById('searchStatus');
+const empty=document.getElementById('emptyState');
+const projects=[...document.querySelectorAll('.project')];
+const filters=[...document.querySelectorAll('[data-project]')];
+let activeProject='all';
+function projectForHash(){
+  const id=decodeURIComponent(location.hash.slice(1));
+  if(!id||id==='all-projects')return 'all';
+  const section=document.getElementById(id)?.closest('.project');
+  return section?section.id.slice(-1):'all';
+}
+function update(){
+  const query=input.value.trim().toLocaleLowerCase('zh-CN');
+  let count=0;
+  for(const project of projects){
+    const letter=project.id.slice(-1);
+    if(activeProject!=='all'&&activeProject!==letter){project.hidden=true;continue}
+    let projectCount=0;
+    const projectText=project.querySelector('h2').textContent.toLocaleLowerCase('zh-CN');
+    const intro=project.querySelector(':scope > .case');
+    if(intro){
+      const found=!query||[projectText,intro.textContent.toLocaleLowerCase('zh-CN')].some(text=>text.includes(query));
+      intro.hidden=!found;
+      if(found)projectCount++;
+    }
+    for(const task of project.querySelectorAll('.task')){
+      let taskCount=0;
+      const taskText=task.querySelector('h3').textContent.toLocaleLowerCase('zh-CN');
+      for(const item of task.querySelectorAll('.case')){
+        const found=!query||[projectText,taskText,item.textContent.toLocaleLowerCase('zh-CN')].some(text=>text.includes(query));
+        item.hidden=!found;
+        if(found)taskCount++;
+      }
+      task.hidden=taskCount===0;
+      projectCount+=taskCount;
+    }
+    project.hidden=projectCount===0;
+    count+=projectCount;
+  }
+  for(const button of filters)button.setAttribute('aria-pressed',String(button.dataset.project===activeProject));
+  const scope=activeProject==='all'?'':('项目 '+activeProject+'：');
+  status.textContent=query?scope+'找到 '+count+' 个案例':scope+'显示 '+count+' 个案例';
+  empty.hidden=count>0;
+}
+filters.forEach(button=>button.addEventListener('click',()=>{
+  activeProject=button.dataset.project;
+  history.replaceState(null,'',activeProject==='all'?location.href.split('#')[0]:'#project-'+activeProject);
+  update();
+}));
+input.addEventListener('input',update);
+document.getElementById('clearSearch').addEventListener('click',()=>{input.value='';update();input.focus()});
+input.addEventListener('keydown',event=>{if(event.key==='Escape'){input.value='';update()}});
+window.addEventListener('hashchange',()=>{
+  activeProject=projectForHash();
+  update();
+  const target=document.getElementById(decodeURIComponent(location.hash.slice(1)));
+  if(target)requestAnimationFrame(()=>target.scrollIntoView({block:'start'}));
+});
+activeProject=projectForHash();
+update();
+if(location.hash){const target=document.getElementById(decodeURIComponent(location.hash.slice(1)));if(target)requestAnimationFrame(()=>target.scrollIntoView({block:'start'}))}
+})();</script></body></html>

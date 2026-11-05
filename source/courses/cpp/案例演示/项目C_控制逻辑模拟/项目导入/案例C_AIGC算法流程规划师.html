@@ -1,0 +1,67 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>案例 C · AIGC算法流程规划师</title>
+<link rel="stylesheet" href="../../../机制通用样式.css"><link rel="stylesheet" href="../../../AI协作案例/AI案例样式.css"><link rel="stylesheet" href="../../../案例统一样式.css"></head><body class="case-document"><main class="case-page">
+<div class="eyebrow">项目 C · 项目导入 · AIGC 案例 C</div>
+<h1>AIGC算法流程规划师</h1>
+<p class="lead">为自动泊车场景规划流程，逐步检查寻找车位、倒车安全分支和停车条件。</p>
+<nav class="case-nav" aria-label="案例导航"><a href="../../../项目演示/项目C.html">返回项目 C</a><a href="../../../资源目录.html#ai-C">返回资源总目录</a></nav><section class="case-meta" aria-label="案例知识与相关资源"><div class="case-meta-group"><span class="case-meta-label">对应知识点</span><div class="case-meta-items"><span class="case-tag">知识点 37 · 程序流程图</span></div></div><div class="case-meta-group"><span class="case-meta-label">相关机制页</span><div class="case-meta-items"><span class="case-empty">暂无独立机制页</span></div></div></section>
+<section class="panel"><h2>案例任务与源码核对</h2><h3>案例背景</h3><p>在编写任何复杂的代码之前，专业的工程师会先进行“设计”——规划程序的逻辑流程，就像建筑师在动工前必须先绘制蓝图一样。如果没有清晰的蓝图，直接施工（编码）很容易导致逻辑混乱、结构不稳，最终返工。程序流程图和伪代码就是我们程序员的“蓝图”。自动泊车是一个复杂的逻辑过程，它包含了顺序执行的动作、根据传感器信息做出的判断、以及持续调整直到满足条件的重复操作。在本案例中，你将扮演一名“算法规划师”，你的任务不是写 C++ 代码，而是用自然语言向你的“AI 助手”（AIGC 工具）清晰地描述一个简化的自动泊车场景，并要求它为你生成一份专业的“施工蓝图”（流程图或伪代码）。这将是你第一次在编码前，对一个完整的逻辑流进行宏观设计。</p><h3>任务要求</h3><p>通过与 AIGC 工具互动，为简化自动泊车场景生成一份清晰的流程图或伪代码。场景描述应包含车辆动作的顺序、基于传感器信息的判断，以及重复执行直到满足条件的循环；随后分析生成结果中三种基本程序结构的对应部分。</p></section>
+<section class="panel"><h2>逐步推演</h2><div class="ai-step-box"><h3 id="aiStepTitle"></h3><p id="aiStepText"></p><div class="ai-step-evidence" id="aiStepEvidence"></div><span id="aiStepCount" class="small"></span></div><div class="toolbar"><button class="btn" id="aiPrev">上一步</button><button class="btn primary" id="aiNext">下一步</button><button class="btn" id="aiReset">重置</button></div></section>
+<section class="panel"><h2>先判断</h2><p>后方距离小于 0.3 米时，任务要求怎样处理？</p><div class="quiz"><button class="btn" data-ai-choice="0">继续倒车</button><button class="btn" data-ai-choice="1">停车并提示泊车失败</button><button class="btn" data-ai-choice="2">只回正方向盘</button></div><div class="ai-result" id="aiFeedback" aria-live="polite"></div></section>
+<section class="panel ai-book"><h2>案例原始资料</h2><p class="small">以下为案例的提示、代码与运行分析；其中展示的 AIGC 输出不是本网页实时生成。</p><details><summary>案例代码、提示与输入</summary><p>本案例的代码是我们输入给 AIGC 的提示（Prompt），以及 AIGC 返回的规划方案。输入给 AIGC 的提示（Prompt）：</p>
+<blockquote>我需要你扮演一名算法规划师。请为下面这个简化的自动泊车场景，生成一份清晰的伪代码。<br><br>场景描述：<br><br>1. 车辆开始时，先向前缓慢行驶。<br>2. 车辆需要不断地用右侧传感器检测车位。<br>3. 一旦检测到宽度合适的车位，就立即停车。<br>4. 然后，向右打满方向盘，开始缓慢倒车。<br>5. 在倒车时，需要不断地用后方传感器检测车位后方的障碍物距离。<br>6. 如果距离障碍物太近（比如小于0.3米），就必须立刻停车，并提示“泊车失败”。<br>7. 否则，就继续倒车，同时用侧方传感器检测车身是否与车位线平行。<br>8. 一直重复倒车和检测，直到车身与车位线平行，就停车。<br>9. 最后，回正方向盘，并提示“泊车完成”。</blockquote></details><details><summary>运行效果与分析</summary><p>AIGC 生成的伪代码（示例）：</p>
+<pre><code>// 自动泊车算法伪代码
+
+开始
+
+    // 阶段1：寻找车位 (顺序 + 循环)
+    启动引擎
+    车辆向前缓慢行驶
+
+    循环 (当未找到合适车位时)
+        使用右侧传感器检测车位
+    结束循环
+
+    停车
+
+    // 阶段2：入库 (选择 + 循环)
+    方向盘向右打满
+    车辆向后缓慢行驶
+
+    循环 (当车身未与车位线平行时)
+        使用后方传感器检测距离
+
+        如果 (距离 &lt; 0.3米) 则  // &lt;--- 这是“选择”结构
+            停车
+            提示 &quot;泊车失败：距离障碍物太近&quot;
+            结束程序
+        否则
+            // 什么也不做，继续倒车
+        结束如果
+
+        使用侧方传感器检测车身平行状态
+    结束循环 // &lt;--- 这是“循环”结构
+
+    停车
+
+    // 阶段3：完成 (顺序)
+    回正方向盘
+    提示 &quot;泊车完成&quot;
+
+结束</code></pre>
+<p>现象分析：这份伪代码虽然不是 C++ 代码，但它用结构化的语言清晰地展现了整个泊车逻辑。我们可以轻易地从中识别出：<br>（1）顺序结构：例如，“启动引擎”→“向前行驶”→“停车”。<br>（2）选择结构：<code>如果 (距离 &lt; 0.3米) 则 ... 否则 ...</code>，这是一个典型的判断分支。<br>（3）循环结构：<code>循环 (当车身未与车位线平行时) ... 结束循环</code>，这是一个重复执行的动作。</p></details></section>
+<section class="panel ai-source"><h2>代码工程对照</h2><p class="ai-source-path">cpp_simulation/simulation_examples/e_C/</p><p class="small">案例 C 的主体是自然语言提示与伪代码；e_C/README.md 明确说明没有 C++ 可执行源文件。</p><details><summary>README.md</summary><pre># e_C：AIGC算法流程规划师
+
+- 案例编号：案例C
+- 归属：项目3 控制逻辑模拟
+- 覆盖知识点：知识点37
+- 本案例为阅读、分析或手工操作案例，不设 C++ 可执行源文件。
+
+## 实施步骤
+
+1. 检查本目录的源码、输入文件、外部资源和工程补全说明。
+2. 若存在 `CMakeLists.txt`，先独立配置本目录，再构建对应目标。
+3. 运行生成的程序并核对输出；阅读、推导或操作类案例直接按目录说明完成。
+
+</pre></details></section>
+</main><script>window.aiCaseData={"steps": [{"title": "寻找车位", "text": "车辆向前行驶，反复用右侧传感器检测，直到找到合适车位。", "evidence": "循环：未找到车位 → 继续检测"}, {"title": "倒车与安全分支", "text": "倒车时检查后方距离；小于 0.3 米就停车并提示泊车失败。", "evidence": "距离 \u003c 0.3 米 → 停车；结束失败路径"}, {"title": "完成泊车", "text": "未触发危险分支且车身平行后，停车、回正方向盘并提示完成。", "evidence": "顺序、选择、循环三种程序结构都要能指出。"}], "quiz": {"correct": 1, "right": "正确。安全分支立即终止倒车。", "wrong": "请核对案例 C 的场景要求第 6 条。"}};</script><script src="../../../AI协作案例/AI案例交互.js"></script></body></html>

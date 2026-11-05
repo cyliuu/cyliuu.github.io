@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>案例39 · 模块化刹车距离计算</title>
+  <style>
+    :root{--bg:#f6f8fa;--card:#fff;--text:#24292f;--muted:#57606a;--line:#d0d7de;--blue:#0969da;--green:#1a7f37;--red:#cf222e}
+    *{box-sizing:border-box}body{margin:0;padding:40px 20px;background:var(--bg);color:var(--text);font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}button,input{font:inherit}button{cursor:pointer}main{max-width:1200px;margin:0 auto}.eyebrow{text-align:center;color:var(--blue);font-size:12px;font-weight:700}h1{text-align:center;font-size:24px;font-weight:600;margin:2px 0 12px}h2{font-size:1.18rem;margin:0 0 12px}h3{font-size:1rem;margin:0 0 8px}p{margin:0 0 12px}.lead{max-width:900px;margin:0 auto;text-align:center;color:var(--muted);font-size:14px}nav{display:flex;flex-wrap:wrap;justify-content:center;gap:9px;margin:14px 0 20px;font-size:13px}a{color:var(--blue)}nav a{text-decoration:none;border:1px solid var(--line);border-radius:8px;background:#fff;padding:7px 11px}nav a:hover{text-decoration:underline}.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:24px;box-shadow:0 8px 24px rgba(140,149,159,.15)}.controls{display:flex;flex-wrap:wrap;align-items:end;gap:10px;margin:12px 0 18px}label{display:grid;gap:4px;color:var(--muted);font-size:14px;font-weight:600}input{width:120px;padding:8px 10px;border:1px solid var(--line);border-radius:6px}.btn{padding:10px 20px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--text);font-size:14px;font-weight:600}.btn.active,.btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}.btn:disabled{opacity:.5}.grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}.code{border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#fff}.codehead{background:#f6f8fa;border-bottom:1px solid var(--line);padding:9px 14px;color:var(--muted);font-size:13px}.code pre{margin:0;padding:13px 0;overflow:auto;font:14px/1.8 ui-monospace,SFMono-Regular,Consolas,monospace}.line{display:block;padding:0 14px;white-space:pre}.line.active{border-left:3px solid var(--blue);padding-left:11px;background:#f6f8fa;font-weight:700}.n{display:inline-block;color:#8c959f;width:2em;user-select:none}.stage{border:2px dashed var(--line);border-radius:9px;padding:12px;margin-bottom:10px;background:#fafbfc}.stage.active{border-color:var(--blue);background:#ddf4ff}.stage small{display:block;color:var(--muted)}.note{background:#f6f8fa;border-left:4px solid var(--blue);padding:10px 13px;margin-top:14px}.terminal{white-space:pre-wrap;background:#24292f;color:#57ab5a;border-radius:8px;padding:16px;margin-top:14px;min-height:80px;font:13px/1.6 ui-monospace,Consolas,monospace}.below{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;font-size:14px}.feedback{min-height:1.5em;font-weight:700;margin-top:6px}.feedback.good{color:var(--green)}.feedback.bad{color:var(--red)}
+    @media(max-width:760px){body{padding:16px 10px}.grid,.below{grid-template-columns:1fr}.panel{padding:15px}}
+  </style>
+<link rel="stylesheet" href="../../../案例统一样式.css"></head>
+<body class="case-document"><main class="case-page">
+  <div class="eyebrow">项目 E · 任务 13 · 案例 39</div><h1>模块化刹车距离计算</h1>
+  <p class="lead">比较单文件与分文件两种实现，核对刹车距离函数的输入、输出和构建关系。</p>
+  <nav class="case-nav" aria-label="案例导航"><a href="../../../项目演示/项目E.html">返回项目 E</a><a href="../../../资源目录.html#case-39">返回资源总目录</a></nav><section class="case-meta" aria-label="案例知识与相关资源"><div class="case-meta-group"><span class="case-meta-label">对应知识点</span><div class="case-meta-items"><span class="case-tag">知识点 69 · 函数定义与声明</span></div></div><div class="case-meta-group"><span class="case-meta-label">相关机制页</span><div class="case-meta-items"><a class="case-mechanism" href="../../../函数/函数调用机制.html">函数调用机制</a></div></div></section>
+  <section class="panel">
+    <h2>刹车距离实验</h2><div class="controls"><label>车速（km/h）<input id="speed" type="number" value="60" min="0" max="140" step="1"></label><button class="btn" id="v1">版本 1：单文件</button><button class="btn" id="v2">版本 2：头文件 + 源文件</button><button class="btn primary" id="run">计算并比较</button></div>
+    <div class="grid"><div class="code"><div class="codehead" id="codehead"></div><pre id="source"></pre></div><div><div id="stages"></div><div class="note" id="result" aria-live="polite"></div></div></div>
+    <div class="terminal" id="terminal" aria-label="输出示意"></div>
+  </section>
+  <div class="below"><section class="panel"><h2>你来判断</h2><p>把函数定义移到 <code>utils.cpp</code> 后，<code>main.cpp</code> 只有 <code>#include "utils.h"</code>，构建时漏掉 <code>utils.cpp</code> 会怎样？</p><button class="btn" data-answer="wrong">照常链接成功</button> <button class="btn" data-answer="right">可能出现未定义引用的链接错误</button><div class="feedback" id="feedback" aria-live="polite"></div></section><section class="panel"><h2>源码边界</h2><p>两套版本都用固定减速度 <code>4.5 m/s²</code>，先将 km/h 除以 3.6，再计算 <code>v²/(2a)</code>。版本 2 只是把函数的声明、定义和调用分离，公式并未改变。</p><p style="color:var(--muted)">这里是刹车距离的理想化计算，不包含驾驶员反应距离、路面附着力等现实因素；不得直接当作真实车辆的安全停车建议。</p></section></div>
+</main><script>
+(() => {
+  'use strict';const $=id=>document.getElementById(id);let version=1;
+  const code={1:[
+    'double calculate_braking_distance(double speed_kmh) {',
+    '  const double DECELERATION = 4.5;',
+    '  double speed_mps = speed_kmh / 3.6;',
+    '  double distance = std::pow(speed_mps, 2) / (2 * DECELERATION);',
+    '  return distance;',
+    '}',
+    'double current_speed = 60.0;',
+    'double required_distance = calculate_braking_distance(current_speed);'
+  ],2:[
+    '// utils.h：函数声明',
+    'double calculate_braking_distance(double speed_kmh);',
+    '// utils.cpp：函数定义（公式与版本 1 相同）',
+    'double calculate_braking_distance(double speed_kmh) {',
+    '  const double DECELERATION = 4.5;',
+    '  double speed_mps = speed_kmh / 3.6;',
+    '  double distance = std::pow(speed_mps, 2) / (2 * DECELERATION);',
+    '  return distance;',
+    '}',
+    '// main.cpp：包含 utils.h 后调用',
+    'double required_distance = calculate_braking_distance(current_speed);'
+  ]};
+  function render(){const raw=$('speed').value.trim(),speed=Number(raw),valid=raw!==''&&Number.isFinite(speed)&&speed>=0&&speed<=140;$('v1').classList.toggle('active',version===1);$('v2').classList.toggle('active',version===2);$('codehead').textContent=version===1?'ee_39/variant_1/main.cpp · 关键代码':'ee_39/variant_2 · utils.h / utils.cpp / main.cpp';const active=version===1?[2,3,7]:[1,5,6,10];$('source').replaceChildren(...code[version].map((line,i)=>{const e=document.createElement('span');e.className='line'+(active.includes(i)?' active':'');const n=document.createElement('span');n.className='n';n.textContent=String(i+1);e.append(n,document.createTextNode(line));return e}));
+    const steps=version===1?['main.cpp 定义函数','main.cpp 调用函数','直接生成可执行程序']:['utils.h 声明接口','utils.cpp 提供函数实现','main.cpp 包含头文件并调用','构建时链接 utils.cpp'];$('stages').replaceChildren(...steps.map((s,i)=>{const e=document.createElement('div');e.className='stage'+(i===steps.length-1?' active':'');e.textContent=`${i+1}. ${s}`;return e}));if(!valid){$('result').textContent='请输入 0～140 之间的车速。';$('terminal').textContent='> 等待有效输入';return}const mps=speed/3.6,dist=mps*mps/9;$('result').textContent=`${speed.toFixed(0)} km/h ÷ 3.6 = ${mps.toFixed(4)} m/s；距离 = ${mps.toFixed(4)}² ÷ (2×4.5) = ${dist.toFixed(4)} m。两个源码版本使用同一公式，结果相同。`;$('terminal').textContent=`在车速为 ${speed.toFixed(0)} km/h 时， 最小刹车距离为： ${dist.toFixed(4)} 米\n[网页计算示意：小数统一显示 4 位；C++ 默认输出精度可能不同]`}
+  $('v1').onclick=()=>{version=1;render()};$('v2').onclick=()=>{version=2;render()};$('run').onclick=render;$('speed').onchange=render;document.querySelectorAll('[data-answer]').forEach(b=>b.onclick=()=>{const ok=b.dataset.answer==='right';$('feedback').className='feedback '+(ok?'good':'bad');$('feedback').textContent=ok?'正确。声明让 main.cpp 能编译，函数实现仍须在链接时提供。':'再想想：头文件只有声明，函数体在 utils.cpp 中。'});render();
+})();
+</script></body></html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>场景数据读写与持久化</title><link rel="stylesheet" href="../机制通用样式.css"></head><body><main>
+<div class="eyebrow">文件与流 · 数字资源 · 输入输出</div><h1>场景数据读写：解析格式与追加格式</h1>
+<p class="lead">比较三字段文本的读取与带标签文本的追加。两个格式不能直接互读；网页在内存中演示解析和写出，不改动磁盘文件。</p>
+<nav><a href="../资源目录.html">返回资源目录</a></nav>
+<section class="panel"><h2>读入 obstacle 日志与追加 detection 日志</h2><div class="grid"><div>
+<label>obstacles.log（示例 的三字段格式）<textarea id="input">Vehicle 50.5 10.2
+Pedestrian 20.1 -1.5
+Vehicle 150.8 0.0</textarea></label>
+<div class="toolbar"><button class="btn primary" id="parse">按示例 解析</button><button class="btn" id="reset">恢复两份样例</button></div>
+<div class="code"><div class="codehead">两种格式的核心读写语句</div><pre>while (log_file &gt;&gt; type &gt;&gt; distance &gt;&gt; speed) { ... }
+std::ofstream out("detection_log.txt", std::ios::app);
+out &lt;&lt; "类型: " &lt;&lt; type &lt;&lt; ", 距离: " &lt;&lt; distance &lt;&lt; "m\n";</pre></div></div>
+<div><div class="display"><h3>读取反馈</h3><div id="parsed" style="white-space:pre-line"></div></div><div class="toolbar"><label>新记录类型<input id="type" type="text" value="Pedestrian"></label><label>距离 m<input id="distance" type="number" step="any" value="25"></label><button class="btn" id="append">按示例 追加</button></div><div class="terminal" id="output" aria-live="polite"></div></div></div>
+<div class="notice">示例 的输入文件是仓库中的三行样例。示例 的输出另有格式；把 <code>detection_log.txt</code> 直接交给示例 的 <code>operator&gt;&gt;</code> 不能得到同一结构。网页的“保存”只是内存模拟。</div></section>
+<section class="panel"><h2>判断题</h2><p>示例 的“类型: Vehicle, 距离: 45.8m”能直接作为示例 的 <code>type distance speed</code> 三字段输入吗？</p><div class="quiz"><button class="btn" data-answer="wrong">可以，两种文件同格式</button><button class="btn" data-answer="right">不可以，需要转换或对应解析器</button></div><div id="feedback" class="feedback" aria-live="polite"></div></section>
+<p class="small">本页可离线运行；关闭页面后内存日志即消失，没有写磁盘或上传数据。</p>
+</main><script>
+(()=>{'use strict';const $=id=>document.getElementById(id);let logs=[];
+function renderLog(){$('output').textContent='detection_log.txt（内存模拟）\n'+(logs.length?logs.join('\n'):'[当前无记录]')}
+function parse(){const rows=$('input').value.split(/\r?\n/),records=[],bad=[];for(let i=0;i<rows.length;i++){const line=rows[i].trim();if(!line)continue;const parts=line.split(/\s+/);if(parts.length!==3||!Number.isFinite(Number(parts[1]))||!Number.isFinite(Number(parts[2])))bad.push(i+1);else records.push({type:parts[0],distance:Number(parts[1]),speed:Number(parts[2])})}
+$('parsed').textContent=records.map((r,i)=>'['+(i+1)+'] '+r.type+'：'+r.distance.toFixed(1)+' m，'+r.speed.toFixed(1)+' m/s').join('\n')+'\n成功解析 '+records.length+' 条；无效行 '+(bad.length?bad.join(', '):'无')+'。\n真实 operator>> 遇到首个提取失败会停止，本页逐行标错便于教学定位。'}
+$('parse').onclick=parse;$('append').onclick=()=>{const type=$('type').value.trim(),distance=Number($('distance').value);if(!/^[A-Za-z_][A-Za-z_0-9]{0,30}$/.test(type)||$('distance').value===''||!Number.isFinite(distance)||distance<0){$('output').textContent='输入无效：类型用英文标识符，距离用非负有限数。';return}logs.push('类型: '+type+', 距离: '+distance+'m');renderLog()};
+$('reset').onclick=()=>{$('input').value='Vehicle 50.5 10.2\nPedestrian 20.1 -1.5\nVehicle 150.8 0.0';$('type').value='Pedestrian';$('distance').value='25';logs=[];parse();renderLog()};
+document.querySelectorAll('[data-answer]').forEach(b=>b.onclick=()=>{const ok=b.dataset.answer==='right';$('feedback').textContent=ok?'正确：示例 需要空白分隔的 type distance speed；示例 输出带标签且缺 speed。':'两份文件的字段和分隔方式不同，不能直接互读。';$('feedback').className='feedback '+(ok?'good':'bad')});parse();renderLog()})();
+</script></body></html>
