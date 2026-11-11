@@ -49,13 +49,24 @@ npm run server
 
 ### 更新 C++ 课程门户
 
-课程门户位于 [source/courses/cpp/](source/courses/cpp/)，访问入口自动跳转到资源目录。更新时保留完整的相对目录结构、共享资源和入口跳转页，再执行构建检查。
+课程门户位于 [source/courses/cpp/](source/courses/cpp/)，默认展示 V1.02；V1.01 保存在其 V1.01 子目录。更新时复制真实资源文件，使用站内相对路径，保留相对目录结构后执行构建检查。
 
-网站保存的是课程资源副本，iCloud 中的修改不会自动同步。该课程目录按静态资源原样发布，保留原有页面设计与交互。
+网站保存的是课程资源副本，原始文件的修改不会自动同步。该课程目录按静态资源原样发布，保留原有页面设计与交互。
+
+使用 [增量同步脚本](tools/sync-course.py) 可一次完成资源复制、本机引用转换和过期文件清理，V1.01 归档不会被修改。需要 Python 3.11 或更高版本：
+
+```sh
+# 先预检，不修改任何文件
+python3 tools/sync-course.py "/你的/V1.02视觉样稿/dist" --check
+# 确认后同步，仅写入内容变化的文件
+python3 tools/sync-course.py "/你的/V1.02视觉样稿/dist"
+```
+
+没有内容变化时无需提交或重新部署。同步后仍应执行构建与必要的页面检查。
 
 ## 发布流程
 
-源代码维护在 `hexo` 分支。推送后，[GitHub Actions](https://github.com/cyliuu/cyliuu.github.io/actions) 自动安装依赖、构建并部署至 GitHub Pages。
+源代码维护在 `hexo` 分支。仅修改 README、docs 或 tools 不触发部署，必要时可在 Actions 页面手动运行。构建与部署使用独立任务，复用 npm 下载缓存；部署失败时只重试 Deploy，复用已验证的构建产物。涉及网站内容的推送后，[GitHub Actions](https://github.com/cyliuu/cyliuu.github.io/actions) 自动安装依赖、构建并部署至 GitHub Pages。
 
 ```sh
 npm run build

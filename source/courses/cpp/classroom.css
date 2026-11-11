@@ -1,0 +1,48 @@
+.classroom-portal { --classroom-card-padding: clamp(18px,4vw,40px); --classroom-block-gap: 12px; --classroom-stage-gap: 24px; }
+.classroom-portal :is(.case-intro,.classroom-stages) { padding: var(--classroom-card-padding); }
+.classroom-card { margin-top: 0; }
+.classroom-portal .case-background p { color: var(--muted); }
+.classroom-portal .case-background p + p { margin-top: 8px; }
+.classroom-knowledge { padding-left: 1.25em; margin-block: 10px; color: var(--muted); }
+.classroom-knowledge li + li { margin-top: 5px; }
+.classroom-fields { grid-template-columns: minmax(0,1fr) minmax(0,2fr); }
+.classroom-fields dd { white-space: normal !important; }
+.classroom-portal p code, .classroom-stage li code { padding: .1em .28em; border-radius: 4px; background: #18564f0d; color: var(--accent-strong); }
+.classroom-stage + .classroom-stage { margin-top: var(--classroom-stage-gap); padding-top: var(--classroom-stage-gap); border-top: 1px solid var(--line); }
+.classroom-stage-heading { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 16px; margin: 0 0 var(--classroom-block-gap); }
+.classroom-stage-heading h3 { display: grid; grid-template-columns: max-content minmax(0,1fr); align-items: start; column-gap: .35em; max-width: 100%; margin: 0; font-size: 1.12rem; color: var(--ink); }
+.classroom-stage-prefix { white-space: nowrap; }
+.classroom-stage-name { min-width: 0; overflow-wrap: anywhere; }
+.classroom-stage-body { display: flex; flex-direction: column; gap: var(--classroom-block-gap); color: var(--muted); }
+.classroom-stage-body > * { min-width: 0; margin-block: 0; }
+.classroom-portal :is(.case-background,.classroom-stage-body) :is(p,li) { overflow-wrap: anywhere; }
+.classroom-stage-body h5, .classroom-stage-body h6 { margin-block: 0; font-size: .95rem; color: var(--ink); }
+.classroom-stage-body :is(ol,ul) { margin-block: 0; padding-left: 1.5em; }
+.classroom-stage-body li + li { margin-top: 9px; }
+.classroom-stage-body li > p + p { margin-top: 6px; }
+.classroom-stage-body blockquote { margin: 0; padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; background: #f1f5ef; color: var(--ink); }
+.classroom-stage-body blockquote h2 { font-size: 1rem; margin-block: 0 8px; }
+.classroom-stage-body .code-panel { overflow: hidden; border: 1px solid #304c50; border-radius: 8px; background: #122b30; color: #e5f2ef; }
+.classroom-stage-body .code-panel pre { max-height: 36rem; background: #122b30; color: #e5f2ef; }
+.classroom-stage-body .classroom-output-panel pre { background: #0e2327; color: #d5efd8; }
+.classroom-output-panel { background: #0e2327; }
+.classroom-effect-media { width: min(100%,680px); margin-inline: auto; }
+.classroom-reference-image { width: min(100%,300px); }
+.classroom-effect-media img { width: 100%; height: auto; object-fit: contain; border-radius: 0; }
+.classroom-output { padding: 0; }
+.classroom-portal .case-jump-row { flex-wrap: nowrap; }
+.classroom-stage-jump { display: flex; align-items: center; gap: 6px; flex: 0 1 auto; min-width: 0; max-width: 36%; padding-inline: 0; color: var(--muted); font-size: .8rem; }
+.classroom-stage-jump > span { display: none; }
+.classroom-stage-links { display: flex; gap: 4px; min-width: 0; overflow-x: auto; scrollbar-width: thin; }
+.classroom-stage-chip { display: inline-flex; align-items: center; justify-content: center; flex: none; min-width: 28px; min-height: 36px; padding: 4px 6px; border: 0; border-radius: 6px; background: transparent; color: var(--accent-strong); font-family: var(--sans); font-size: .84rem; font-weight: 650; text-decoration: none; }
+.classroom-stage-chip:hover { border-color: #8eb8a0; background: var(--tint); }
+.classroom-stage-chip[aria-current] { border-color: var(--accent-strong); background: var(--accent-strong); color: white; }
+.classroom-stage-chip:focus-visible { outline-offset: -3px; }
+@media(max-width:660px) { .classroom-portal { --classroom-stage-gap: 18px; } }
+@media(max-width:660px) {
+  .classroom-portal .case-jump-row { column-gap: 10px; }
+  .classroom-stage-jump { max-width: 28%; }
+  .classroom-stage-links { gap: 2px; scrollbar-width: none; }
+  .classroom-stage-chip { min-width: 26px; }
+  .classroom-portal .catalogue-task-actions { align-self: center; gap: 8px; }
+}

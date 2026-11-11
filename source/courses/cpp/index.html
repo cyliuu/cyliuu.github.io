@@ -1,2 +1,352 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>C++语言程序设计 · 课程门户</title><meta http-equiv="refresh" content="0; url=资源目录.html"><script>location.replace("资源目录.html" + location.search + location.hash);</script></head><body><p><a href="资源目录.html">进入 C++语言程序设计课程门户</a></p><p><a href="/courses/">返回我的课程</a></p></body></html>
+<html lang="zh-CN" class="has-project-directory">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="C++ 语言程序设计课程门户 · 自动驾驶仿真系统项目V1.02">
+  <title>C++ 语言程序设计 · 自动驾驶仿真系统项目V1.02</title>
+  <link rel="stylesheet" href="preview.css">
+  <script src="navigation.js" defer></script>
+  <link rel="stylesheet" href="map.css">
+  <script src="project-data.js" defer></script>
+  <script src="task-samples.js" defer></script>
+  <script src="reading-data.js" defer></script>
+  <script src="effect-media-data.js" defer></script>
+  <script src="preview.js" defer></script>
+  <script src="exercises.js" defer></script>
+  <script src="diagram.js" defer></script>
+  <script src="map.js" defer></script>
+  <link rel="stylesheet" href="display-crop.css">
+  <script src="display-crop-data.js" defer></script>
+  <script src="display-crop.js" defer></script>
+</head>
+<body id="top">
+  <a class="skip" href="#main">跳至主要内容</a>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <a data-home-href="#top" class="brand" aria-label="C++语言程序设计 课程门户"><span class="mark" aria-hidden="true">C++语言程序设计</span><span class="brand-title"> 课程门户</span></a>
+      <nav aria-label="门户导航">
+        <a href="index.html#top" data-portal="home" aria-current="location">课程首页</a>
+        <a href="index.html#project-map" data-portal="map">项目地图</a>
+        <a href="index.html#project" data-portal="tasks">任务门户</a>
+        <a href="reading.html" data-portal="cases">案例门户</a>
+        <a href="classroom.html" data-portal="classroom">课堂门户</a>
+      </nav>
+      <span class="review-label">自动驾驶仿真系统项目V1.02</span>
+    </div>
+  </header>
+
+  <nav class="project-directory" aria-label="项目与任务悬浮目录">
+    <div class="shell project-directory-inner">
+      <div class="directory-row"><span>项目</span><div class="directory-links" id="directory-projects"></div></div>
+      <div class="directory-row directory-task-row"><span>任务</span><div class="directory-links" id="directory-tasks"></div></div>
+    </div>
+  </nav>
+
+  <main id="main" class="shell">
+    <section id="overview" class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="dot"></span> 自动驾驶仿真系统项目</p>
+        <h1 id="hero-title">C++ 语言<br>程序设计</h1>
+        <p class="hero-summary"><span>从第一条启动信息出发，</span><br><span>逐步搭建自动驾驶仿真系统。</span></p>
+        <a class="button primary" href="#project-map">查看项目地图 <span aria-hidden="true">↓</span></a>
+      </div>
+      <figure class="hero-art">
+        <div class="figure-heading">
+          <span class="figure-index">自动驾驶仿真</span>
+          <span>感知 · 决策 · 控制</span>
+        </div>
+        <svg viewBox="0 0 500 300" role="img" aria-labelledby="art-title art-description">
+          <title id="art-title">道路上的自动驾驶仿真车辆</title>
+          <desc id="art-description">俯视道路示意图。红灯亮起时，两车在停止线前等候，行人沿斑马线过街。绿灯亮起后，黄车先行，青色主车驶过路口后变道绕过封闭车道内的障碍物。绿色扇形表示主车的感知区域。</desc>
+          <defs>
+            <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse">
+              <path d="M24 0H0v24" fill="none" stroke="#749585" stroke-opacity=".16"/>
+            </pattern>
+            <linearGradient id="sense" x2="0" y2="1">
+              <stop stop-color="#e2f8b3" stop-opacity=".95"/>
+              <stop offset="1" stop-color="#8fc68f" stop-opacity=".16"/>
+            </linearGradient>
+            <clipPath id="hero-road-scene">
+              <rect x="8" y="6" width="484" height="283" rx="16"/>
+            </clipPath>
+            <g id="hero-road-cone">
+              <rect x="-7" y="3" width="14" height="4" rx="2" fill="#a36e42"/>
+              <path d="M-5 4L-1-7H1L5 4Z" fill="#cd935b" stroke="#fff3df" stroke-width="1.2"/>
+              <path d="M-2 0h4" stroke="#fff3df" stroke-width="2"/>
+            </g>
+          </defs>
+          <rect x="8" y="6" width="484" height="283" rx="16" fill="#edf4e8"/>
+          <rect x="8" y="6" width="484" height="283" rx="16" fill="url(#grid)"/>
+          <g clip-path="url(#hero-road-scene)">
+            <path d="M0 164H392C442 164 459 133 501 111" fill="none" stroke="#cbdace" stroke-width="98"/>
+            <path d="M0 164H392C442 164 459 133 501 111" fill="none" stroke="#7a9588" stroke-width="83"/>
+            <path d="M0 164H392C442 164 459 133 501 111" fill="none" stroke="#fffdf2" stroke-opacity=".92" stroke-width="2.5" stroke-dasharray="14 11"/>
+            <path d="M151 99v19m0 92v19" fill="none" stroke="#c9dac8" stroke-width="26" stroke-linecap="round"/>
+            <path d="M140 126h22m-22 11h22m-22 11h22m-22 11h22m-22 11h22m-22 11h22m-22 11h22m-22 11h22" fill="none" stroke="#fffdf2" stroke-width="4"/>
+            <path d="M134 123v34m0 14v34" fill="none" stroke="#fffdf2" stroke-width="2.5"/>
+            <path d="M208 185C238 185 255 143 297 143" fill="none" stroke="#cae7bc" stroke-width="2" stroke-dasharray="4 5"/>
+            <path d="M320 197l45-21h36v24h-81z" fill="#c79865" fill-opacity=".19" stroke="#edd5ac" stroke-opacity=".7" stroke-dasharray="4 4"/>
+            <use href="#hero-road-cone" x="323" y="197"/>
+            <use href="#hero-road-cone" x="342" y="188"/>
+            <use href="#hero-road-cone" x="361" y="179"/>
+            <g transform="translate(384 188)">
+              <rect x="-12" y="-8" width="24" height="16" rx="3" fill="#80684e" stroke="#fff2db" stroke-width="1.5"/>
+              <path d="M-7 5L-2-5M1 5l5-10" stroke="#edb571" stroke-width="3"/>
+            </g>
+            <g class="hero-traffic-vehicle" transform="translate(110 143)">
+              <rect x="-20" y="-10" width="41" height="20" rx="7" fill="#d0a373" stroke="#fff7e7" stroke-width="1.8"/>
+              <path d="M-6-7H5l4 3v8L5 7H-6z" fill="#f7dec1"/>
+              <path d="M15-5v2m0 6v2" stroke="#fff4d8" stroke-width="2.4" stroke-linecap="round"/>
+            </g>
+            <g class="hero-ego-vehicle" transform="translate(100 185)">
+              <path d="M25 0l76-33q17 33 0 66z" fill="url(#sense)" stroke="#e4f4c7" stroke-width="1.3"/>
+              <g fill="none" stroke="#f1f7dd" stroke-width="1.8">
+                <path class="hero-sense-arc" d="M60-15q9 15 0 30"/>
+                <path class="hero-sense-arc" d="M82-24q13 24 0 48"/>
+              </g>
+              <rect x="-26" y="-14" width="57" height="28" rx="10" fill="#1d554b" stroke="#fcfdf3" stroke-width="2"/>
+              <path d="M-6-10h15l6 5v10l-6 5H-6l-5-5v-10z" fill="#8bb4a1"/>
+              <path d="M20-8v4m0 8v4" stroke="#ecf6ba" stroke-width="3" stroke-linecap="round"/>
+            </g>
+            <g transform="translate(151 99)">
+              <g class="hero-walker">
+                <circle r="8" fill="#f6faeb" stroke="#6e9989" stroke-width="1.2"/>
+                <path d="M-4-1h8M-2-2v-3m4 3v-4" stroke="#3f7467" stroke-width="1.8" stroke-linecap="round"/>
+                <circle cy="2" r="2.3" fill="#3f7467"/>
+              </g>
+            </g>
+          </g>
+          <g transform="translate(83 77)">
+            <path d="M49 20v22" fill="none" stroke="#819b89" stroke-width="1.5" stroke-dasharray="4 3"/>
+            <rect width="58" height="24" rx="8" fill="#294e47" stroke="#c2d3bc" stroke-width="1.3"/>
+            <circle class="hero-signal-red" cx="12" cy="12" r="5" fill="#ff826f"/>
+            <circle class="hero-signal-amber" cx="29" cy="12" r="5" fill="#ffd278" opacity=".25"/>
+            <circle class="hero-signal-green" cx="46" cy="12" r="5" fill="#96e6aa" opacity=".25"/>
+          </g>
+          <path d="M172 108l28-35h17M251 172l-29 60h19" fill="none" stroke="#819b89" stroke-width="1.5" stroke-dasharray="4 4"/>
+          <circle cx="172" cy="108" r="3" fill="#5b8979"/>
+          <circle cx="251" cy="172" r="3" fill="#d7e9d8" stroke="#5b8979"/>
+          <path d="M386 207l19 25h44" fill="none" stroke="#a18b64" stroke-width="1.5" stroke-dasharray="4 4"/>
+          <circle cx="386" cy="207" r="3" fill="#a18b64"/>
+          <text x="224" y="78" fill="#3a5d52" font-size="14" letter-spacing="1">环境感知</text>
+          <text x="245" y="237" fill="#3a5d52" font-size="14" letter-spacing="1">自主决策</text>
+          <text x="403" y="252" fill="#685737" font-size="14" letter-spacing="1">车道封闭</text>
+        </svg>
+        <figcaption>八个项目，从开发环境搭建到系统集成</figcaption>
+      </figure>
+    </section>
+
+    <section class="course-strip" aria-labelledby="scope-title">
+      <div>
+        <p class="eyebrow">课程资源</p>
+        <h2 id="scope-title">课程概览</h2>
+      </div>
+      <dl class="stats">
+        <div><dt>课程项目</dt><dd>08</dd></div>
+        <div><dt>任务单元</dt><dd>37</dd></div>
+        <div><dt>教学案例</dt><dd>88</dd></div>
+        <div><dt>知识点</dt><dd>120</dd></div>
+      </dl>
+    </section>
+
+    <section id="project-map" class="project-map" aria-labelledby="map-title">
+      <header class="section-heading">
+        <div>
+          <p class="eyebrow">课程导航</p>
+          <h2 id="map-title">项目地图</h2>
+          <p>按课程顺序选项目，或看看每个项目在仿真系统中负责什么。</p>
+        </div>
+        <div class="map-switch" role="group" aria-label="地图视图">
+          <button type="button" data-map-mode="learning" aria-pressed="false" aria-controls="map-learning">学习路线</button>
+          <button type="button" data-map-mode="system" aria-pressed="true" aria-controls="map-system">系统关系</button>
+        </div>
+      </header>
+
+      <div class="map-views">
+        <div id="map-learning" class="learning-map" role="region" aria-label="学习路线" tabindex="0" hidden></div>
+        <div id="map-system" class="system-map">
+          <div class="map-side">
+            <section class="system-controls" aria-labelledby="flow-title">
+              <h3 id="flow-title">仿真演示</h3>
+              <div class="system-actions">
+                <div class="system-mode">
+                  <button type="button" id="flow-mode" aria-label="驾驶模式：自动驾驶" aria-expanded="false" aria-controls="flow-mode-options">自动驾驶</button>
+                  <div class="system-mode-options" id="flow-mode-options" role="group" aria-label="驾驶模式" hidden>
+                    <button type="button" data-driving-mode="auto" aria-pressed="true">自动驾驶</button>
+                    <button type="button" data-driving-mode="manual" aria-pressed="false">手动驾驶</button>
+                  </div>
+                </div>
+                <button type="button" id="flow-play">播放路径</button>
+                <button type="button" id="flow-next">下一步</button>
+              </div>
+              <div id="flow-status" aria-live="polite" aria-atomic="true">
+                <div class="flow-step-heading">
+                  <strong id="flow-stage">运行路径</strong>
+                  <span id="flow-progress">共 3 步</span>
+                </div>
+                <p id="flow-description">播放演示，或逐步查看。</p>
+              </div>
+            </section>
+
+            <div class="diagram-zoom-section">
+              <div class="diagram-zoom">
+                <button type="button" id="diagram-zoom" aria-controls="system-diagram" aria-pressed="false">放大地图</button>
+                <span id="diagram-pan-hint" hidden>滚动查看细节</span>
+              </div>
+            </div>
+            <div class="diagram-legend" aria-label="线条图例">
+              <span class="legend-setup">准备与启动</span>
+              <span class="legend-auto">自动驾驶数据</span>
+              <span class="legend-manual">手动驾驶指令</span>
+              <span class="legend-output">仿真与界面输出</span>
+            </div>
+          </div>
+          <figure class="diagram-frame" id="system-diagram" aria-label="系统关系地图"></figure>
+        </div>
+      </div>
+    </section>
+
+    <div id="project-list"></div>
+    <div id="other-projects"></div>
+
+    <section id="task" class="task" aria-labelledby="task-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">项目 1 · 基础任务 1</p>
+          <h1 id="task-title">通信数据解析</h1>
+        </div>
+        <span class="badge">任务页</span>
+      </div>
+      <nav class="section-tabs" aria-label="任务栏目">
+        <a href="#task-description" aria-current="location">任务描述</a>
+        <a href="#task-goals">任务目标</a>
+        <a href="#task-analysis">任务分析</a>
+        <a href="#task-practice">任务实施</a>
+        <a href="#task-summary">任务总结</a>
+        <a href="#task-exercises">思考练习</a>
+        <a href="#task-knowledge">知识清单</a>
+      </nav>
+
+      <section id="task-description" class="task-section">
+        <h3>任务描述</h3>
+        <p>车辆通信数据通常以二进制或十六进制形式传输，颜色、状态码和控制信号都需要经过解析才能转化为可理解的信息。本任务以CAN总线报文为应用背景，通过进制转换、数据存储和信息编码知识，完成典型通信字段的识别、拆分与解释，为后续车辆状态处理奠定数据基础。</p>
+      </section>
+
+      <section id="task-goals" class="task-section">
+        <h3>任务目标</h3>
+        <dl class="goal-list">
+          <div><dt>知识目标：</dt><dd><ol>
+            <li>理解计算机硬件五大部件与冯·诺依曼原理；</li>
+            <li>掌握进制转换方法与大小端字节序规则；</li>
+            <li>理解原码、反码、补码及字符编码方式。</li>
+          </ol></dd></div>
+          <div><dt>能力目标：</dt><dd><ol>
+            <li>能手动完成十六进制、十进制、二进制转换；</li>
+            <li>能按协议解析多字节数据的含义；</li>
+            <li>能独立撰写数据解析报告。</li>
+          </ol></dd></div>
+          <div><dt>素质目标：</dt><dd><ol>
+            <li>养成探究本质、理解底层的科学态度；</li>
+            <li>树立通信协议必须严格遵守的工程意识。</li>
+          </ol></dd></div>
+        </dl>
+      </section>
+
+      <section id="task-analysis" class="task-section">
+        <h3>任务分析</h3>
+        <p>完成“通信数据解析”，需要依次掌握两项关键能力：</p>
+        <ol>
+          <li>解析数值字段——能够拆分十六进制数据，并利用按权展开和进制转换得到实际数值（对应<a href="reading.html#c-001">案例 1</a>）；</li>
+          <li>解释状态字段——能够结合位模式、编码规则和字段含义，将报文中的状态码转化为车辆状态信息（对应<a href="reading.html#c-002">案例 2</a>）。</li>
+        </ol>
+        <p>在此基础上，<a href="#task-practice">任务 1</a>将综合运用上述方法，完成指定报文字段的提取、转换和结果输出。</p>
+      </section>
+
+      <section id="task-practice" class="task-section">
+        <h3>任务实施</h3>
+        <h4>任务1——CAN总线报文解析</h4>
+        <div class="teaching-grid">
+          <article class="reading-card" aria-labelledby="example-title">
+            <h5 id="example-title">1. 任务要求</h5>
+            <div class="task-requirements">
+              <p><strong>手动转换</strong><span>掌握十六进制、十进制和二进制之间的手动转换方法，再将 <code>0x7A</code> 转换成等值的十进制数和 8 位二进制数。</span></p>
+              <p><strong>提交报告</strong><span>记录完整计算步骤和两种进制的结果，整理成计算报告并提交。</span></p>
+            </div>
+          </article>
+          <details class="worksheet">
+            <summary>2. 报告模板</summary>
+            <div class="report-sheet">
+              <p class="report-title">CAN总线数据帧解析报告</p>
+              <dl class="report-identity">
+                <div><dt>姓名</dt><dd>待填写</dd></div>
+                <div><dt>学号</dt><dd>待填写</dd></div>
+              </dl>
+              <ol class="report-fields">
+                <li><strong>待解析数据</strong><span>十六进制原始值 <code>0x7A</code></span></li>
+                <li><strong>十六进制 → 十进制转换过程</strong><span>方法、计算步骤</span></li>
+                <li><strong>十六进制 → 二进制转换过程</strong><span>方法、计算步骤</span></li>
+                <li><strong>最终解析结果</strong><span>十进制结果、8 位二进制结果</span></li>
+              </ol>
+            </div>
+            <details class="report-source">
+              <summary>查看 Markdown 原模板</summary>
+              <pre class="text-sample"><code># CAN总线数据帧解析报告
+
+**姓名：[请在此处填写你的姓名]**
+**学号：[请在此处填写你的学号]**
+
+###### 1. 待解析数据
+- 十六进制原始值: 0x7A
+
+###### 2. 十六进制 -&gt; 十进制 转换过程
+- 方法: [请填写你使用的方法]
+- 计算: [请在此处展示你的详细计算步骤]
+
+###### 3. 十六进制 -&gt; 二进制 转换过程
+- 方法: [请填写你使用的方法]
+- 计算: [请在此处展示你的详细计算步骤]
+
+###### 4. 最终解析结果
+- 十进制: [请填写最终十进制结果]
+- 二进制: [请填写最终二进制结果]</code></pre>
+            </details>
+          </details>
+        </div>
+      </section>
+
+      <section id="task-summary" class="task-section">
+        <h3>任务总结</h3>
+        <p>掌握十六进制数值的拆分与转换、位模式和状态编码的解析方法后，能够建立“原始数据—编码规则—业务含义”的基本处理链路，为后续读取和计算车辆数据做好准备。</p>
+      </section>
+
+      <section id="task-exercises" class="task-section exercise-card" aria-labelledby="exercises-title">
+        <div class="exercise-heading">
+          <div>
+            <h3 id="exercises-title">思考练习</h3>
+            <p>点选后即时反馈，可以随时调整答案。</p>
+          </div>
+          <span class="badge">5 道单选 · 3 道多选 · 2 道判断</span>
+        </div>
+        <div id="exercise-questions"></div>
+      </section>
+
+      <section id="task-knowledge" class="task-section">
+        <h3>知识清单</h3>
+        <ol class="knowledge-list" start="4">
+          <li><a href="reading.html#k-004">计算机系统原理</a></li>
+          <li><a href="reading.html#k-005">计算机数据存储</a></li>
+          <li><a href="reading.html#k-006">进制转换与运算</a></li>
+          <li><a href="reading.html#k-007">信息表示与编码</a></li>
+          <li><a href="reading.html#k-008">非数值信息表示</a></li>
+        </ol>
+      </section>
+    </section>
+
+  </main>
+  <footer class="shell page-footer">
+    <span>C++语言程序设计 · 自动驾驶仿真系统项目V1.02</span>
+    <a href="#top">返回课程首页 ↑</a>
+  </footer>
+</body>
+</html>

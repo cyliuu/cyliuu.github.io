@@ -2,6 +2,10 @@ name: Build and deploy Hexo
 on:
   push:
     branches: [hexo]
+    paths-ignore:
+      - 'README.md'
+      - 'docs/**'
+      - 'tools/**'
   workflow_dispatch:
 permissions:
   contents: read
