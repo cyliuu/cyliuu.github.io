@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>知识机制 · C++语言程序设计</title>
+    <style>
+
+*, *::before, *::after { box-sizing: border-box; }
+:root {
+    --page: #f6f7f1;
+    --surface: #fffefb;
+    --ink: #203f40;
+    --muted: #4e6663;
+    --accent: #23736a;
+    --accent-strong: #18564f;
+    --tint: #e7f2e8;
+    --line: #dce7dd;
+    --line-strong: #a8c8b4;
+    --bg-body: #f6f7f1;
+    --bg-card: #fffefb;
+    --text-main: #203f40;
+    --text-muted: #4e6663;
+    --text-light: #789795;
+    --primary: #23736a;
+    --primary-hover: #18564f;
+    --primary-soft: #e7f2e8;
+    --primary-border: #8eb8a0;
+    --success: #1f6f54;
+    --success-soft: #e4f3ea;
+    --success-border: #82b89a;
+    --warning: #8c6223;
+    --warning-soft: #f6f1e3;
+    --warning-border: #d8c79b;
+    --danger: #b43c2f;
+    --danger-soft: #fbefee;
+    --danger-border: #e4b6af;
+    --purple: #674781;
+    --purple-soft: #f3eef4;
+    --purple-border: #cbb8cd;
+    --border: #dce7dd;
+    --border-light: #e5efe6;
+    --code-bg: #122b30;
+    --active-line: #1b383d;
+    --syn-kw: #a9d7fb;
+    --syn-keyword: #a9d7fb;
+    --syn-type: #92e1c6;
+    --syn-num: #ffe0a3;
+    --syn-number: #ffe0a3;
+    --syn-str: #bce9ac;
+    --syn-string: #bce9ac;
+    --syn-cmt: #a0b8b8;
+    --console-bg: #0e2327;
+    --console-text: #d5efd8;
+    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+}
+html { scroll-behavior: smooth; }
+button, .tab-btn, .ptr-nav-btn, .quiz-opt, .j-cell, .j-ptr-item, .row-strip, .bcell, .fbit {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+button:active, .quiz-opt:active { transform: scale(0.98); }
+.tabs, .ptr-sidebar { -webkit-overflow-scrolling: touch; }
+
+body {
+    font-family: var(--sans);
+    background-color: var(--page);
+    color: var(--ink);
+    margin: 0;
+    padding: 20px 16px 40px;
+    line-height: 1.55;
+}
+.page-shell {
+    max-width: 1220px;
+    margin: 0 auto;
+}
+.lab-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 18px;
+    padding: 16px 22px;
+    background: linear-gradient(118deg, #e9f3ed 10%, #f4f0e4 92%);
+    border: 1px solid #dae6d8;
+    border-radius: 18px;
+    box-shadow: 0 10px 26px rgba(32, 63, 64, 0.05);
+}
+.lab-topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.lab-badge {
+    background: var(--accent-strong);
+    color: #ffffff;
+    border: 1px solid var(--accent-strong);
+    font-size: 12.5px;
+    font-weight: 700;
+    padding: 5px 11px;
+    border-radius: 8px;
+    font-family: var(--mono);
+}
+.lab-kp-tag {
+    background: var(--surface);
+    color: var(--accent-strong);
+    border: 1px solid #a8c8b4;
+    font-size: 12.5px;
+    font-weight: 700;
+    padding: 4px 11px;
+    border-radius: 999px;
+}
+.lab-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--ink);
+    margin: 0;
+    letter-spacing: -0.02em;
+}
+.back-link {
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--accent-strong);
+    background: var(--surface);
+    border: 1px solid #a8c8b4;
+    padding: 8px 15px;
+    border-radius: 10px;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+.back-link:hover {
+    background: var(--accent-strong);
+    color: #ffffff;
+    border-color: var(--accent-strong);
+}
+.container {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    background: var(--surface);
+    border-radius: 18px;
+    border: 1px solid var(--line);
+    box-shadow: 0 10px 26px rgba(32, 63, 64, 0.05);
+    overflow: hidden;
+}
+.tabs, .nav {
+    display: flex;
+    gap: 6px;
+    padding: 8px 10px;
+    background-color: #eef4ec !important;
+    border-bottom: 1px solid var(--line) !important;
+    overflow-x: auto;
+    margin-bottom: 0 !important;
+}
+.tab-btn, .nav-item {
+    flex: 1;
+    min-width: 160px;
+    padding: 11px 16px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--muted);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    text-align: center;
+}
+.tab-btn:hover, .nav-item:hover {
+    background-color: var(--tint);
+    color: var(--accent-strong);
+}
+.tab-btn.active, .nav-item.active {
+    color: #ffffff !important;
+    background-color: var(--accent-strong) !important;
+    border-color: var(--accent-strong) !important;
+    box-shadow: 0 3px 10px rgba(24, 86, 79, 0.16);
+}
+.tab-content { display: none; padding: 22px; }
+.tab-content.active { display: block; }
+
+.workspace {
+    display: flex;
+    gap: 20px;
+    min-height: 460px;
+    align-items: stretch;
+}
+.code-panel {
+    flex: 0.95;
+    min-width: 0;
+    background: #122b30 !important;
+    color: #e5f2ef !important;
+    border: 1px solid #c5dad0 !important;
+    border-radius: 12px !important;
+    padding: 48px 0 16px !important;
+    font-family: var(--mono);
+    font-size: 13.2px;
+    line-height: 1.78;
+    font-variant-ligatures: none;
+    tab-size: 4;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start !important;
+    overflow-x: auto;
+    position: relative;
+    box-shadow: 0 8px 20px rgba(14, 35, 39, 0.12), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+.code-panel::before {
+    content: "C++ 源码";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 38px;
+    background: #e9f3ed;
+    border-bottom: 1px solid #cfe0d6;
+    color: #18564f;
+    font-family: var(--sans);
+    font-size: 13.5px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    letter-spacing: 0.02em;
+    border-radius: 0;
+}
+.code-panel::after {
+    content: "执行流对照";
+    position: absolute;
+    top: 0; right: 16px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    color: #476864;
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 600;
+    pointer-events: none;
+}
+.code-panel::-webkit-scrollbar, .code-area::-webkit-scrollbar { height: 7px; width: 7px; }
+.code-panel::-webkit-scrollbar-track, .code-area::-webkit-scrollbar-track { background: #183237; }
+.code-panel::-webkit-scrollbar-thumb, .code-area::-webkit-scrollbar-thumb { background: #527473; border-radius: 7px; }
+.code-line {
+    display: block;
+    padding: 2.5px 16px 2.5px 12px;
+    border-left: 3px solid transparent;
+    transition: background-color 0.18s ease, border-color 0.18s ease;
+    white-space: pre;
+    color: #e5f2ef !important;
+}
+.code-line:hover {
+    background-color: rgba(146, 225, 198, 0.06);
+}
+.code-line::before {
+    content: attr(data-line);
+    display: inline-block;
+    width: 24px;
+    min-width: 24px;
+    margin-right: 14px;
+    color: #6d8e90 !important;
+    text-align: right;
+    user-select: none;
+    font-weight: 500;
+}
+.code-line.active {
+    background-color: rgba(146, 225, 198, 0.14) !important;
+    border-left-color: #92e1c6 !important;
+    font-weight: 600;
+    color: #ffffff !important;
+}
+.code-line.active::before {
+    color: #92e1c6 !important;
+    font-weight: 700;
+}
+.code-panel span[style*="--syn-cmt"], .code-area .cmt, .code-area .comment {
+    color: var(--syn-cmt) !important;
+    font-style: italic;
+    font-weight: 400 !important;
+}
+.code-area {
+    background: #122b30 !important;
+    color: #e5f2ef !important;
+    font-family: var(--mono) !important;
+    font-size: 13.2px !important;
+    line-height: 1.78 !important;
+    font-variant-ligatures: none;
+}
+.code-area .kw, .code-area .keyword { color: var(--syn-kw) !important; }
+.code-area .type { color: var(--syn-type) !important; }
+.code-area .num, .code-area .number { color: var(--syn-num) !important; }
+.code-area .str, .code-area .string { color: var(--syn-str) !important; }
+.code-area .fn, .code-area .func { color: var(--syn-fn) !important; }
+.visual-panel {
+    flex: 1.35;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    background: #f3f7ee !important;
+    border: 1px solid #d4e2d5 !important;
+    border-radius: 14px;
+    padding: 18px;
+    position: relative;
+}
+.info-header {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 14px;
+    padding: 10px 14px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+}
+.info-item { display: flex; flex-direction: column; align-items: center; }
+.info-label { font-size: 12px; color: var(--muted); font-weight: 600; margin-bottom: 3px; }
+.info-value { font-family: var(--mono); font-size: 14.5px; font-weight: 800; color: var(--accent-strong); }
+
+.animation-stage {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 16px 12px;
+    min-height: 220px;
+    background: var(--surface);
+    border: 1px solid #d4e2d5;
+    border-radius: 12px;
+}
+.console {
+    background: #0e2327 !important;
+    color: #d5efd8 !important;
+    padding: 13px 16px;
+    border-radius: 10px;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.6;
+    min-height: 60px;
+    margin-top: 14px;
+    white-space: pre-wrap;
+    border: 1px solid #304c50;
+    border-left: 4px solid #92e1c6 !important;
+}
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 14px;
+    justify-content: flex-end;
+}
+button.ctrl-btn {
+    padding: 9px 16px;
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid #a8c8b4;
+    border-radius: 9px;
+    background-color: var(--surface);
+    color: var(--accent-strong);
+    transition: all 0.2s;
+    min-height: 40px;
+}
+button.ctrl-btn:hover:not(:disabled) { background-color: var(--tint); border-color: var(--accent); }
+button.ctrl-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+button.ctrl-btn.primary { background-color: var(--accent); color: #ffffff; border-color: var(--accent); }
+button.ctrl-btn.primary:hover:not(:disabled) { background-color: var(--accent-strong); border-color: var(--accent-strong); }
+
+.encyclopedia {
+    margin-top: 18px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    max-width: 100% !important;
+}
+.concept-card {
+    background: var(--surface) !important;
+    border: 1px solid var(--line) !important;
+    border-radius: 14px !important;
+    padding: 16px !important;
+    box-shadow: 0 4px 12px rgba(32, 63, 64, 0.03) !important;
+}
+.concept-card h4 {
+    color: var(--accent-strong) !important;
+    margin: 0 0 8px 0 !important;
+    border-bottom: 1px solid var(--line) !important;
+    padding-bottom: 8px !important;
+    font-size: 14.5px !important;
+    font-weight: 800 !important;
+}
+.concept-card p {
+    font-size: 13px !important;
+    color: var(--muted) !important;
+    line-height: 1.6 !important;
+    margin: 0 !important;
+}
+
+
+.resp-grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; width: 100%; }
+.resp-grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; width: 100%; }
+.resp-grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; width: 100%; }
+.resp-grid-5 { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; width: 100%; }
+.resp-grid-6 { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; width: 100%; }
+.resp-arrow-grid { display: grid; grid-template-columns: minmax(0, 1fr) 52px minmax(0, 1.2fr); gap: 12px; width: 100%; align-items: center; font-family: var(--mono); }
+@media (max-width: 960px) {
+    .resp-grid-6, .resp-grid-5 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .resp-grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 680px) {
+    .resp-grid-2, .resp-grid-3, .resp-arrow-grid { grid-template-columns: 1fr; }
+    .resp-grid-6, .resp-grid-5 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 1200px) {
+    .workspace { gap: 14px; }
+    .code-panel { font-size: 12.6px; }
+}
+@media (max-width: 1024px) {
+    .workspace {
+        flex-direction: column !important;
+        min-height: auto !important;
+        height: auto !important;
+        max-height: none !important;
+    }
+    .code-panel, .visual-panel {
+        flex: none !important;
+        width: 100% !important;
+        height: auto !important;
+        max-height: none !important;
+    }
+    .visual-panel { overflow: visible !important; }
+    .rec-layout, .mem-arch, .main-layout, .main-grid, .io-pipe, .vtable-grid, .obj-grid, .cpu-grid, .link-files {
+        grid-template-columns: 1fr !important;
+    }
+    .encyclopedia { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+    .quiz-opts { grid-template-columns: 1fr !important; }
+}
+@media (max-width: 680px) {
+    body { padding: 10px 8px 28px; }
+    .lab-topbar { padding: 12px 14px; }
+    .lab-title { font-size: 17px; }
+    .tab-content { padding: 14px 10px; }
+    .mem-split, .cmp-grid, .lib-cols, .copy-grid, .alias-grid, .jagged-wrap, .reg-grid, .btn-grid {
+        grid-template-columns: 1fr !important;
+    }
+    .byte-map { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+    .mat-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+    .encyclopedia { grid-template-columns: 1fr !important; }
+    .container { overflow: clip !important; }
+    .tabs { scrollbar-width: none; }
+    .tabs::-webkit-scrollbar, .ptr-sidebar::-webkit-scrollbar { display: none; }
+    .tab-btn, .ptr-nav-btn { min-height: 40px !important; }
+    .quiz-opt { min-height: 44px !important; padding: 11px 13px !important; }
+    .controls button.ctrl-btn { min-height: 40px !important; }
+    .controls {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 6px !important;
+        position: sticky !important;
+        bottom: 8px !important;
+        z-index: 30 !important;
+        background: rgba(246, 249, 243, 0.96) !important;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        padding: 8px !important;
+        margin-top: 12px !important;
+        border: 1px solid #c5dad0 !important;
+        border-radius: 12px !important;
+        box-shadow: 0 6px 18px rgba(18, 43, 48, 0.14) !important;
+    }
+    .controls:has(> :nth-child(3):last-child) {
+        grid-template-columns: 0.72fr 0.88fr 1.4fr !important;
+    }
+    .controls:has(> :nth-child(3):last-child) button.ctrl-btn:last-child {
+        grid-column: auto !important;
+    }
+    .controls button.ctrl-btn {
+        width: 100% !important;
+        flex: none !important;
+        padding: 8px 6px !important;
+        font-size: 12px !important;
+        text-align: center !important;
+        white-space: nowrap !important;
+    }
+    .controls button.ctrl-btn:last-child:nth-child(odd) {
+        grid-column: 1 / -1;
+    }
+}
+
+.hero-banner {
+    background: linear-gradient(118deg, #e9f3ed 10%, #f4f0e4 92%);
+    border: 1px solid #dae6d8;
+    border-radius: 22px;
+    padding: 32px 34px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 18px;
+    box-shadow: 0 12px 30px rgba(32, 63, 64, 0.05);
+}
+.filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+    background: var(--surface);
+    padding: 14px 18px;
+    border-radius: 16px;
+    border: 1px solid var(--line);
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 6px 18px rgba(32, 63, 64, 0.03);
+}
+.proj-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.pill-btn {
+    padding: 7px 14px;
+    border-radius: 9px;
+    border: 1px solid var(--line);
+    background: #f4f8f1;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.pill-btn:hover {
+    background: var(--tint);
+    color: var(--accent-strong);
+    border-color: #8eb8a0;
+}
+.pill-btn.active {
+    background: var(--accent-strong);
+    color: #ffffff;
+    border-color: var(--accent-strong);
+}
+.search-box {
+    padding: 9px 14px;
+    border-radius: 9px;
+    border: 1px solid #a8c8b4;
+    background: var(--surface);
+    color: var(--ink);
+    font-size: 13.5px;
+    min-width: 250px;
+    outline: none;
+}
+.search-box:focus { border-color: var(--accent-strong); box-shadow: 0 0 0 3px rgba(35, 115, 106, 0.14); }
+.portal-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+.portal-card {
+    text-decoration: none;
+    color: inherit;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.22s ease;
+    box-shadow: 0 6px 16px rgba(32, 63, 64, 0.04);
+}
+.portal-card:hover {
+    border-color: #8eb8a0;
+    background: #fbfdf9;
+    transform: translateY(-3px);
+    box-shadow: 0 14px 28px rgba(32, 63, 64, 0.10);
+}
+.pcard-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+.pcard-title {
+    font-size: 17.5px;
+    font-weight: 800;
+    color: var(--ink);
+    margin: 0 0 5px 0;
+    font-family: var(--mono);
+}
+.pcard-sub {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--accent-strong);
+    margin-bottom: 8px;
+}
+.pcard-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin: 0 0 14px 0;
+    flex: 1;
+}
+.pcard-foot {
+    padding-top: 10px;
+    border-top: 1px dashed var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 600;
+}
+@media (max-width: 1024px) { .portal-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px) {
+    .portal-grid { grid-template-columns: 1fr; }
+    .search-box { width: 100%; }
+}
+    
+/* Portal directory simplification */
+.hero-banner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+.mechanism-directory-title { margin: 0; font-size: clamp(22px, 3vw, 28px); color: var(--ink); }
+.pcard-title a { color: inherit; text-decoration: none; }
+.pcard-title a:hover { text-decoration: underline; }
+.mechanism-knowledge-links { display: flex; flex-wrap: wrap; gap: 6px 12px; }
+.mechanism-knowledge-link { color: inherit; font: inherit; text-decoration: underline; text-underline-offset: .18em; }
+.mechanism-knowledge-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+</style>
+</head>
+<body>
+<div class="page-shell">
+    <header class="hero-banner">
+<h1 class="mechanism-directory-title">知识机制演示</h1><a class="back-link" href="../reading.html">返回案例门户</a></header>
+
+    <div class="filter-bar">
+        <div class="proj-pills">
+            <button class="pill-btn active" onclick="filterProj('ALL', this)">全部 (4)</button>
+            <button class="pill-btn" onclick="filterProj('项目1', this)">项目1 开发环境搭建 (4)</button>
+        </div>
+        <input type="search" id="kw-input" class="search-box" placeholder="搜索机制或知识点" oninput="applyFilter()">
+    </div>
+
+    <div class="portal-grid" id="portal-grid">
+        
+        <article class="portal-card" data-proj="项目1" data-search="指令取指与执行周期 取指-译码-执行-写回周期、PC/IR/ALU 寄存器联动与五大硬件部件数据流 项目1 知识点4 · 计算机系统原理 知识点9 · 汇编体系" data-href="01_指令取指与执行.html" data-knowledge="4,9">
+            <div class="pcard-top">
+                <span class="lab-badge" style="background:#18564f;">底层架构与编译</span>
+                <span class="lab-kp-tag">项目1 · 开发环境搭建</span>
+            </div>
+            <h3 class="pcard-title"><a href="01_%E6%8C%87%E4%BB%A4%E5%8F%96%E6%8C%87%E4%B8%8E%E6%89%A7%E8%A1%8C.html">指令取指与执行周期</a></h3><p class="pcard-desc">取指-译码-执行-写回周期、PC/IR/ALU 寄存器联动与五大硬件部件数据流</p>
+            <div class="pcard-foot"><div class="mechanism-knowledge-links"><a class="mechanism-knowledge-link" href="../reading.html#k-004">知识点4 · 计算机系统原理</a><a class="mechanism-knowledge-link" href="../reading.html#k-009">知识点9 · 汇编体系</a></div></div></article>
+        
+        <article class="portal-card" data-proj="项目1" data-search="内存编址与大小端字节序 32位整数大小端内存字节排列翻转与二/十/十六进制 4 位分组联动换算 项目1 知识点5 · 计算机数据存储 知识点6 · 进制转换与运算" data-href="02_内存编址与字节序.html" data-knowledge="5,6">
+            <div class="pcard-top">
+                <span class="lab-badge" style="background:#18564f;">底层架构与编译</span>
+                <span class="lab-kp-tag">项目1 · 开发环境搭建</span>
+            </div>
+            <h3 class="pcard-title"><a href="02_%E5%86%85%E5%AD%98%E7%BC%96%E5%9D%80%E4%B8%8E%E5%AD%97%E8%8A%82%E5%BA%8F.html">内存编址与大小端字节序</a></h3><p class="pcard-desc">32位整数大小端内存字节排列翻转与二/十/十六进制 4 位分组联动换算</p>
+            <div class="pcard-foot"><div class="mechanism-knowledge-links"><a class="mechanism-knowledge-link" href="../reading.html#k-005">知识点5 · 计算机数据存储</a><a class="mechanism-knowledge-link" href="../reading.html#k-006">知识点6 · 进制转换与运算</a></div></div></article>
+        
+        <article class="portal-card" data-proj="项目1" data-search="机器数与补码运算 原码→反码→补码三步翻转计算器、加法代减法运算器与逆向求原码验证 项目1 知识点7 · 信息表示与编码" data-href="03_机器数与补码运算.html" data-knowledge="7">
+            <div class="pcard-top">
+                <span class="lab-badge" style="background:#18564f;">底层架构与编译</span>
+                <span class="lab-kp-tag">项目1 · 开发环境搭建</span>
+            </div>
+            <h3 class="pcard-title"><a href="03_%E6%9C%BA%E5%99%A8%E6%95%B0%E4%B8%8E%E8%A1%A5%E7%A0%81%E8%BF%90%E7%AE%97.html">机器数与补码运算</a></h3><p class="pcard-desc">原码→反码→补码三步翻转计算器、加法代减法运算器与逆向求原码验证</p>
+            <div class="pcard-foot"><div class="mechanism-knowledge-links"><a class="mechanism-knowledge-link" href="../reading.html#k-007">知识点7 · 信息表示与编码</a></div></div></article>
+        
+        <article class="portal-card" data-proj="项目1" data-search="C++ 编译与多文件链接 预处理-编译-汇编-链接四阶段产物透视、未决符号决议与 Makefile 增量构建 项目1 知识点10 · 简单项目构建方法 知识点11 · 复杂项目构建方法 知识点16 · Makefile" data-href="04_源文件编译与链接.html" data-knowledge="10,11,16">
+            <div class="pcard-top">
+                <span class="lab-badge" style="background:#18564f;">底层架构与编译</span>
+                <span class="lab-kp-tag">项目1 · 开发环境搭建</span>
+            </div>
+            <h3 class="pcard-title"><a href="04_%E6%BA%90%E6%96%87%E4%BB%B6%E7%BC%96%E8%AF%91%E4%B8%8E%E9%93%BE%E6%8E%A5.html">C++ 编译与多文件链接</a></h3><p class="pcard-desc">预处理-编译-汇编-链接四阶段产物透视、未决符号决议与 Makefile 增量构建</p>
+            <div class="pcard-foot"><div class="mechanism-knowledge-links"><a class="mechanism-knowledge-link" href="../reading.html#k-010">知识点10 · 简单项目构建方法</a><a class="mechanism-knowledge-link" href="../reading.html#k-011">知识点11 · 复杂项目构建方法</a><a class="mechanism-knowledge-link" href="../reading.html#k-016">知识点16 · Makefile</a></div></div></article>
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    </div>
+</div>
+<script>
+let curProj = 'ALL';
+function filterProj(p, btn) {
+    curProj = p;
+    document.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    applyFilter();
+}
+function applyFilter() {
+    const kw = document.getElementById('kw-input').value.trim().toLowerCase();
+    const point = kw.match(/^(?:知识点|kp)\s*0*(\d+)$/i);
+    const normalize = text => text.replace(/\s+/g, '').toLowerCase();
+    document.querySelectorAll('.portal-card').forEach(card => {
+        const matchProj = curProj === 'ALL' || card.dataset.proj === curProj;
+        const matchKw = !kw || (point ? card.dataset.knowledge.split(',').includes(String(Number(point[1]))) : normalize(card.dataset.search).includes(normalize(kw)));
+        card.style.display = matchProj && matchKw ? 'flex' : 'none';
+    });
+}
+document.getElementById('portal-grid').addEventListener('click', event => {
+    const card = event.target.closest('.portal-card');
+    if (card && !event.target.closest('a, button, input')) location.href = card.dataset.href;
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>机器数与补码运算</title>
+    <style>
+
+*, *::before, *::after { box-sizing: border-box; }
+:root {
+    --page: #f6f7f1;
+    --surface: #fffefb;
+    --ink: #203f40;
+    --muted: #4e6663;
+    --accent: #23736a;
+    --accent-strong: #18564f;
+    --tint: #e7f2e8;
+    --line: #dce7dd;
+    --line-strong: #a8c8b4;
+    --bg-body: #f6f7f1;
+    --bg-card: #fffefb;
+    --text-main: #203f40;
+    --text-muted: #4e6663;
+    --text-light: #789795;
+    --primary: #23736a;
+    --primary-hover: #18564f;
+    --primary-soft: #e7f2e8;
+    --primary-border: #8eb8a0;
+    --success: #1f6f54;
+    --success-soft: #e4f3ea;
+    --success-border: #82b89a;
+    --warning: #8c6223;
+    --warning-soft: #f6f1e3;
+    --warning-border: #d8c79b;
+    --danger: #b43c2f;
+    --danger-soft: #fbefee;
+    --danger-border: #e4b6af;
+    --purple: #674781;
+    --purple-soft: #f3eef4;
+    --purple-border: #cbb8cd;
+    --border: #dce7dd;
+    --border-light: #e5efe6;
+    --code-bg: #122b30;
+    --active-line: #1b383d;
+    --syn-kw: #a9d7fb;
+    --syn-keyword: #a9d7fb;
+    --syn-type: #92e1c6;
+    --syn-num: #ffe0a3;
+    --syn-number: #ffe0a3;
+    --syn-str: #bce9ac;
+    --syn-string: #bce9ac;
+    --syn-cmt: #a0b8b8;
+    --console-bg: #0e2327;
+    --console-text: #d5efd8;
+    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+}
+html { scroll-behavior: smooth; }
+button, .tab-btn, .ptr-nav-btn, .quiz-opt, .j-cell, .j-ptr-item, .row-strip, .bcell, .fbit {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+button:active, .quiz-opt:active { transform: scale(0.98); }
+.tabs, .ptr-sidebar { -webkit-overflow-scrolling: touch; }
+
+body {
+    font-family: var(--sans);
+    background-color: var(--page);
+    color: var(--ink);
+    margin: 0;
+    padding: 20px 16px 40px;
+    line-height: 1.55;
+}
+.page-shell {
+    max-width: 1220px;
+    margin: 0 auto;
+}
+.lab-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 18px;
+    padding: 16px 22px;
+    background: linear-gradient(118deg, #e9f3ed 10%, #f4f0e4 92%);
+    border: 1px solid #dae6d8;
+    border-radius: 18px;
+    box-shadow: 0 10px 26px rgba(32, 63, 64, 0.05);
+}
+.lab-topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.lab-badge {
+    background: var(--accent-strong);
+    color: #ffffff;
+    border: 1px solid var(--accent-strong);
+    font-size: 12.5px;
+    font-weight: 700;
+    padding: 5px 11px;
+    border-radius: 8px;
+    font-family: var(--mono);
+}
+.lab-kp-tag {
+    background: var(--surface);
+    color: var(--accent-strong);
+    border: 1px solid #a8c8b4;
+    font-size: 12.5px;
+    font-weight: 700;
+    padding: 4px 11px;
+    border-radius: 999px;
+}
+.lab-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--ink);
+    margin: 0;
+    letter-spacing: -0.02em;
+}
+.back-link {
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--accent-strong);
+    background: var(--surface);
+    border: 1px solid #a8c8b4;
+    padding: 8px 15px;
+    border-radius: 10px;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+.back-link:hover {
+    background: var(--accent-strong);
+    color: #ffffff;
+    border-color: var(--accent-strong);
+}
+.container {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    background: var(--surface);
+    border-radius: 18px;
+    border: 1px solid var(--line);
+    box-shadow: 0 10px 26px rgba(32, 63, 64, 0.05);
+    overflow: hidden;
+}
+.tabs, .nav {
+    display: flex;
+    gap: 6px;
+    padding: 8px 10px;
+    background-color: #eef4ec !important;
+    border-bottom: 1px solid var(--line) !important;
+    overflow-x: auto;
+    margin-bottom: 0 !important;
+}
+.tab-btn, .nav-item {
+    flex: 1;
+    min-width: 160px;
+    padding: 11px 16px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--muted);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    text-align: center;
+}
+.tab-btn:hover, .nav-item:hover {
+    background-color: var(--tint);
+    color: var(--accent-strong);
+}
+.tab-btn.active, .nav-item.active {
+    color: #ffffff !important;
+    background-color: var(--accent-strong) !important;
+    border-color: var(--accent-strong) !important;
+    box-shadow: 0 3px 10px rgba(24, 86, 79, 0.16);
+}
+.tab-content { display: none; padding: 22px; }
+.tab-content.active { display: block; }
+
+.workspace {
+    display: flex;
+    gap: 20px;
+    min-height: 460px;
+    align-items: stretch;
+}
+.code-panel {
+    flex: 0.95;
+    min-width: 0;
+    background: #122b30 !important;
+    color: #e5f2ef !important;
+    border: 1px solid #c5dad0 !important;
+    border-radius: 12px !important;
+    padding: 48px 0 16px !important;
+    font-family: var(--mono);
+    font-size: 13.2px;
+    line-height: 1.78;
+    font-variant-ligatures: none;
+    tab-size: 4;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start !important;
+    overflow-x: auto;
+    position: relative;
+    box-shadow: 0 8px 20px rgba(14, 35, 39, 0.12), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+.code-panel::before {
+    content: "C++ 源码";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 38px;
+    background: #e9f3ed;
+    border-bottom: 1px solid #cfe0d6;
+    color: #18564f;
+    font-family: var(--sans);
+    font-size: 13.5px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    letter-spacing: 0.02em;
+    border-radius: 0;
+}
+.code-panel::after {
+    content: "执行流对照";
+    position: absolute;
+    top: 0; right: 16px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    color: #476864;
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 600;
+    pointer-events: none;
+}
+.code-panel::-webkit-scrollbar, .code-area::-webkit-scrollbar { height: 7px; width: 7px; }
+.code-panel::-webkit-scrollbar-track, .code-area::-webkit-scrollbar-track { background: #183237; }
+.code-panel::-webkit-scrollbar-thumb, .code-area::-webkit-scrollbar-thumb { background: #527473; border-radius: 7px; }
+.code-line {
+    display: block;
+    padding: 2.5px 16px 2.5px 12px;
+    border-left: 3px solid transparent;
+    transition: background-color 0.18s ease, border-color 0.18s ease;
+    white-space: pre;
+    color: #e5f2ef !important;
+}
+.code-line:hover {
+    background-color: rgba(146, 225, 198, 0.06);
+}
+.code-line::before {
+    content: attr(data-line);
+    display: inline-block;
+    width: 24px;
+    min-width: 24px;
+    margin-right: 14px;
+    color: #6d8e90 !important;
+    text-align: right;
+    user-select: none;
+    font-weight: 500;
+}
+.code-line.active {
+    background-color: rgba(146, 225, 198, 0.14) !important;
+    border-left-color: #92e1c6 !important;
+    font-weight: 600;
+    color: #ffffff !important;
+}
+.code-line.active::before {
+    color: #92e1c6 !important;
+    font-weight: 700;
+}
+.code-panel span[style*="--syn-cmt"], .code-area .cmt, .code-area .comment {
+    color: var(--syn-cmt) !important;
+    font-style: italic;
+    font-weight: 400 !important;
+}
+.code-area {
+    background: #122b30 !important;
+    color: #e5f2ef !important;
+    font-family: var(--mono) !important;
+    font-size: 13.2px !important;
+    line-height: 1.78 !important;
+    font-variant-ligatures: none;
+}
+.code-area .kw, .code-area .keyword { color: var(--syn-kw) !important; }
+.code-area .type { color: var(--syn-type) !important; }
+.code-area .num, .code-area .number { color: var(--syn-num) !important; }
+.code-area .str, .code-area .string { color: var(--syn-str) !important; }
+.code-area .fn, .code-area .func { color: var(--syn-fn) !important; }
+.visual-panel {
+    flex: 1.35;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    background: #f3f7ee !important;
+    border: 1px solid #d4e2d5 !important;
+    border-radius: 14px;
+    padding: 18px;
+    position: relative;
+}
+.info-header {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 14px;
+    padding: 10px 14px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+}
+.info-item { display: flex; flex-direction: column; align-items: center; }
+.info-label { font-size: 12px; color: var(--muted); font-weight: 600; margin-bottom: 3px; }
+.info-value { font-family: var(--mono); font-size: 14.5px; font-weight: 800; color: var(--accent-strong); }
+
+.animation-stage {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 16px 12px;
+    min-height: 220px;
+    background: var(--surface);
+    border: 1px solid #d4e2d5;
+    border-radius: 12px;
+}
+.console {
+    background: #0e2327 !important;
+    color: #d5efd8 !important;
+    padding: 13px 16px;
+    border-radius: 10px;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.6;
+    min-height: 60px;
+    margin-top: 14px;
+    white-space: pre-wrap;
+    border: 1px solid #304c50;
+    border-left: 4px solid #92e1c6 !important;
+}
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 14px;
+    justify-content: flex-end;
+}
+button.ctrl-btn {
+    padding: 9px 16px;
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid #a8c8b4;
+    border-radius: 9px;
+    background-color: var(--surface);
+    color: var(--accent-strong);
+    transition: all 0.2s;
+    min-height: 40px;
+}
+button.ctrl-btn:hover:not(:disabled) { background-color: var(--tint); border-color: var(--accent); }
+button.ctrl-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+button.ctrl-btn.primary { background-color: var(--accent); color: #ffffff; border-color: var(--accent); }
+button.ctrl-btn.primary:hover:not(:disabled) { background-color: var(--accent-strong); border-color: var(--accent-strong); }
+
+.encyclopedia {
+    margin-top: 18px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    max-width: 100% !important;
+}
+.concept-card {
+    background: var(--surface) !important;
+    border: 1px solid var(--line) !important;
+    border-radius: 14px !important;
+    padding: 16px !important;
+    box-shadow: 0 4px 12px rgba(32, 63, 64, 0.03) !important;
+}
+.concept-card h4 {
+    color: var(--accent-strong) !important;
+    margin: 0 0 8px 0 !important;
+    border-bottom: 1px solid var(--line) !important;
+    padding-bottom: 8px !important;
+    font-size: 14.5px !important;
+    font-weight: 800 !important;
+}
+.concept-card p {
+    font-size: 13px !important;
+    color: var(--muted) !important;
+    line-height: 1.6 !important;
+    margin: 0 !important;
+}
+
+
+.resp-grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; width: 100%; }
+.resp-grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; width: 100%; }
+.resp-grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; width: 100%; }
+.resp-grid-5 { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; width: 100%; }
+.resp-grid-6 { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; width: 100%; }
+.resp-arrow-grid { display: grid; grid-template-columns: minmax(0, 1fr) 52px minmax(0, 1.2fr); gap: 12px; width: 100%; align-items: center; font-family: var(--mono); }
+@media (max-width: 960px) {
+    .resp-grid-6, .resp-grid-5 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .resp-grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 680px) {
+    .resp-grid-2, .resp-grid-3, .resp-arrow-grid { grid-template-columns: 1fr; }
+    .resp-grid-6, .resp-grid-5 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 1200px) {
+    .workspace { gap: 14px; }
+    .code-panel { font-size: 12.6px; }
+}
+@media (max-width: 1024px) {
+    .workspace {
+        flex-direction: column !important;
+        min-height: auto !important;
+        height: auto !important;
+        max-height: none !important;
+    }
+    .code-panel, .visual-panel {
+        flex: none !important;
+        width: 100% !important;
+        height: auto !important;
+        max-height: none !important;
+    }
+    .visual-panel { overflow: visible !important; }
+    .rec-layout, .mem-arch, .main-layout, .main-grid, .io-pipe, .vtable-grid, .obj-grid, .cpu-grid, .link-files {
+        grid-template-columns: 1fr !important;
+    }
+    .encyclopedia { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+    .quiz-opts { grid-template-columns: 1fr !important; }
+}
+@media (max-width: 680px) {
+    body { padding: 10px 8px 28px; }
+    .lab-topbar { padding: 12px 14px; }
+    .lab-title { font-size: 17px; }
+    .tab-content { padding: 14px 10px; }
+    .mem-split, .cmp-grid, .lib-cols, .copy-grid, .alias-grid, .jagged-wrap, .reg-grid, .btn-grid {
+        grid-template-columns: 1fr !important;
+    }
+    .byte-map { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+    .mat-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+    .encyclopedia { grid-template-columns: 1fr !important; }
+    .container { overflow: clip !important; }
+    .tabs { scrollbar-width: none; }
+    .tabs::-webkit-scrollbar, .ptr-sidebar::-webkit-scrollbar { display: none; }
+    .tab-btn, .ptr-nav-btn { min-height: 40px !important; }
+    .quiz-opt { min-height: 44px !important; padding: 11px 13px !important; }
+    .controls button.ctrl-btn { min-height: 40px !important; }
+    .controls {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 6px !important;
+        position: sticky !important;
+        bottom: 8px !important;
+        z-index: 30 !important;
+        background: rgba(246, 249, 243, 0.96) !important;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        padding: 8px !important;
+        margin-top: 12px !important;
+        border: 1px solid #c5dad0 !important;
+        border-radius: 12px !important;
+        box-shadow: 0 6px 18px rgba(18, 43, 48, 0.14) !important;
+    }
+    .controls:has(> :nth-child(3):last-child) {
+        grid-template-columns: 0.72fr 0.88fr 1.4fr !important;
+    }
+    .controls:has(> :nth-child(3):last-child) button.ctrl-btn:last-child {
+        grid-column: auto !important;
+    }
+    .controls button.ctrl-btn {
+        width: 100% !important;
+        flex: none !important;
+        padding: 8px 6px !important;
+        font-size: 12px !important;
+        text-align: center !important;
+        white-space: nowrap !important;
+    }
+    .controls button.ctrl-btn:last-child:nth-child(odd) {
+        grid-column: 1 / -1;
+    }
+}
+
+
+        :root { --accent: #257469; --accent-strong: #18564f; --tint: #e4f3ea; }
+        .lab-topbar { background: linear-gradient(118deg, #e5f1ec 8%, #edf2f4 92%); border-color: #c5dad6; }
+        .lab-badge { background: #18564f; }
+        .visual-panel { background: #f1f6f3 !important; }
+        
+
+        /* 严格复用溢出模拟器的 CSS 变量 */
+        
+
+        
+
+        .container {
+            max-width: 1050px;
+            width: 100%;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            margin-top: 20px;
+        }
+
+
+        /* 主导航 */
+        .nav { display: flex; background: #ebf2ec; padding: 6px; gap: 6px; border-bottom: 1px solid var(--border); }
+        .nav-item {
+            flex: 1; padding: 12px; text-align: center; cursor: pointer;
+            border-radius: 8px; font-weight: 600; color: var(--text-muted);
+            transition: 0.2s;
+        }
+        .nav-item.active { background: white; color: var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+
+        .content { padding: 25px 20px; }
+        .view { display: none; }
+        .view.active { display: block; }
+
+        /* 实验室侧边栏布局 */
+        .lab-layout { display: flex; flex-direction: column; gap: 20px; }
+        
+        /* 桌面端特有排版：提升断点到 960px，提前让侧边栏去上方，防止中间宽度挤压 */
+        @media (min-width: 960px) {
+            .lab-layout { flex-direction: row; }
+            .lab-sidebar { width: 220px; border-right: 1px solid var(--border); padding-right: 20px; flex-shrink: 0; }
+            .lab-main { flex: 1; overflow-x: hidden;}
+            
+            .horizontal-step {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 15px;
+            }
+            .horizontal-step .step-title {
+                margin-bottom: 0;
+                flex: 0 0 35%;
+            }
+            .horizontal-step .binary-grid {
+                flex: 1;
+                margin: 0;
+                justify-content: center; 
+                padding: 8px 12px;
+            }
+        }
+
+        /* 完全保留原样的标签样式 */
+        .lab-nav-item {
+            padding: 15px; margin-bottom: 8px; border-radius: 10px;
+            cursor: pointer; font-weight: 600; transition: 0.2s;
+            border: 1px solid transparent; background: #f4f8f1; color: var(--text-muted);
+        }
+        .lab-nav-item:hover { background: #ebf2ec; }
+        .lab-nav-item.active { background: #e7f2e8; border-color: #a8c8b4; color: var(--primary); }
+
+        .lab-view { display: none; }
+        .lab-view.active { display: block; }
+
+        /* 控件区域 */
+        .controls {
+            display: flex; flex-wrap: wrap; gap: 15px;
+            background: #f4f8f1; padding: 20px; border-radius: 12px;
+            margin-bottom: 20px; border: 1px solid var(--border); align-items: center;
+        }
+        
+        /* 保证电脑平板同行 */
+        .slider-group { display: flex; align-items: center; gap: 15px; flex: 1; min-width: 220px; }
+        /* 强制文字标签不换行 */
+        .slider-group label { font-weight: 600; white-space: nowrap; }
+        
+        input[type="range"] { flex: 1; accent-color: var(--primary); cursor: pointer; }
+        select { padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border); outline: none; font-size: 0.95rem; background: white; }
+
+        .decimal-hero {
+            font-size: 2.2rem; font-weight: 800; min-width: 75px; text-align: right; 
+            font-family: 'Consolas', monospace; letter-spacing: -1px;
+        }
+        .decimal-hero.positive { color: var(--success); }
+        .decimal-hero.negative { color: var(--danger); }
+
+        /* 步骤卡片 */
+        .step-card {
+            background: white; border: 1px solid var(--border); border-radius: 12px;
+            padding: 15px 20px; margin-bottom: 15px; border-left: 5px solid var(--primary);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .step-title { font-weight: 700; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 12px; }
+
+        /* 统一的二进制网格布局 */
+        .binary-grid {
+            display: flex; justify-content: center; flex-wrap: wrap; gap: 15px;
+            background: #f4f8f1; padding: 12px; border-radius: 10px; border: 1px solid var(--border);
+        }
+        .byte-group { display: flex; gap: 4px; flex-wrap: nowrap; justify-content: center; } 
+        .bit-box { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        
+        .bit-value {
+            width: 32px; height: 42px; display: flex; align-items: center; justify-content: center;
+            background: white; border: 2px solid var(--border); border-radius: 6px;
+            font-size: 1.1rem; font-weight: 700; transition: 0.2s;
+        }
+        .bit-index { font-size: 0.65rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; }
+
+        /* 状态颜色 */
+        .sign-bit .bit-value { border-color: var(--sign-border); background: var(--sign-bg); color: var(--sign-border); }
+        .is-negative .bit-value { border-color: var(--danger); background: #fef2f2; color: var(--danger); }
+        .clickable .bit-value { cursor: pointer; }
+        .clickable .bit-value:hover { transform: translateY(-2px); border-color: var(--primary); box-shadow: 0 4px 6px -1px rgba(35,115,106,0.2); }
+
+        /* 运算算式网格 */
+        .calc-grid {
+            background: #f4f8f1; padding: 25px; border-radius: 12px; border: 1px solid var(--border);
+            display: flex; flex-direction: column; align-items: center; gap: 12px;
+        }
+        
+        /* 确保算式行永远同行；op-mark 增加 flex-shrink 防止被挤压 */
+        .calc-row { display: flex; align-items: center; gap: 15px; width: 100%; justify-content: center; flex-wrap: nowrap; }
+        .op-mark { font-size: 1.8rem; font-weight: 900; width: 40px; text-align: center; color: var(--text-main); flex-shrink: 0; }
+        
+        /* 核心修复：强制算式内部的网格（也就是那9个方块）绝对不准换行，防止进位掉下去 */
+        .calc-row .binary-grid { flex-wrap: nowrap; }
+        
+        .divider-line { height: 3px; background: var(--border); width: 80%; max-width: 600px; margin: 5px 0; border-radius: 2px; }
+
+        .conclusion {
+            margin-top: 15px; padding: 15px; border-radius: 10px;
+            background: #f0fdf4; color: var(--success); border: 1px solid #bbf7d0;
+            text-align: center; font-weight: 700; font-size: 0.95rem;
+        }
+
+        /* 响应式断点 1：600px，仅处理顶部表单控件换行，绝不改变方块大小 */
+        @media (max-width: 600px) {
+            .content { padding: 15px 10px; }
+            .controls { padding: 15px 10px; gap: 10px; }
+            .slider-group { min-width: 100%; } 
+            .decimal-hero { font-size: 1.8rem; min-width: 50px; }
+            .calc-grid { padding: 15px 10px; }
+        }
+
+        /* 响应式断点 2：480px，严格对齐整型模拟器的策略！专门针对真手机屏幕的尺寸缩小 */
+        @media (max-width: 480px) {
+             /* 对齐整型模拟器的边距收紧 */
+            .step-card { padding: 12px 10px; }
+            .binary-grid { gap: 10px; padding: 10px; }
+            .byte-group { gap: 3px; }
+            /* 对齐整型模拟器的小尺寸设定 */
+            .bit-value { width: 26px; height: 36px; font-size: 0.9rem; } 
+            .bit-index { font-size: 0.55rem; }
+        }
+    
+
+    /* V1.02 Volantis Unified Typography, Mobile-First Responsive & Quiz Overrides */
+    html, body { overflow-x: hidden; max-width: 100%; }
+    .page-shell, .container, .workspace, .visual-panel, .code-panel, .ptr-shell, .ptr-main, .mem-arch, .heap-arena { min-width: 0 !important; max-width: 100% !important; }
+    body, button, input, select { font-family: var(--sans) !important; }
+    code, pre, .code-panel, .code-area, .console, .status-msg, .info-value, .mem-addr, .mem-val { font-family: var(--mono) !important; }
+    .container { max-width: 100% !important; width: 100% !important; margin: 0 !important; background: var(--surface) !important; border: 1px solid var(--line) !important; border-radius: 18px !important; }
+    .lab-topbar h1.lab-title { text-align: left !important; padding: 0 !important; margin: 0 !important; border: none !important; font-size: clamp(16px, 2.2vw, 20px) !important; color: var(--ink) !important; line-height: 1.35 !important; word-break: break-word !important; }
+    .lab-kp-tag { max-width: 100%; white-space: normal !important; line-height: 1.4; }
+    .panel { border: 1px solid var(--line) !important; border-radius: 14px !important; box-shadow: 0 8px 20px rgba(32, 63, 64, 0.05) !important; min-width: 0 !important; }
+    .panel .header { background: #e9f3ed !important; color: var(--accent-strong) !important; border-bottom: 1px solid var(--line) !important; font-size: 15px !important; padding: 12px 18px !important; }
+    .code-area { background: #122b30 !important; overflow-x: auto !important; font-size: 13.2px !important; }
+.panel .header { background: #e9f3ed !important; color: #18564f !important; border-bottom: 1px solid #cfe0d6 !important; font-family: var(--sans) !important; font-size: 13.5px !important; font-weight: 800 !important; height: 38px !important; min-height: 38px !important; box-sizing: border-box !important; padding: 0 16px !important; display: flex !important; align-items: center !important; justify-content: space-between !important; }
+.panel .header span { color: #476864 !important; font-size: 12px !important; font-weight: 600 !important; }
+    .line.active { background: #1b383d !important; border-left-color: #92e1c6 !important; }
+    .reg-area { background: #0e2327 !important; color: #e5f2ef !important; border-top: 1px solid #304c50 !important; }
+    .reg-item { color: #bdd3d1 !important; border-bottom-color: #304c50 !important; font-size: 13.5px !important; }
+    .reg-val { color: #92e1c6 !important; }
+    .simd-box { background: #153238 !important; border-color: #304c50 !important; color: #e5f2ef !important; }
+    .status-msg { background: #0e2327 !important; color: #d5efd8 !important; border-left: 4px solid #92e1c6 !important; font-size: 13.5px !important; padding: 13px 16px !important; }
+    .code-panel span[style*="var(--syn-"] { font-weight: 600; }
+    .bottom-bar button, .btn-grid button { min-height: 42px; font-size: 14px !important; padding: 9px 18px !important; border-radius: 9px !important; }
+    /* Unified Quiz Card */
+    .lab-quiz-card {
+        margin-top: 16px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 18px 20px;
+        box-shadow: 0 6px 16px rgba(32, 63, 64, 0.04);
+    }
+    .quiz-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+    .quiz-badge { background: var(--accent-strong); color: #ffffff; font-size: 11.5px; font-weight: 800; padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+    .quiz-q { font-size: 14.5px; color: var(--ink); line-height: 1.5; }
+    .quiz-opts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .quiz-opt {
+        text-align: left; padding: 10px 14px; border-radius: 10px;
+        border: 1.5px solid var(--line-strong); background: #f4f8f1;
+        color: var(--ink); font-size: 13px; font-weight: 700; cursor: pointer;
+        transition: all 0.2s; min-height: 44px; line-height: 1.4;
+    }
+    .quiz-opt:hover { background: var(--tint); border-color: var(--accent); }
+    .quiz-opt.right { background: var(--success-soft); border-color: var(--success); color: var(--success); }
+    .quiz-opt.wrong { background: var(--danger-soft); border-color: var(--danger); color: var(--danger); }
+    .quiz-fb { margin-top: 10px; font-size: 13px; font-weight: 700; line-height: 1.55; border-radius: 8px; }
+    .quiz-fb.ok { padding: 9px 12px; background: var(--success-soft); color: var(--success); border: 1px solid var(--success-border); }
+    .quiz-fb.err { padding: 9px 12px; background: var(--danger-soft); color: var(--danger); border: 1px solid var(--danger-border); }
+    
+
+    @media (max-width: 1024px) {
+        .workspace, .main-layout, .main-grid, .rec-layout {
+            display: flex !important;
+            flex-direction: column !important;
+            height: auto !important;
+            min-height: auto !important;
+        }
+        .panel { height: auto !important; min-height: 0 !important; }
+        .encyclopedia { grid-template-columns: repeat(2, 1fr) !important; }
+        .quiz-opts { grid-template-columns: 1fr !important; }
+    }
+    @media (max-width: 680px) {
+        body { padding: 10px 8px 28px !important; }
+        .lab-topbar { padding: 12px 14px !important; border-radius: 14px !important; }
+        .back-link { width: 100%; text-align: center; }
+        .tabs, .nav {
+            display: flex !important;
+            flex-wrap: nowrap !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch;
+            gap: 6px !important;
+            padding: 8px !important;
+        }
+        .tab-btn, .nav-item {
+            flex: 0 0 auto !important;
+            min-width: auto !important;
+            white-space: nowrap !important;
+            padding: 9px 13px !important;
+            font-size: 13px !important;
+        }
+        .tab-content { padding: 12px 10px !important; }
+        .visual-panel, .heap-arena, .display-card { padding: 12px 10px !important; }
+        .animation-stage { padding: 12px 8px !important; overflow-x: auto !important; max-width: 100% !important; min-height: auto !important; }
+        .code-panel, .code-area { font-size: 12px !important; overflow-x: auto !important; max-width: 100% !important; }
+        .binary-grid { padding: 10px 6px !important; gap: 8px !important; }
+        .byte-group { gap: 2px !important; }
+        .bit-value { width: 22px !important; height: 32px !important; font-size: 12px !important; }
+        .mem-table-wrap { overflow-x: auto !important; }
+        .cpu-grid, .mem-split, .lib-cols, .copy-grid, .vtable-grid, .io-pipe, .obj-grid, .cmp-grid, .mem-arch {
+            grid-template-columns: 1fr !important;
+        }
+        .bottom-bar { flex-direction: column !important; gap: 10px !important; }
+        .btn-group { width: 100% !important; }
+        .btn-group button { flex: 1 !important; }
+        .encyclopedia { grid-template-columns: 1fr !important; }
+        .controls { justify-content: stretch !important; padding: 12px 10px !important; }
+        .controls button.ctrl-btn { flex: 1 1 auto !important; }
+    }
+    
+    
+/* Portal knowledge backlinks */
+.lab-kp-tag { display: inline-flex; flex-wrap: wrap; gap: 4px 6px; }
+.mechanism-knowledge-link { color: inherit; font: inherit; text-decoration: underline; text-underline-offset: .18em; }
+.mechanism-knowledge-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+</style>
+</head>
+<body>
+<div class="page-shell">
+    <header class="lab-topbar">
+        <div class="lab-topbar-left">
+            <span class="lab-badge">底层架构与编译 03 / 26</span>
+            <h1 class="lab-title">机器数与补码运算</h1>
+            <span class="lab-kp-tag"><a class="mechanism-knowledge-link" href="../reading.html#k-007">知识点7 · 信息表示与编码</a></span>
+        </div>
+        <a class="back-link" href="index.html">← 返回知识机制总览</a>
+    </header>
+    <div class="container">
+    
+    <div class="nav">
+        <div id="nav1" class="nav-item active" onclick="switchMainView(1)">1. 补码计算器</div>
+        <div id="nav2" class="nav-item" onclick="switchMainView(2)">2. 特性验证器</div>
+    </div>
+
+    <div class="content">
+        <div id="mainView1" class="view active">
+            <div class="controls">
+                <div class="slider-group" style="flex: 0.4">
+                    <label>位宽:</label>
+                    <select id="bitWidth" onchange="initValue()">
+                        <option value="8">8位 (char)</option>
+                        <option value="16">16位 (short)</option>
+                    </select>
+                </div>
+                <div class="slider-group">
+                    <label style="display:none;">数值:</label> <input type="range" id="sliderDec" oninput="updateFromSlider('sliderDec')">
+                    <div id="valDec" class="decimal-hero negative">-5</div>
+                </div>
+            </div>
+
+            <div class="step-card">
+                <div class="step-title">① [原码] 绝对值转二进制，最高位赋符号</div>
+                <div id="yuanBits" class="binary-grid"></div>
+            </div>
+            <div class="step-card" style="border-left-color: #8b5cf6;">
+                <div class="step-title">② [反码] 正数不变，负数除符号位外全体取反</div>
+                <div id="fanBits" class="binary-grid"></div>
+            </div>
+            <div class="step-card" style="border-left-color: var(--success);">
+                <div class="step-title">③ [补码] 正数不变，负数反码末位加一 (支持点击位动态翻转)</div>
+                <div id="buBits" class="binary-grid clickable"></div>
+            </div>
+        </div>
+
+        <div id="mainView2" class="view">
+            <div class="lab-layout">
+                <div class="lab-sidebar">
+                    <div id="labNavItem1" class="lab-nav-item active" onclick="switchLabView(1)">特性一：加法代减法</div>
+                    <div id="labNavItem2" class="lab-nav-item" onclick="switchLabView(2)">特性二：逆向求原码</div>
+                </div>
+                
+                <div class="lab-main">
+                    <div id="labView1" class="lab-view active">
+                        <div class="controls">
+                            <div class="slider-group">
+                                <label>A:</label>
+                                <input type="range" id="sliderA" oninput="runLab1()">
+                                <div id="valA" class="decimal-hero">5</div>
+                            </div>
+                            <div class="slider-group">
+                                <label>减去 B:</label>
+                                <input type="range" id="sliderB" oninput="runLab1()">
+                                <div id="valB" class="decimal-hero">3</div>
+                            </div>
+                        </div>
+                        <div class="calc-grid">
+                            <div class="calc-row"><span class="op-mark"></span><div id="lab1_A" class="binary-grid" style="border:none; background:transparent; padding:0;"></div></div>
+                            <div class="calc-row"><span class="op-mark">+</span><div id="lab1_negB" class="binary-grid" style="border:none; background:transparent; padding:0;"></div></div>
+                            <div class="divider-line"></div>
+                            <div class="calc-row"><span class="op-mark">=</span><div id="lab1_res" class="binary-grid" style="border:none; background:transparent; padding:0;"></div></div>
+                        </div>
+                        <div id="lab1_text" class="conclusion"></div>
+                    </div>
+
+                    <div id="labView2" class="lab-view">
+                        <div class="controls">
+                            <div class="slider-group">
+                                <label>负数 X:</label>
+                                <input type="range" id="sliderX" oninput="runLab2()">
+                                <div id="valX" class="decimal-hero negative">-5</div>
+                            </div>
+                        </div>
+                        <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:15px; font-weight:600;">
+                            💡 证明：负数从补码逆向求原码的过程，与原码求补码的操作完全一致。
+                        </p>
+                        <div class="step-card horizontal-step" style="border-left-color: var(--text-muted);"><div class="step-title">1. [X] 的 原码 (目标对照)</div><div id="lab2_yuan" class="binary-grid"></div></div>
+                        <div class="step-card horizontal-step"><div class="step-title">2. [X] 的 反码</div><div id="lab2_fan" class="binary-grid"></div></div>
+                        <div class="step-card horizontal-step" style="border-left-color: var(--success);"><div class="step-title">3. [X] 的 补码 (真实存储)</div><div id="lab2_bu" class="binary-grid"></div></div>
+                        <div class="step-card horizontal-step" style="border-left-color: var(--warning);"><div class="step-title">4. 补码执行【非符号位取反】</div><div id="lab2_bu_inv" class="binary-grid"></div></div>
+                        <div class="step-card horizontal-step" style="border-left-color: var(--danger);"><div class="step-title">5. 在取反结果上【末位加 1】(神奇地还原出原码！)</div><div id="lab2_bu_bu" class="binary-grid"></div></div>
+                        <div id="lab2_text" class="conclusion"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    
+    <section class="lab-quiz-card">
+        <div class="quiz-head">
+            <span class="quiz-badge">随堂交互检验</span>
+            <strong class="quiz-q">8 位有符号整数 -5 的二进制补码表示是？</strong>
+        </div>
+        <div class="quiz-opts"><button class="quiz-opt" onclick="checkLabQuiz(this, False)">A. 10000101 (原码)</button>
+<button class="quiz-opt" onclick="checkLabQuiz(this, False)">B. 11111010 (反码)</button>
+<button class="quiz-opt" onclick="checkLabQuiz(this, True)">C. 11111011 (反码+1)</button></div>
+        <div class="quiz-fb" id="lab-quiz-fb" data-exp="正数 5 为 00000101，符号位为 1 取反得反码 11111010，末位加 1 得补码 11111011。"></div>
+    </section>
+    
+    <section class="encyclopedia">
+        <div class="concept-card"><h4>原码 (Sign-Magnitude)</h4><p>最高位为符号位（0正1负），其余位表示绝对值大小。直观但存在 +0 与 -0 双零问题，且无法直接做加减法。</p></div>
+<div class="concept-card"><h4>反码 (Ones' Complement)</h4><p>正数反码与原码相同；负数反码保持符号位为 1 不变，其余数值位逐位取反（0变1、1变0）。</p></div>
+<div class="concept-card"><h4>补码 (Two's Complement)</h4><p>正数补码与原码相同；负数补码等于其反码末位加 1。现代计算机统一使用补码存储有符号整数。</p></div>
+<div class="concept-card"><h4>模运算与加法代减法</h4><p>在固定 N 位模 2^N 环上，减去 B 等价于加上 (-B) 的补码，最高位溢出的进位自然丢弃，使 CPU 只需一套加法器。</p></div>
+    </section>
+</div>
+<script>
+
+    let bitW = 8;
+    let currentDec = -5n;
+
+    function switchMainView(n) {
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(v => v.classList.remove('active'));
+        document.getElementById('mainView' + n).classList.add('active');
+        document.getElementById('nav' + n).classList.add('active');
+        if(n === 1) renderCalculator();
+        if(n === 2) { runLab1(); runLab2(); }
+    }
+
+    function switchLabView(n) {
+        document.querySelectorAll('.lab-view').forEach(v => v.classList.remove('active'));
+        document.querySelectorAll('.lab-nav-item').forEach(v => v.classList.remove('active'));
+        document.getElementById('labView' + n).classList.add('active');
+        document.getElementById('labNavItem' + n).classList.add('active');
+        n === 1 ? runLab1() : runLab2();
+    }
+
+    function initValue() {
+        bitW = parseInt(document.getElementById('bitWidth').value);
+        let max = (1 << (bitW - 1)) - 1;
+        let min = -(1 << (bitW - 1));
+
+        let sDec = document.getElementById('sliderDec');
+        sDec.max = max; sDec.min = min; sDec.value = -5;
+        
+        let sA = document.getElementById('sliderA');
+        let sB = document.getElementById('sliderB');
+        sA.max = 127; sA.min = -128; sA.value = 5;
+        sB.max = 127; sB.min = -128; sB.value = 3;
+
+        let sX = document.getElementById('sliderX');
+        sX.max = -1; sX.min = -127; sX.value = -5;
+
+        updateFromSlider('sliderDec');
+        runLab1();
+        runLab2();
+    }
+
+    function updateFromSlider(sliderId) {
+        let val = parseInt(document.getElementById(sliderId).value);
+        let decEl = document.getElementById(sliderId.replace('slider', 'val'));
+        if (decEl) {
+            decEl.innerText = val;
+            decEl.className = 'decimal-hero ' + (val < 0 ? 'negative' : 'positive');
+        }
+        
+        if(sliderId === 'sliderDec') { 
+            currentDec = BigInt(val); 
+            renderCalculator(); 
+        }
+    }
+
+    function getTrueForm(val, w) {
+        if(val === -(1n << BigInt(w-1))) return null;
+        let abs = val < 0n ? -val : val;
+        let bin = abs.toString(2).padStart(w-1, '0');
+        return (val < 0n ? '1' : '0') + bin;
+    }
+
+    function getOnesComplement(val, w, trueFormStr) {
+        if(!trueFormStr) return null;
+        if(val >= 0n) return trueFormStr;
+        let res = '1';
+        for(let i=1; i<w; i++) res += trueFormStr[i] === '1' ? '0' : '1';
+        return res;
+    }
+
+    function getTwosComplement(val, w) {
+        let mask = (1n << BigInt(w)) - 1n;
+        return (val & mask).toString(2).padStart(w, '0');
+    }
+
+    function renderBinaryBlocks(containerId, binStr, isCarry = false, clickable = false, currentBitW = bitW) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        container.innerHTML = '';
+        
+        if(!binStr) { 
+            container.innerHTML = "<div style='color:var(--danger); font-weight:bold; padding:10px; font-size:0.9rem;'>超出了范围</div>"; 
+            return; 
+        }
+        
+        let bits = binStr.length;
+        if (isCarry && bits > currentBitW) {
+            const carryGroup = document.createElement('div');
+            carryGroup.className = 'byte-group';
+            carryGroup.appendChild(createBitBox('1', '丢弃', false, clickable, containerId, -1, true));
+            container.appendChild(carryGroup);
+            binStr = binStr.slice(-currentBitW);
+            bits = currentBitW;
+        }
+
+        for (let i = 0; i < bits; i += 8) {
+            const byteGroup = document.createElement('div');
+            byteGroup.className = 'byte-group';
+            for (let j = i; j < i + 8 && j < bits; j++) {
+                const isSign = (j === 0);
+                const bitVal = binStr[j];
+                const label = isSign ? "符号" : (bits - 1 - j).toString();
+                byteGroup.appendChild(createBitBox(bitVal, label, isSign, clickable, containerId, j));
+            }
+            container.appendChild(byteGroup);
+        }
+    }
+
+    function createBitBox(val, label, isSign, clickable, containerId, index, isCarryNode = false) {
+        const box = document.createElement('div');
+        box.className = 'bit-box' + (isSign ? ' sign-bit' : '');
+        if (isCarryNode) box.style.opacity = "0.4";
+        const valDiv = document.createElement('div');
+        valDiv.className = 'bit-value';
+        if (isSign && val === '1') box.classList.add('is-negative');
+        valDiv.innerText = val;
+        if (clickable && containerId === 'buBits') valDiv.onclick = () => toggleBit(index);
+        const indexDiv = document.createElement('div');
+        indexDiv.className = 'bit-index';
+        indexDiv.innerText = label;
+        box.appendChild(valDiv);
+        box.appendChild(indexDiv);
+        return box;
+    }
+
+    function toggleBit(i) {
+        let mask = 1n << BigInt(bitW - 1 - i);
+        let bu = BigInt('0b' + getTwosComplement(currentDec, bitW));
+        bu = bu ^ mask; 
+        if (bu & (1n << BigInt(bitW - 1))) {
+            currentDec = bu - (1n << BigInt(bitW));
+        } else {
+            currentDec = bu;
+        }
+        document.getElementById('sliderDec').value = currentDec.toString();
+        updateFromSlider('sliderDec');
+    }
+
+    function renderCalculator() {
+        let yuan = getTrueForm(currentDec, bitW);
+        let fan = getOnesComplement(currentDec, bitW, yuan);
+        let bu = getTwosComplement(currentDec, bitW);
+        renderBinaryBlocks('yuanBits', yuan, false, false, bitW);
+        renderBinaryBlocks('fanBits', fan, false, false, bitW);
+        renderBinaryBlocks('buBits', bu, false, true, bitW); 
+    }
+
+    function runLab1() {
+        let labBitW = 8;
+        updateFromSlider('sliderA');
+        updateFromSlider('sliderB');
+        let a = BigInt(document.getElementById('sliderA').value);
+        let b = BigInt(document.getElementById('sliderB').value);
+        let buA = getTwosComplement(a, labBitW);
+        let buNegB = getTwosComplement(-b, labBitW);
+        let sum = BigInt('0b' + buA) + BigInt('0b' + buNegB);
+        let mask = (1n << BigInt(labBitW)) - 1n;
+        let isCarry = sum > mask;
+        renderBinaryBlocks('lab1_A', buA, false, false, labBitW);
+        renderBinaryBlocks('lab1_negB', buNegB, false, false, labBitW);
+        renderBinaryBlocks('lab1_res', sum.toString(2).padStart(labBitW, '0'), isCarry, false, labBitW);
+        document.getElementById('lab1_text').innerText = `物理结论：直接使用加法器算 [A]补 + [-B]补 得到 [${a-b}]补 ，无需构建减法器。`;
+    }
+
+    function runLab2() {
+        let labBitW = 8;
+        updateFromSlider('sliderX');
+        let x = BigInt(document.getElementById('sliderX').value);
+        let yuan = getTrueForm(x, labBitW);
+        let fan = getOnesComplement(x, labBitW, yuan);
+        let bu = getTwosComplement(x, labBitW);
+        let bu_inv = bu[0]; 
+        for(let i = 1; i < labBitW; i++) bu_inv += (bu[i] === '1' ? '0' : '1');
+        let mask = (1n << BigInt(labBitW)) - 1n;
+        let bu_bu = ((BigInt('0b' + bu_inv) + 1n) & mask).toString(2).padStart(labBitW, '0');
+        renderBinaryBlocks('lab2_yuan', yuan, false, false, labBitW);
+        renderBinaryBlocks('lab2_fan', fan, false, false, labBitW);
+        renderBinaryBlocks('lab2_bu', bu, false, false, labBitW);
+        renderBinaryBlocks('lab2_bu_inv', bu_inv, false, false, labBitW);
+        renderBinaryBlocks('lab2_bu_bu', bu_bu, false, false, labBitW);
+        document.getElementById('lab2_text').innerText = `✅ 对称之美：无论是正推还是逆推，使用的都是“数值位取反，末位加一”！`;
+    }
+
+    window.onload = () => { initValue(); switchMainView(1); };
+
+
+    function checkLabQuiz(btn, isRight) {
+        const card = btn.closest('.lab-quiz-card');
+        card.querySelectorAll('.quiz-opt').forEach(b => b.classList.remove('right', 'wrong'));
+        btn.classList.add(isRight ? 'right' : 'wrong');
+        const fb = document.getElementById('lab-quiz-fb');
+        fb.className = 'quiz-fb ' + (isRight ? 'ok' : 'err');
+        fb.innerText = (isRight ? '✅ 回答正确！' : '❌ 再想一想：') + fb.dataset.exp;
+    }
+    
+</script>
+</body>
+</html>

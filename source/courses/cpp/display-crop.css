@@ -1,0 +1,28 @@
+.image-display-crop {
+  position: relative;
+  display: block;
+  width: 100%;
+  max-width: 680px;
+  margin-inline: auto;
+  aspect-ratio: var(--display-crop-ratio);
+  overflow: hidden;
+  border-radius: var(--display-window-radius, 0px);
+}
+.task-effect-media > img {
+  width: 100%;
+  max-width: 680px;
+  height: auto;
+  margin-inline: auto;
+}
+.image-display-crop > img {
+  position: absolute;
+  display: block;
+  width: var(--display-crop-width) !important;
+  height: auto !important;
+  max-width: none !important;
+  max-height: none !important;
+  left: var(--display-crop-left);
+  top: var(--display-crop-top);
+  margin: 0;
+  border-radius: 0 !important;
+}

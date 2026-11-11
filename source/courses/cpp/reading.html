@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>案例门户 · C++语言程序设计</title>
+  <link rel="stylesheet" href="preview.css">
+  <script src="navigation.js" defer></script>
+  <link rel="stylesheet" href="map.css">
+  <script src="project-data.js" defer></script>
+  <script src="reading-data.js" defer></script>
+  <script src="knowledge-content.js" defer></script>
+  <script src="mechanism-data.js" defer></script>
+  <script src="effect-media-data.js" defer></script>
+  <script src="preview.js" defer></script>
+  <link rel="stylesheet" href="display-crop.css">
+  <script src="display-crop-data.js" defer></script>
+  <script src="display-crop.js" defer></script>
+</head>
+<body id="top" class="reader case-reader">
+  <a class="skip" href="#main">跳至主要内容</a>
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <a data-home-href="index.html#top" class="brand" aria-label="C++语言程序设计 课程门户"><span class="mark" aria-hidden="true">C++语言程序设计</span><span class="brand-title"> 课程门户</span></a>
+      <nav aria-label="门户导航">
+        <a href="index.html#top">课程首页</a>
+        <a href="index.html#project-map">项目地图</a>
+        <a href="index.html#project">任务门户</a>
+        <a href="reading.html" aria-current="page">案例门户</a>
+        <a href="classroom.html">课堂门户</a>
+      </nav>
+      <span class="review-label">自动驾驶仿真系统项目</span>
+    </div>
+  </header>
+  <nav class="project-directory reader-directory" id="reader-directory" aria-label="案例页项目与任务悬浮目录" hidden>
+    <div class="shell project-directory-inner">
+      <div class="directory-row"><span>项目</span><div class="directory-links" id="reader-directory-projects"></div></div>
+      <div class="directory-row directory-task-row"><span>任务</span><div class="directory-links" id="reader-directory-tasks"></div></div>
+    </div>
+  </nav>
+  <main id="main" class="shell">
+    <section id="reading-preview" class="reading-page" aria-label="任务案例与知识"></section>
+    <template id="reading-samples">
+      <article id="c-ai-a" class="case-article" data-reading-sample="c-ai-a" aria-labelledby="c-ai-a-title" data-aigc-sample="true">
+        <header class="case-intro">
+          <div class="case-overview">
+            <div class="case-title">
+              <p class="eyebrow">案例 A</p>
+              <h2 id="c-ai-a-title">AIGC开源项目探索</h2>
+            </div>
+            <div class="case-background">
+              <h3 class="case-subhead">案例背景</h3>
+<p>学习编程语言就像学习一门外语，仅仅背诵单词和语法是远远不够的，更要看懂真实项目，理解其结构与表达习惯。在正式编写复杂代码之前，先以“探索官”的身份，利用 AIGC 作为向导，去窥探一个真实 C++ 项目的“五脏六腑”，建立对专业软件开发的宏观认知。</p>
+</div>
+          </div>
+          <section class="case-information">
+            <h3 class="case-subhead">案例信息</h3>
+<p class="frame-note">借助 AIGC 查找结构清晰的 C++ 开源项目，核验仓库地址后克隆到本地，按 <code>README.md</code> 了解项目结构与构建方法。无法联网时，可请 AIGC 模拟命令行工具的文件结构，认识 <code>src</code>、<code>include</code>、<code>CMakeLists.txt</code> 和 <code>README.md</code> 的作用。</p>
+<figure class="case-visual case-flow">
+              <figcaption><span>浏览开源项目的步骤</span><span>C++ 工程</span></figcaption>
+              <dl class="case-fields">
+                <div><dt>查询</dt><dd><code>AIGC</code></dd></div>
+                <div><dt>核验</dt><dd><code>GitHub</code></dd></div>
+                <div><dt>阅读</dt><dd><code>README.md</code></dd></div>
+              </dl>
+            </figure>
+          </section>
+        </header>
+        <div class="case-body"><div class="case-method case-method-compact"><h3>案例代码</h3><section class="case-prompt"><h4>提示词（Prompt）</h4><div class="case-prompt-body"><p>根据当前条件，选择联网或离线探索。</p>
+<p><strong>联网探索</strong></p>
+<p>请推荐一个结构清晰、文档完整、便于学习的 C++ 开源项目，并提供真实可访问的 GitHub 链接。请说明项目的主要功能，指出源文件、头文件、构建文件和 <code>README.md</code> 的位置，并根据项目说明介绍构建方法。</p>
+<p><strong>离线探索</strong></p>
+<p>我当前无法联网。请模拟一个简单 C++ 命令行工具的项目目录，以目录树展示 <code>src</code>、<code>include</code>、<code>CMakeLists.txt</code> 和 <code>README.md</code>，并分别解释它们的作用。请明确说明这是用于学习的模拟示例，不是真实开源仓库。</p></div></section><section class="aigc-commands"><p>联网探索时，核验仓库后可按以下命令查看项目结构：</p><div class="case-code-files"><figure class="code-panel" data-code-language="bash" data-book-excerpt="true"><figcaption><span>操作命令</span><span class="code-kind">Shell</span></figcaption><pre tabindex="0"><code># 用核验后的仓库地址替换下方占位地址，再克隆到本地
+git clone https://github.com/user/simple-calculator.git
+
+# 切换到克隆后的项目目录，查看项目结构
+cd simple-calculator
+ls</code></pre></figure></div></section></div>
+<div class="case-result"><h3>运行效果</h3><p>克隆并查看项目后，可以观察其头文件、源文件、构建脚本和项目说明。不同项目的目录结构可能不同，应以实际仓库中的文件为准。</p>
+<p>离线探索时，AIGC 应返回标明为模拟示例的项目目录，并说明源文件、头文件、构建文件和项目说明的分工。</p>
+<blockquote class="case-tip">[提示] 代码中的仓库地址和目录名仅为占位示例，不能直接照抄运行。请使用 AIGC 的联网搜索功能获取真实链接，核验后同时替换地址和目录名。</blockquote></div></div></article>
+
+      <article id="c-001" class="case-article" data-reading-sample="c-001" aria-labelledby="case-one-title">
+        <header class="case-intro">
+          <div class="case-overview">
+            <div class="case-title">
+              <p class="eyebrow">案例 1</p>
+              <h2 id="case-one-title">氛围灯颜色解析</h2>
+            </div>
+            <div class="case-background">
+              <h3 class="case-subhead">案例背景</h3>
+              <p>在现代智能汽车中，车载氛围灯已成为提升用户体验的重要配置。工程师通过车载网络发送指令控制氛围灯颜色，这些颜色指令通常使用紧凑的十六进制格式传输。作为一名车载软件工程师，需要正确解析从总线接收到的颜色数据，将其转换为 UI 界面能理解和显示的 0-255 范围十进制数值。</p>
+            </div>
+          </div>
+          <section class="case-information">
+            <h3 class="case-subhead">案例信息</h3>
+            <p class="frame-note">从 CAN 总线分析仪截获到一条控制氛围灯颜色的报文，核心数据为十六进制颜色值 <code>#2F80ED</code>，遵循网页颜色表示法 <code>#RRGGBB</code>：前两位 <code>2F</code> 为红色分量，中间两位 <code>80</code> 为绿色分量，后两位 <code>ED</code> 为蓝色分量。手动将这三个十六进制数分别转换为十进制整数。</p>
+            <figure class="case-visual">
+              <figcaption><span>氛围灯控制报文</span><code>#2F80ED</code></figcaption>
+              <dl class="case-fields color-fields">
+                <div><dt><i aria-hidden="true"></i>R 红</dt><dd><code>2F</code></dd></div>
+                <div><dt><i aria-hidden="true"></i>G 绿</dt><dd><code>80</code></dd></div>
+                <div><dt><i aria-hidden="true"></i>B 蓝</dt><dd><code>ED</code></dd></div>
+              </dl>
+            </figure>
+          </section>
+        </header>
+        <div class="case-body">
+          <div class="case-method case-method-compact">
+            <h3>案例代码</h3>
+            <pre class="text-sample"><code>红色分量 (R) 解析：2F
+按权展开法：(2F)₁₆ = 2 × 16¹ + 15 × 16⁰ = 32 + 15 = 47
+绿色分量 (G) 解析：80
+(80)₁₆ = 8 × 16¹ + 0 × 16⁰ = 128
+蓝色分量 (B) 解析：ED
+(ED)₁₆ = 14 × 16¹ + 13 × 16⁰ = 224 + 13 = 237</code></pre>
+          </div>
+          <div class="case-result">
+            <h3>运行效果</h3>
+            <div class="case-effect color-preview" aria-hidden="true"></div>
+            <p>最终得到氛围灯颜色的十进制 RGB 值：(47, 128, 237)。</p>
+          </div>
+        </div>
+      </article>
+
+      <article id="c-002" class="case-article" data-reading-sample="c-002" aria-labelledby="case-two-title">
+        <header class="case-intro">
+          <div class="case-overview">
+            <div class="case-title">
+              <p class="eyebrow">案例 2</p>
+              <h2 id="case-two-title">行车状态码解码</h2>
+            </div>
+            <div class="case-background">
+              <h3 class="case-subhead">案例背景</h3>
+              <p>在车辆的远程诊断和数据记录系统中，为了节约存储空间和网络带宽，车辆状态信息通常打包成紧凑的二进制数据帧发送回数据中心。作为车辆诊断工程师，需要从原始十六进制数据流中精确解码出车辆在某一时刻的关键运行状态。</p>
+            </div>
+          </div>
+          <section class="case-information">
+            <h3 class="case-subhead">案例信息</h3>
+            <p class="frame-note">一辆测试车通过串口发送回一个 4 字节状态码：<code>0x01 0x02 0x00 0x64</code>。协议规定：第 1 字节为挡位（<code>0x01</code> 代表 D 挡），第 2 字节为驾驶模式（<code>0x02</code> 代表舒适模式），第 3、4 字节组成 16 位无符号整数表示车速（单位 km/h，采用大端字节序）。根据协议解析挡位、驾驶模式和车速。</p>
+            <figure class="case-visual">
+              <figcaption><span>行车状态报文</span><span>4 字节</span></figcaption>
+              <dl class="case-fields status-fields">
+                <div><dt>挡位</dt><dd><code>01</code></dd></div>
+                <div><dt>模式</dt><dd><code>02</code></dd></div>
+                <div><dt>车速</dt><dd><code>00 64</code></dd></div>
+              </dl>
+            </figure>
+          </section>
+        </header>
+        <div class="case-body">
+          <div class="case-method case-method-compact">
+            <h3>案例代码</h3>
+            <pre class="text-sample"><code>1. 挡位解析：第1字节 0x01
+(01)₁₆ = 1 × 16⁰ = 1 → 查表得 D（前进挡）
+2. 驾驶模式解析：第2字节 0x02
+(02)₁₆ = 2 → 查表得 舒适模式
+3. 车速解析：第3、4字节 0x00 0x64（大端：高位在前）
+组合为 0x0064：(0064)₁₆ = 6 × 16¹ + 4 × 16⁰ = 100 km/h</code></pre>
+          </div>
+          <div class="case-result">
+            <h3>运行效果</h3>
+            <p>解码结果：D 挡、舒适模式、车速 100 km/h。</p>
+          </div>
+          <blockquote class="case-tip">[提示] 若协议规定小端字节序，<code>0x01 0x2C</code> 应组合为 <code>0x2C01</code>（11265 km/h），结果明显错误——字节序是通信协议中必须严格遵守的“铁律”。</blockquote>
+        </div>
+      </article>
+
+      <article id="c-003" class="case-article" data-reading-sample="c-003" aria-labelledby="c-003-title">
+        <header class="case-intro">
+          <div class="case-overview">
+            <div class="case-title">
+              <p class="eyebrow">案例 3</p>
+              <h2 id="c-003-title">欢迎横幅打印</h2>
+            </div>
+            <div class="case-background">
+              <h3 class="case-subhead">案例背景</h3>
+              <p>在真实汽车开发中，中控系统、液晶仪表盘在车辆启动时都会先展示一个启动画面，是用户与车辆智能系统的第一次“握手”。作为初级车载软件工程师，第一个任务就是编写一个启动程序，把抽象的代码思想转化为能被执行、有实际输出的应用程序。</p>
+            </div>
+          </div>
+          <section class="case-information">
+            <h3 class="case-subhead">案例信息</h3>
+            <p class="frame-note">编写一个单文件 C++ 程序 <code>main.cpp</code>，使用 <code>std::cout</code> 在控制台打印一个由 ASCII 字符组成的多行欢迎横幅，包含简单的汽车图案和欢迎词。</p>
+            <figure class="case-visual case-flow">
+              <figcaption><span>从源文件到欢迎横幅</span><span>单文件</span></figcaption>
+              <dl class="case-fields">
+                <div><dt>源文件</dt><dd><code>main.cpp</code></dd></div>
+                <div><dt>输出语句</dt><dd><code>std::cout</code></dd></div>
+                <div><dt>终端效果</dt><dd>ASCII 横幅</dd></div>
+              </dl>
+            </figure>
+          </section>
+        </header>
+        <div class="case-body">
+          <div class="case-method case-method-compact">
+            <h3>案例代码</h3>
+            <div class="case-code-files">
+              <figure class="code-panel" data-code-language="cpp">
+                <figcaption><span>main.cpp</span><span class="code-kind">C++</span></figcaption>
+                <pre tabindex="0"><code>#include &lt;iostream&gt;
+
+int main() {
+    std::cout &lt;&lt; "******************************************" &lt;&lt; std::endl;
+    std::cout &lt;&lt; "**                                      **" &lt;&lt; std::endl;
+    std::cout &lt;&lt; "** Welcome to the Auto Driving System!  **" &lt;&lt; std::endl;
+    std::cout &lt;&lt; "**                                      **" &lt;&lt; std::endl;
+    std::cout &lt;&lt; "**       _______                        **" &lt;&lt; std::endl;
+    std::cout &lt;&lt; "**      //  | |  \\                      **" &lt;&lt; std::endl;
+    std::cout &lt;&lt; "** ,----'---| | O |---.                 **" &lt;&lt; std::endl;
+    std::cout &lt;&lt; "** '----(O)-----(O)---'                 **" &lt;&lt; std::endl;
+    std::cout &lt;&lt; "**                                      **" &lt;&lt; std::endl;
+    std::cout &lt;&lt; "******************************************" &lt;&lt; std::endl;
+    return 0;
+}
+</code></pre>
+              </figure>
+            </div>
+          </div>
+          <div class="case-result">
+            <h3>运行效果</h3>
+            <div class="case-effect case-terminal">
+              <div class="case-terminal-heading"><span>终端</span><span>实际输出</span></div>
+              <div class="case-terminal-body">
+                <figure class="code-panel terminal-command">
+                  <figcaption><span>构建与运行命令</span></figcaption>
+                  <pre tabindex="0"><code>g++ main.cpp -o welcome
+./welcome</code></pre>
+                </figure>
+                <div class="case-run-outputs">
+                  <figure class="code-panel">
+                    <figcaption><span>欢迎横幅</span></figcaption>
+                    <pre tabindex="0"><code>******************************************
+**                                      **
+** Welcome to the Auto Driving System!  **
+**                                      **
+**       _______                        **
+**      //  | |  \                      **
+** ,----'---| | O |---.                 **
+** '----(O)-----(O)---'                 **
+**                                      **
+******************************************
+</code></pre>
+                  </figure>
+                </div>
+              </div>
+            </div>
+            <p>编译运行后，控制台显示一个由 <code>*</code> 组成的边框、内含 ASCII 汽车图案与欢迎词的横幅，直观宣告仿真系统的启动。</p>
+          </div>
+        </div>
+      </article>
+
+      <article id="c-004" class="case-article" data-reading-sample="c-004" aria-labelledby="c-004-title">
+        <header class="case-intro">
+          <div class="case-overview">
+            <div class="case-title">
+              <p class="eyebrow">案例 4</p>
+              <h2 id="c-004-title">欢迎信息模块化</h2>
+            </div>
+            <div class="case-background">
+              <h3 class="case-subhead">案例背景</h3>
+              <p>将所有代码都放在 <code>main.cpp</code> 里看似简单，但随着功能增多，文件会变得臃肿、难以维护，团队协作时多名工程师无法同时修改同一文件。专业实践要求模块化——把不同功能的代码拆分到不同文件，让每个文件只负责一件事。</p>
+            </div>
+          </div>
+          <section class="case-information">
+            <h3 class="case-subhead">案例信息</h3>
+            <p class="frame-note">将<a href="#c-003">案例 3「欢迎横幅打印」</a>的欢迎信息显示功能进行模块化拆分：创建头文件 <code>greeter.h</code> 声明 <code>void displayWelcomeMessage();</code> 并用 <code>#pragma once</code> 防止重复包含；创建源文件 <code>greeter.cpp</code> 实现该函数；修改 <code>main.cpp</code> 通过 <code>#include "greeter.h"</code> 引入声明并直接调用。</p>
+            <figure class="case-visual case-flow">
+              <figcaption><span>欢迎模块的文件分工</span><span>3 个文件</span></figcaption>
+              <dl class="case-fields">
+                <div><dt>接口声明</dt><dd><code>greeter.h</code></dd></div>
+                <div><dt>函数实现</dt><dd><code>greeter.cpp</code></dd></div>
+                <div><dt>入口调用</dt><dd><code>main.cpp</code></dd></div>
+              </dl>
+            </figure>
+          </section>
+        </header>
+        <div class="case-body">
+          <div class="case-method case-method-compact">
+            <h3>案例代码</h3>
+            <div class="case-code-files">
+              <figure class="code-panel" data-code-language="cpp">
+                <figcaption><span>greeter.h</span><span class="code-kind">C++</span></figcaption>
+                <pre tabindex="0"><code>#pragma once
+void displayWelcomeMessage();
+</code></pre>
+              </figure>
+              <figure class="code-panel" data-code-language="cpp">
+                <figcaption><span>greeter.cpp</span><span class="code-kind">C++</span></figcaption>
+                <pre tabindex="0"><code>#include "greeter.h"
+#include &lt;iostream&gt;
+
+void displayWelcomeMessage() {
+    std::cout &lt;&lt; "******************************************" &lt;&lt; std::endl;
+    std::cout &lt;&lt; "** Welcome to the Auto Driving System!  **" &lt;&lt; std::endl;
+    std::cout &lt;&lt; "******************************************" &lt;&lt; std::endl;
+}
+</code></pre>
+              </figure>
+              <figure class="code-panel" data-code-language="cpp">
+                <figcaption><span>main.cpp</span><span class="code-kind">C++</span></figcaption>
+                <pre tabindex="0"><code>#include "greeter.h"
+
+int main() {
+    displayWelcomeMessage();
+    return 0;
+}
+</code></pre>
+              </figure>
+            </div>
+          </div>
+          <div class="case-result">
+            <h3>运行效果</h3>
+            <div class="case-effect case-terminal">
+              <div class="case-terminal-heading"><span>终端</span><span>实际输出</span></div>
+              <div class="case-terminal-body">
+                <figure class="code-panel terminal-command">
+                  <figcaption><span>构建与运行命令</span></figcaption>
+                  <pre tabindex="0"><code>g++ main.cpp greeter.cpp -o welcome
+./welcome</code></pre>
+                </figure>
+                <div class="case-run-outputs">
+                  <figure class="code-panel">
+                    <figcaption><span>模块化欢迎横幅</span></figcaption>
+                    <pre tabindex="0"><code>******************************************
+** Welcome to the Auto Driving System!  **
+******************************************
+</code></pre>
+                  </figure>
+                </div>
+              </div>
+            </div>
+            <p>编译运行后，控制台显示三行横幅，保留原有的欢迎词。拆分后，<code>main.cpp</code> 变得简洁，欢迎功能成为独立可复用的模块。</p>
+          </div>
+        </div>
+      </article>
+
+      <article id="c-ext-a1" class="case-article" data-reading-sample="c-ext-a1" aria-labelledby="c-ext-a1-title">
+        <header class="case-intro">
+          <div class="case-overview">
+            <div class="case-title">
+              <p class="eyebrow">拓展案例 A1</p>
+              <h2 id="c-ext-a1-title">项目跨平台构建</h2>
+            </div>
+            <div class="case-background">
+              <h3 class="case-subhead">案例背景</h3>
+              <p>在专业软件开发领域，“在我电脑上能跑”是一句禁忌语。一个成功的软件产品必须能在不同操作系统和开发环境中被稳定构建和运行。本案例将“欢迎信息模块”从熟悉的开发环境移植到另外两个专业环境，验证代码的可移植性。</p>
+            </div>
+          </div>
+          <section class="case-information">
+            <h3 class="case-subhead">案例信息</h3>
+            <p class="frame-note">使用<a href="reading.html?task=t-p01-b02#c-004">案例 4「欢迎信息模块化」</a>的 <code>greeter.h</code>、<code>greeter.cpp</code>、<code>main.cpp</code> 三个文件，分别在 CLion、Visual Studio、VS Code + MinGW 三种环境中创建工程并编译运行。</p>
+            <figure class="case-visual case-flow">
+              <figcaption><span>同一项目的三种开发环境</span><span>3 种 IDE</span></figcaption>
+              <dl class="case-fields">
+                <div><dt>CMake 项目</dt><dd><code>CLion</code></dd></div>
+                <div><dt>解决方案</dt><dd><code>Visual Studio</code></dd></div>
+                <div><dt>文件视图</dt><dd><code>VS Code</code></dd></div>
+              </dl>
+            </figure>
+          </section>
+        </header>
+        <div class="case-body">
+          <div class="case-method case-method-compact">
+            <h3>案例代码</h3>
+            <div class="case-code-files">
+              <figure class="code-panel" data-code-language="cmake" data-book-excerpt="true"><figcaption><span>CMakeLists.txt</span><span class="code-kind">CMake</span></figcaption><pre tabindex="0"><code># VS Code 环境下的 CMakeLists.txt
+cmake_minimum_required(VERSION 3.10)
+project(WelcomeBanner)
+add_executable(welcome_module main.cpp greeter.cpp)
+</code></pre></figure>
+              <figure class="code-panel" data-code-language="cpp">
+                <figcaption><span>main.cpp</span><span class="code-kind">C++</span></figcaption>
+                <pre tabindex="0"><code>// 程序入口调用欢迎信息模块
+
+#include "greeter.h"
+
+int main() {
+    displayWelcomeMessage();
+    return 0;
+}
+</code></pre>
+              </figure>
+              <figure class="code-panel" data-code-language="cpp">
+                <figcaption><span>greeter.h</span><span class="code-kind">C++</span></figcaption>
+                <pre tabindex="0"><code>// 声明欢迎信息模块的接口
+
+#pragma once
+
+void displayWelcomeMessage();
+</code></pre>
+              </figure>
+              <figure class="code-panel" data-code-language="cpp">
+                <figcaption><span>greeter.cpp</span><span class="code-kind">C++</span></figcaption>
+                <pre tabindex="0"><code>// 实现欢迎信息模块
+
+#include "greeter.h"
+
+#include &lt;iostream&gt;
+
+void displayWelcomeMessage() {
+    std::cout &lt;&lt; "******************************************" &lt;&lt; std::endl;
+    std::cout &lt;&lt; "** Welcome to the Auto Driving System!  **" &lt;&lt; std::endl;
+    std::cout &lt;&lt; "******************************************" &lt;&lt; std::endl;
+}
+</code></pre>
+              </figure>
+            </div>
+          </div>
+          <div class="case-result">
+            <h3>运行效果</h3>
+            <div class="case-effect case-terminal">
+              <div class="case-terminal-heading"><span>终端</span><span>CMake · 实际输出</span></div>
+              <div class="case-terminal-body">
+                <figure class="code-panel terminal-command">
+                  <figcaption><span>构建与运行命令</span></figcaption>
+                  <pre tabindex="0"><code>cmake -S . -B build
+cmake --build build
+./build/welcome_module</code></pre>
+                </figure>
+                <div class="case-run-outputs">
+                  <figure class="code-panel">
+                    <figcaption><span>运行输出</span></figcaption>
+                    <pre tabindex="0"><code>******************************************
+** Welcome to the Auto Driving System!  **
+******************************************
+</code></pre>
+                  </figure>
+                </div>
+              </div>
+            </div>
+            <p>无论使用哪种 IDE，最终运行程序输出完全相同的欢迎横幅。三种 IDE 在项目组织上各有差异：CLion 基于 CMake 的逻辑视图，Visual Studio 基于解决方案资源管理器，VS Code 直接展示物理文件视图。</p>
+            <p class="case-source-caption">终端展示本地 CMake 构建的实测输出。三种 IDE 的工程组织方式见原文说明。</p>
+          </div>
+        </div>
+      </article>
+
+      <article id="c-ext-a2" class="case-article" data-reading-sample="c-ext-a2" aria-labelledby="c-ext-a2-title">
+        <header class="case-intro">
+          <div class="case-overview">
+            <div class="case-title">
+              <p class="eyebrow">拓展案例 A2</p>
+              <h2 id="c-ext-a2-title">版本信息注入</h2>
+            </div>
+            <div class="case-background">
+              <h3 class="case-subhead">案例背景</h3>
+              <p>专业软件都有版本号，直接写死在代码里每次发布都要手动修改，容易遗忘或改错。更专业的方法是将版本信息从代码中分离，由构建系统统一管理。</p>
+            </div>
+          </div>
+          <section class="case-information">
+            <h3 class="case-subhead">案例信息</h3>
+            <p class="frame-note">在<a href="reading.html?task=t-p01-b02#c-004">案例 4「欢迎信息模块化」</a>的基础上，用 CMake 构建项目，通过 <code>target_compile_definitions</code> 定义 <code>APP_VERSION</code> 宏并注入版本号，在 C++ 代码中读取并打印。</p>
+            <figure class="case-visual case-flow">
+              <figcaption><span>版本号如何进入程序</span><span>CMake → C++</span></figcaption>
+              <dl class="case-fields">
+                <div><dt>构建配置</dt><dd><code>CMake</code></dd></div>
+                <div><dt>编译宏</dt><dd><code>APP_VERSION</code></dd></div>
+                <div><dt>注入值</dt><dd><code>1.0.1</code></dd></div>
+              </dl>
+            </figure>
+          </section>
+        </header>
+        <div class="case-body">
+          <div class="case-method case-method-compact">
+            <h3>案例代码</h3>
+            <div class="case-code-files">
+              <figure class="code-panel" data-code-language="cmake" data-book-excerpt="true"><figcaption><span>CMakeLists.txt</span><span class="code-kind">CMake</span></figcaption><pre tabindex="0"><code># CMakeLists.txt
+cmake_minimum_required(VERSION 3.10)
+project(WelcomeBanner)
+add_executable(version_demo main.cpp greeter.cpp)
+# 由构建系统注入版本号，避免将其写死在 C++ 源文件中。
+set(APP_VERSION &quot;1.0.1&quot; CACHE STRING &quot;Application version&quot;)
+target_compile_definitions(version_demo PRIVATE APP_VERSION=${APP_VERSION})
+</code></pre></figure>
+              <figure class="code-panel" data-code-language="cpp">
+                <figcaption><span>main.cpp</span><span class="code-kind">C++</span></figcaption>
+                <pre tabindex="0"><code>// 展示由 CMake 注入的版本信息
+
+#include "greeter.h"
+
+#include &lt;iostream&gt;
+
+// 将未加引号的 APP_VERSION 宏转换为字符串字面量
+#define STRINGIFY_IMPL(value) #value
+#define TOSTRING(value) STRINGIFY_IMPL(value)
+
+int main() {
+#ifdef APP_VERSION
+    std::cout &lt;&lt; "System Version: " &lt;&lt; TOSTRING(APP_VERSION) &lt;&lt; std::endl;
+#else
+    std::cout &lt;&lt; "Version: Not Defined" &lt;&lt; std::endl;
+#endif
+
+    displayWelcomeMessage();
+    return 0;
+}
+</code></pre>
+              </figure>
+              <figure class="code-panel" data-code-language="cpp">
+                <figcaption><span>greeter.h</span><span class="code-kind">C++</span></figcaption>
+                <pre tabindex="0"><code>// 声明欢迎信息模块的接口
+
+#pragma once
+
+void displayWelcomeMessage();
+</code></pre>
+              </figure>
+              <figure class="code-panel" data-code-language="cpp">
+                <figcaption><span>greeter.cpp</span><span class="code-kind">C++</span></figcaption>
+                <pre tabindex="0"><code>// 实现欢迎信息模块
+
+#include "greeter.h"
+
+#include &lt;iostream&gt;
+
+void displayWelcomeMessage() {
+    std::cout &lt;&lt; "******************************************" &lt;&lt; std::endl;
+    std::cout &lt;&lt; "** Welcome to the Auto Driving System!  **" &lt;&lt; std::endl;
+    std::cout &lt;&lt; "******************************************" &lt;&lt; std::endl;
+}
+</code></pre>
+              </figure>
+            </div>
+          </div>
+          <div class="case-result">
+            <h3>运行效果</h3>
+            <div class="case-effect case-terminal">
+              <div class="case-terminal-heading"><span>终端</span><span>实际输出</span></div>
+              <div class="case-terminal-body">
+                <figure class="code-panel terminal-command">
+                  <figcaption><span>构建与运行命令</span></figcaption>
+                  <pre tabindex="0"><code>cmake -S . -B build -DAPP_VERSION=1.0.1
+cmake --build build
+./build/version_demo
+
+g++ main.cpp greeter.cpp -o version_demo_undefined
+./version_demo_undefined</code></pre>
+                </figure>
+                <div class="case-run-outputs">
+                  <figure class="code-panel">
+                    <figcaption><span>启用版本定义</span></figcaption>
+                    <pre tabindex="0"><code>System Version: 1.0.1
+******************************************
+** Welcome to the Auto Driving System!  **
+******************************************
+</code></pre>
+                  </figure>
+                  <figure class="code-panel">
+                    <figcaption><span>未定义版本</span></figcaption>
+                    <pre tabindex="0"><code>Version: Not Defined
+******************************************
+** Welcome to the Auto Driving System!  **
+******************************************
+</code></pre>
+                  </figure>
+                </div>
+              </div>
+            </div>
+            <p>使用 CMake 构建时，<code>-DAPP_VERSION=1.0.1</code> 将版本值传给构建配置，程序输出 <code>System Version: 1.0.1</code>。直接用 <code>g++</code> 编译时未传入版本宏，程序输出 <code>Version: Not Defined</code>。</p>
+          </div>
+        </div>
+      </article>
+
+      <article data-reading-sample="k-007">
+<section id="m-twos-complement" class="knowledge-note">
+          <h4>机制 · 补码表示</h4>
+          <p>以 8 位数据 <code>11111101</code> 为例，按无符号整数读取时是 253。按有符号补码读取时，最高位的位权为 −128，结果为 −3。</p>
+        </section>
+      </article>
+    </template>
+  </main>
+</body>
+</html>

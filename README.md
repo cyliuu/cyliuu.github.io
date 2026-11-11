@@ -49,13 +49,37 @@ npm run server
 
 ### 更新 C++ 课程门户
 
-课程门户位于 [source/courses/cpp/](source/courses/cpp/)，访问入口自动跳转到资源目录。更新时保留完整的相对目录结构、共享资源和入口跳转页，再执行构建检查。
+课程门户位于 [source/courses/cpp/](source/courses/cpp/)，当前展示 V1.02。更新时复制真实资源文件，使用站内相对路径，保留相对目录结构后执行构建检查。
 
-网站保存的是课程资源副本，iCloud 中的修改不会自动同步。该课程目录按静态资源原样发布，保留原有页面设计与交互。
+网站保存的是课程资源副本，原始文件的修改不会自动同步。发布副本为 V1.02 裁剪版：仅保留项目 1 的完整材料（任务、案例、知识点、机制页、操作与思政）及课堂门户全部工单，项目 2–8 只保留任务名与案例名，未被引用的素材一并清理。本地 `V1.02视觉样稿/dist` 是完整原稿，请勿用它直接覆盖发布副本。
+
+**视觉样稿只读**：`V1.02视觉样稿/dist` 正文中指向本机 iCloud `配图_V1.09` 的配图引用一律保持原样，同步不会改写原稿，本地用 `file://` 打开原稿时配图仍按原路径显示。脚本会把这些配图的真实文件复制到发布副本的 `assets/knowledge-figures/`，并且只把**发布副本**的 `knowledge-content.js`、`reading-data.js` 里的 `<img src>` 改写为站内相对路径。
+
+维护裁剪版请使用 `--figures-only`：它按发布副本中实际出现的引用工作，不会用完整原稿覆盖裁剪版，也不会带入项目 2–8 的未引用素材。
+
+```sh
+python3 tools/sync-course.py "/你的/V1.02视觉样稿/dist" \
+  --target source/courses/cpp --figures-only --check
+python3 tools/sync-course.py "/你的/V1.02视觉样稿/dist" \
+  --target source/courses/cpp --figures-only
+```
+
+使用 [增量同步脚本](tools/sync-course.py) 可完成资源复制、本机引用转换与按内容比对；只有显式传入 `--delete-obsolete` 才清理过期文件，`--preserve` 可保护指定目录。需要 Python 3.11 或更高版本，且目标目录必须显式指定：
+
+```sh
+# 先预检，不修改任何文件
+python3 tools/sync-course.py "/你的/V1.02视觉样稿/dist" --check \
+  --target source/courses/cpp
+# 确认后同步，仅写入内容变化的文件
+python3 tools/sync-course.py "/你的/V1.02视觉样稿/dist" \
+  --target source/courses/cpp
+```
+
+没有内容变化时无需提交或重新部署。同步后仍应执行构建与必要的页面检查。
 
 ## 发布流程
 
-源代码维护在 `hexo` 分支。推送后，[GitHub Actions](https://github.com/cyliuu/cyliuu.github.io/actions) 自动安装依赖、构建并部署至 GitHub Pages。
+源代码维护在 `hexo` 分支。仅修改 README、docs 或 tools 不触发部署，必要时可在 Actions 页面手动运行。构建与部署使用独立任务，复用 npm 下载缓存；部署失败时只重试 Deploy，复用已验证的构建产物。涉及网站内容的推送后，[GitHub Actions](https://github.com/cyliuu/cyliuu.github.io/actions) 自动安装依赖、构建并部署至 GitHub Pages。
 
 ```sh
 npm run build

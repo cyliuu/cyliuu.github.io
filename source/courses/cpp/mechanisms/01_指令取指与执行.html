@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>指令取指与执行周期</title>
+    <style>
+
+*, *::before, *::after { box-sizing: border-box; }
+:root {
+    --page: #f6f7f1;
+    --surface: #fffefb;
+    --ink: #203f40;
+    --muted: #4e6663;
+    --accent: #23736a;
+    --accent-strong: #18564f;
+    --tint: #e7f2e8;
+    --line: #dce7dd;
+    --line-strong: #a8c8b4;
+    --bg-body: #f6f7f1;
+    --bg-card: #fffefb;
+    --text-main: #203f40;
+    --text-muted: #4e6663;
+    --text-light: #789795;
+    --primary: #23736a;
+    --primary-hover: #18564f;
+    --primary-soft: #e7f2e8;
+    --primary-border: #8eb8a0;
+    --success: #1f6f54;
+    --success-soft: #e4f3ea;
+    --success-border: #82b89a;
+    --warning: #8c6223;
+    --warning-soft: #f6f1e3;
+    --warning-border: #d8c79b;
+    --danger: #b43c2f;
+    --danger-soft: #fbefee;
+    --danger-border: #e4b6af;
+    --purple: #674781;
+    --purple-soft: #f3eef4;
+    --purple-border: #cbb8cd;
+    --border: #dce7dd;
+    --border-light: #e5efe6;
+    --code-bg: #122b30;
+    --active-line: #1b383d;
+    --syn-kw: #a9d7fb;
+    --syn-keyword: #a9d7fb;
+    --syn-type: #92e1c6;
+    --syn-num: #ffe0a3;
+    --syn-number: #ffe0a3;
+    --syn-str: #bce9ac;
+    --syn-string: #bce9ac;
+    --syn-cmt: #a0b8b8;
+    --console-bg: #0e2327;
+    --console-text: #d5efd8;
+    --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+}
+html { scroll-behavior: smooth; }
+button, .tab-btn, .ptr-nav-btn, .quiz-opt, .j-cell, .j-ptr-item, .row-strip, .bcell, .fbit {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+button:active, .quiz-opt:active { transform: scale(0.98); }
+.tabs, .ptr-sidebar { -webkit-overflow-scrolling: touch; }
+
+body {
+    font-family: var(--sans);
+    background-color: var(--page);
+    color: var(--ink);
+    margin: 0;
+    padding: 20px 16px 40px;
+    line-height: 1.55;
+}
+.page-shell {
+    max-width: 1220px;
+    margin: 0 auto;
+}
+.lab-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 18px;
+    padding: 16px 22px;
+    background: linear-gradient(118deg, #e9f3ed 10%, #f4f0e4 92%);
+    border: 1px solid #dae6d8;
+    border-radius: 18px;
+    box-shadow: 0 10px 26px rgba(32, 63, 64, 0.05);
+}
+.lab-topbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.lab-badge {
+    background: var(--accent-strong);
+    color: #ffffff;
+    border: 1px solid var(--accent-strong);
+    font-size: 12.5px;
+    font-weight: 700;
+    padding: 5px 11px;
+    border-radius: 8px;
+    font-family: var(--mono);
+}
+.lab-kp-tag {
+    background: var(--surface);
+    color: var(--accent-strong);
+    border: 1px solid #a8c8b4;
+    font-size: 12.5px;
+    font-weight: 700;
+    padding: 4px 11px;
+    border-radius: 999px;
+}
+.lab-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--ink);
+    margin: 0;
+    letter-spacing: -0.02em;
+}
+.back-link {
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--accent-strong);
+    background: var(--surface);
+    border: 1px solid #a8c8b4;
+    padding: 8px 15px;
+    border-radius: 10px;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+.back-link:hover {
+    background: var(--accent-strong);
+    color: #ffffff;
+    border-color: var(--accent-strong);
+}
+.container {
+    max-width: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    background: var(--surface);
+    border-radius: 18px;
+    border: 1px solid var(--line);
+    box-shadow: 0 10px 26px rgba(32, 63, 64, 0.05);
+    overflow: hidden;
+}
+.tabs, .nav {
+    display: flex;
+    gap: 6px;
+    padding: 8px 10px;
+    background-color: #eef4ec !important;
+    border-bottom: 1px solid var(--line) !important;
+    overflow-x: auto;
+    margin-bottom: 0 !important;
+}
+.tab-btn, .nav-item {
+    flex: 1;
+    min-width: 160px;
+    padding: 11px 16px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--muted);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    text-align: center;
+}
+.tab-btn:hover, .nav-item:hover {
+    background-color: var(--tint);
+    color: var(--accent-strong);
+}
+.tab-btn.active, .nav-item.active {
+    color: #ffffff !important;
+    background-color: var(--accent-strong) !important;
+    border-color: var(--accent-strong) !important;
+    box-shadow: 0 3px 10px rgba(24, 86, 79, 0.16);
+}
+.tab-content { display: none; padding: 22px; }
+.tab-content.active { display: block; }
+
+.workspace {
+    display: flex;
+    gap: 20px;
+    min-height: 460px;
+    align-items: stretch;
+}
+.code-panel {
+    flex: 0.95;
+    min-width: 0;
+    background: #122b30 !important;
+    color: #e5f2ef !important;
+    border: 1px solid #c5dad0 !important;
+    border-radius: 12px !important;
+    padding: 48px 0 16px !important;
+    font-family: var(--mono);
+    font-size: 13.2px;
+    line-height: 1.78;
+    font-variant-ligatures: none;
+    tab-size: 4;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start !important;
+    overflow-x: auto;
+    position: relative;
+    box-shadow: 0 8px 20px rgba(14, 35, 39, 0.12), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+.code-panel::before {
+    content: "C++ 源码";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 38px;
+    background: #e9f3ed;
+    border-bottom: 1px solid #cfe0d6;
+    color: #18564f;
+    font-family: var(--sans);
+    font-size: 13.5px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    letter-spacing: 0.02em;
+    border-radius: 0;
+}
+.code-panel::after {
+    content: "执行流对照";
+    position: absolute;
+    top: 0; right: 16px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    color: #476864;
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 600;
+    pointer-events: none;
+}
+.code-panel::-webkit-scrollbar, .code-area::-webkit-scrollbar { height: 7px; width: 7px; }
+.code-panel::-webkit-scrollbar-track, .code-area::-webkit-scrollbar-track { background: #183237; }
+.code-panel::-webkit-scrollbar-thumb, .code-area::-webkit-scrollbar-thumb { background: #527473; border-radius: 7px; }
+.code-line {
+    display: block;
+    padding: 2.5px 16px 2.5px 12px;
+    border-left: 3px solid transparent;
+    transition: background-color 0.18s ease, border-color 0.18s ease;
+    white-space: pre;
+    color: #e5f2ef !important;
+}
+.code-line:hover {
+    background-color: rgba(146, 225, 198, 0.06);
+}
+.code-line::before {
+    content: attr(data-line);
+    display: inline-block;
+    width: 24px;
+    min-width: 24px;
+    margin-right: 14px;
+    color: #6d8e90 !important;
+    text-align: right;
+    user-select: none;
+    font-weight: 500;
+}
+.code-line.active {
+    background-color: rgba(146, 225, 198, 0.14) !important;
+    border-left-color: #92e1c6 !important;
+    font-weight: 600;
+    color: #ffffff !important;
+}
+.code-line.active::before {
+    color: #92e1c6 !important;
+    font-weight: 700;
+}
+.code-panel span[style*="--syn-cmt"], .code-area .cmt, .code-area .comment {
+    color: var(--syn-cmt) !important;
+    font-style: italic;
+    font-weight: 400 !important;
+}
+.code-area {
+    background: #122b30 !important;
+    color: #e5f2ef !important;
+    font-family: var(--mono) !important;
+    font-size: 13.2px !important;
+    line-height: 1.78 !important;
+    font-variant-ligatures: none;
+}
+.code-area .kw, .code-area .keyword { color: var(--syn-kw) !important; }
+.code-area .type { color: var(--syn-type) !important; }
+.code-area .num, .code-area .number { color: var(--syn-num) !important; }
+.code-area .str, .code-area .string { color: var(--syn-str) !important; }
+.code-area .fn, .code-area .func { color: var(--syn-fn) !important; }
+.visual-panel {
+    flex: 1.35;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    background: #f3f7ee !important;
+    border: 1px solid #d4e2d5 !important;
+    border-radius: 14px;
+    padding: 18px;
+    position: relative;
+}
+.info-header {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-bottom: 14px;
+    padding: 10px 14px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+}
+.info-item { display: flex; flex-direction: column; align-items: center; }
+.info-label { font-size: 12px; color: var(--muted); font-weight: 600; margin-bottom: 3px; }
+.info-value { font-family: var(--mono); font-size: 14.5px; font-weight: 800; color: var(--accent-strong); }
+
+.animation-stage {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 16px 12px;
+    min-height: 220px;
+    background: var(--surface);
+    border: 1px solid #d4e2d5;
+    border-radius: 12px;
+}
+.console {
+    background: #0e2327 !important;
+    color: #d5efd8 !important;
+    padding: 13px 16px;
+    border-radius: 10px;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.6;
+    min-height: 60px;
+    margin-top: 14px;
+    white-space: pre-wrap;
+    border: 1px solid #304c50;
+    border-left: 4px solid #92e1c6 !important;
+}
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 14px;
+    justify-content: flex-end;
+}
+button.ctrl-btn {
+    padding: 9px 16px;
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    border: 1px solid #a8c8b4;
+    border-radius: 9px;
+    background-color: var(--surface);
+    color: var(--accent-strong);
+    transition: all 0.2s;
+    min-height: 40px;
+}
+button.ctrl-btn:hover:not(:disabled) { background-color: var(--tint); border-color: var(--accent); }
+button.ctrl-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+button.ctrl-btn.primary { background-color: var(--accent); color: #ffffff; border-color: var(--accent); }
+button.ctrl-btn.primary:hover:not(:disabled) { background-color: var(--accent-strong); border-color: var(--accent-strong); }
+
+.encyclopedia {
+    margin-top: 18px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    max-width: 100% !important;
+}
+.concept-card {
+    background: var(--surface) !important;
+    border: 1px solid var(--line) !important;
+    border-radius: 14px !important;
+    padding: 16px !important;
+    box-shadow: 0 4px 12px rgba(32, 63, 64, 0.03) !important;
+}
+.concept-card h4 {
+    color: var(--accent-strong) !important;
+    margin: 0 0 8px 0 !important;
+    border-bottom: 1px solid var(--line) !important;
+    padding-bottom: 8px !important;
+    font-size: 14.5px !important;
+    font-weight: 800 !important;
+}
+.concept-card p {
+    font-size: 13px !important;
+    color: var(--muted) !important;
+    line-height: 1.6 !important;
+    margin: 0 !important;
+}
+
+
+.resp-grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; width: 100%; }
+.resp-grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; width: 100%; }
+.resp-grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; width: 100%; }
+.resp-grid-5 { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; width: 100%; }
+.resp-grid-6 { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; width: 100%; }
+.resp-arrow-grid { display: grid; grid-template-columns: minmax(0, 1fr) 52px minmax(0, 1.2fr); gap: 12px; width: 100%; align-items: center; font-family: var(--mono); }
+@media (max-width: 960px) {
+    .resp-grid-6, .resp-grid-5 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .resp-grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 680px) {
+    .resp-grid-2, .resp-grid-3, .resp-arrow-grid { grid-template-columns: 1fr; }
+    .resp-grid-6, .resp-grid-5 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 1200px) {
+    .workspace { gap: 14px; }
+    .code-panel { font-size: 12.6px; }
+}
+@media (max-width: 1024px) {
+    .workspace {
+        flex-direction: column !important;
+        min-height: auto !important;
+        height: auto !important;
+        max-height: none !important;
+    }
+    .code-panel, .visual-panel {
+        flex: none !important;
+        width: 100% !important;
+        height: auto !important;
+        max-height: none !important;
+    }
+    .visual-panel { overflow: visible !important; }
+    .rec-layout, .mem-arch, .main-layout, .main-grid, .io-pipe, .vtable-grid, .obj-grid, .cpu-grid, .link-files {
+        grid-template-columns: 1fr !important;
+    }
+    .encyclopedia { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+    .quiz-opts { grid-template-columns: 1fr !important; }
+}
+@media (max-width: 680px) {
+    body { padding: 10px 8px 28px; }
+    .lab-topbar { padding: 12px 14px; }
+    .lab-title { font-size: 17px; }
+    .tab-content { padding: 14px 10px; }
+    .mem-split, .cmp-grid, .lib-cols, .copy-grid, .alias-grid, .jagged-wrap, .reg-grid, .btn-grid {
+        grid-template-columns: 1fr !important;
+    }
+    .byte-map { grid-template-columns: repeat(4, minmax(0, 1fr)) !important; }
+    .mat-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+    .encyclopedia { grid-template-columns: 1fr !important; }
+    .container { overflow: clip !important; }
+    .tabs { scrollbar-width: none; }
+    .tabs::-webkit-scrollbar, .ptr-sidebar::-webkit-scrollbar { display: none; }
+    .tab-btn, .ptr-nav-btn { min-height: 40px !important; }
+    .quiz-opt { min-height: 44px !important; padding: 11px 13px !important; }
+    .controls button.ctrl-btn { min-height: 40px !important; }
+    .controls {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 6px !important;
+        position: sticky !important;
+        bottom: 8px !important;
+        z-index: 30 !important;
+        background: rgba(246, 249, 243, 0.96) !important;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        padding: 8px !important;
+        margin-top: 12px !important;
+        border: 1px solid #c5dad0 !important;
+        border-radius: 12px !important;
+        box-shadow: 0 6px 18px rgba(18, 43, 48, 0.14) !important;
+    }
+    .controls:has(> :nth-child(3):last-child) {
+        grid-template-columns: 0.72fr 0.88fr 1.4fr !important;
+    }
+    .controls:has(> :nth-child(3):last-child) button.ctrl-btn:last-child {
+        grid-column: auto !important;
+    }
+    .controls button.ctrl-btn {
+        width: 100% !important;
+        flex: none !important;
+        padding: 8px 6px !important;
+        font-size: 12px !important;
+        text-align: center !important;
+        white-space: nowrap !important;
+    }
+    .controls button.ctrl-btn:last-child:nth-child(odd) {
+        grid-column: 1 / -1;
+    }
+}
+
+
+        :root { --accent: #257469; --accent-strong: #18564f; --tint: #e4f3ea; }
+        .lab-topbar { background: linear-gradient(118deg, #e5f1ec 8%, #edf2f4 92%); border-color: #c5dad6; }
+        .lab-badge { background: #18564f; }
+        .visual-panel { background: #f1f6f3 !important; }
+        
+
+    .cpu-grid {
+        display: grid;
+        grid-template-columns: 1.15fr 1fr;
+        gap: 16px;
+        width: 100%;
+    }
+    .hw-box {
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        padding: 14px;
+        background: #F4F8F1;
+        transition: all 0.3s;
+    }
+    .hw-box.active-hw {
+        border-color: var(--primary);
+        background: var(--primary-soft);
+        box-shadow: 0 6px 16px rgba(35, 115, 106, 0.14);
+    }
+    .hw-title {
+        font-size: 13.5px;
+        font-weight: 800;
+        color: var(--text-main);
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .reg-row, .mem-slot {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 7px 10px;
+        background: #FFFFFF;
+        border: 1.5px solid var(--border-light);
+        border-radius: 7px;
+        font-family: var(--mono);
+        font-size: 12.5px;
+        margin-bottom: 6px;
+        transition: all 0.25s;
+    }
+    .reg-row.hi, .mem-slot.hi {
+        border-color: var(--primary);
+        background: #D9ECE0;
+        color: #18564F;
+        font-weight: 700;
+        transform: scale(1.02);
+    }
+    .mem-slot.hi-green {
+        border-color: var(--success);
+        background: #D1FAE5;
+        color: #065F46;
+        font-weight: 700;
+    }
+    .cycle-pill-bar {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+        width: 100%;
+        margin-bottom: 14px;
+    }
+    .cycle-pill {
+        text-align: center;
+        padding: 7px 6px;
+        border-radius: 8px;
+        font-size: 12.5px;
+        font-weight: 700;
+        background: #EBF2EC;
+        color: var(--text-muted);
+        border: 1.5px solid var(--border);
+    }
+    .cycle-pill.on {
+        background: var(--primary);
+        color: #FFFFFF;
+        border-color: var(--primary);
+    }
+    @media (max-width: 640px) {
+        .cpu-grid { grid-template-columns: 1fr; }
+        .cycle-pill-bar { grid-template-columns: repeat(2, 1fr); }
+    }
+    
+
+    /* V1.02 Volantis Unified Typography, Mobile-First Responsive & Quiz Overrides */
+    html, body { overflow-x: hidden; max-width: 100%; }
+    .page-shell, .container, .workspace, .visual-panel, .code-panel, .ptr-shell, .ptr-main, .mem-arch, .heap-arena { min-width: 0 !important; max-width: 100% !important; }
+    body, button, input, select { font-family: var(--sans) !important; }
+    code, pre, .code-panel, .code-area, .console, .status-msg, .info-value, .mem-addr, .mem-val { font-family: var(--mono) !important; }
+    .container { max-width: 100% !important; width: 100% !important; margin: 0 !important; background: var(--surface) !important; border: 1px solid var(--line) !important; border-radius: 18px !important; }
+    .lab-topbar h1.lab-title { text-align: left !important; padding: 0 !important; margin: 0 !important; border: none !important; font-size: clamp(16px, 2.2vw, 20px) !important; color: var(--ink) !important; line-height: 1.35 !important; word-break: break-word !important; }
+    .lab-kp-tag { max-width: 100%; white-space: normal !important; line-height: 1.4; }
+    .panel { border: 1px solid var(--line) !important; border-radius: 14px !important; box-shadow: 0 8px 20px rgba(32, 63, 64, 0.05) !important; min-width: 0 !important; }
+    .panel .header { background: #e9f3ed !important; color: var(--accent-strong) !important; border-bottom: 1px solid var(--line) !important; font-size: 15px !important; padding: 12px 18px !important; }
+    .code-area { background: #122b30 !important; overflow-x: auto !important; font-size: 13.2px !important; }
+.panel .header { background: #e9f3ed !important; color: #18564f !important; border-bottom: 1px solid #cfe0d6 !important; font-family: var(--sans) !important; font-size: 13.5px !important; font-weight: 800 !important; height: 38px !important; min-height: 38px !important; box-sizing: border-box !important; padding: 0 16px !important; display: flex !important; align-items: center !important; justify-content: space-between !important; }
+.panel .header span { color: #476864 !important; font-size: 12px !important; font-weight: 600 !important; }
+    .line.active { background: #1b383d !important; border-left-color: #92e1c6 !important; }
+    .reg-area { background: #0e2327 !important; color: #e5f2ef !important; border-top: 1px solid #304c50 !important; }
+    .reg-item { color: #bdd3d1 !important; border-bottom-color: #304c50 !important; font-size: 13.5px !important; }
+    .reg-val { color: #92e1c6 !important; }
+    .simd-box { background: #153238 !important; border-color: #304c50 !important; color: #e5f2ef !important; }
+    .status-msg { background: #0e2327 !important; color: #d5efd8 !important; border-left: 4px solid #92e1c6 !important; font-size: 13.5px !important; padding: 13px 16px !important; }
+    .code-panel span[style*="var(--syn-"] { font-weight: 600; }
+    .bottom-bar button, .btn-grid button { min-height: 42px; font-size: 14px !important; padding: 9px 18px !important; border-radius: 9px !important; }
+    /* Unified Quiz Card */
+    .lab-quiz-card {
+        margin-top: 16px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 18px 20px;
+        box-shadow: 0 6px 16px rgba(32, 63, 64, 0.04);
+    }
+    .quiz-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+    .quiz-badge { background: var(--accent-strong); color: #ffffff; font-size: 11.5px; font-weight: 800; padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+    .quiz-q { font-size: 14.5px; color: var(--ink); line-height: 1.5; }
+    .quiz-opts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .quiz-opt {
+        text-align: left; padding: 10px 14px; border-radius: 10px;
+        border: 1.5px solid var(--line-strong); background: #f4f8f1;
+        color: var(--ink); font-size: 13px; font-weight: 700; cursor: pointer;
+        transition: all 0.2s; min-height: 44px; line-height: 1.4;
+    }
+    .quiz-opt:hover { background: var(--tint); border-color: var(--accent); }
+    .quiz-opt.right { background: var(--success-soft); border-color: var(--success); color: var(--success); }
+    .quiz-opt.wrong { background: var(--danger-soft); border-color: var(--danger); color: var(--danger); }
+    .quiz-fb { margin-top: 10px; font-size: 13px; font-weight: 700; line-height: 1.55; border-radius: 8px; }
+    .quiz-fb.ok { padding: 9px 12px; background: var(--success-soft); color: var(--success); border: 1px solid var(--success-border); }
+    .quiz-fb.err { padding: 9px 12px; background: var(--danger-soft); color: var(--danger); border: 1px solid var(--danger-border); }
+    
+
+    @media (max-width: 1024px) {
+        .workspace, .main-layout, .main-grid, .rec-layout {
+            display: flex !important;
+            flex-direction: column !important;
+            height: auto !important;
+            min-height: auto !important;
+        }
+        .panel { height: auto !important; min-height: 0 !important; }
+        .encyclopedia { grid-template-columns: repeat(2, 1fr) !important; }
+        .quiz-opts { grid-template-columns: 1fr !important; }
+    }
+    @media (max-width: 680px) {
+        body { padding: 10px 8px 28px !important; }
+        .lab-topbar { padding: 12px 14px !important; border-radius: 14px !important; }
+        .back-link { width: 100%; text-align: center; }
+        .tabs, .nav {
+            display: flex !important;
+            flex-wrap: nowrap !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch;
+            gap: 6px !important;
+            padding: 8px !important;
+        }
+        .tab-btn, .nav-item {
+            flex: 0 0 auto !important;
+            min-width: auto !important;
+            white-space: nowrap !important;
+            padding: 9px 13px !important;
+            font-size: 13px !important;
+        }
+        .tab-content { padding: 12px 10px !important; }
+        .visual-panel, .heap-arena, .display-card { padding: 12px 10px !important; }
+        .animation-stage { padding: 12px 8px !important; overflow-x: auto !important; max-width: 100% !important; min-height: auto !important; }
+        .code-panel, .code-area { font-size: 12px !important; overflow-x: auto !important; max-width: 100% !important; }
+        .binary-grid { padding: 10px 6px !important; gap: 8px !important; }
+        .byte-group { gap: 2px !important; }
+        .bit-value { width: 22px !important; height: 32px !important; font-size: 12px !important; }
+        .mem-table-wrap { overflow-x: auto !important; }
+        .cpu-grid, .mem-split, .lib-cols, .copy-grid, .vtable-grid, .io-pipe, .obj-grid, .cmp-grid, .mem-arch {
+            grid-template-columns: 1fr !important;
+        }
+        .bottom-bar { flex-direction: column !important; gap: 10px !important; }
+        .btn-group { width: 100% !important; }
+        .btn-group button { flex: 1 !important; }
+        .encyclopedia { grid-template-columns: 1fr !important; }
+        .controls { justify-content: stretch !important; padding: 12px 10px !important; }
+        .controls button.ctrl-btn { flex: 1 1 auto !important; }
+    }
+    
+    
+/* Portal knowledge backlinks */
+.lab-kp-tag { display: inline-flex; flex-wrap: wrap; gap: 4px 6px; }
+.mechanism-knowledge-link { color: inherit; font: inherit; text-decoration: underline; text-underline-offset: .18em; }
+.mechanism-knowledge-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+</style>
+</head>
+<body>
+<div class="page-shell">
+    <header class="lab-topbar">
+        <div class="lab-topbar-left">
+            <span class="lab-badge">底层架构与编译 01 / 26</span>
+            <h1 class="lab-title">指令取指与执行周期</h1>
+            <span class="lab-kp-tag"><a class="mechanism-knowledge-link" href="../reading.html#k-004">知识点4 · 计算机系统原理</a> / <a class="mechanism-knowledge-link" href="../reading.html#k-009">知识点9 · 汇编体系</a></span>
+        </div>
+        <a class="back-link" href="index.html">← 返回知识机制总览</a>
+    </header>
+    
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('tab1', this)">1. 指令四阶段周期</button>
+            <button class="tab-btn" onclick="switchTab('tab2', this)">2. 五大硬件协同</button>
+        </div>
+        <div id="tab1" class="tab-content active">
+            <div class="workspace">
+                <div class="code-panel" id="code-1">
+                    <div class="code-line" id="c1-1" data-line="1"><span style="color:var(--syn-cmt);">// C++ 源语句与对应汇编机器指令</span></div>
+                    <div class="code-line" id="c1-2" data-line="2"><span style="color:var(--syn-type);">int</span> a = <span style="color:var(--syn-num);">12</span>;   <span style="color:var(--syn-cmt);">// [0x0100] LOAD  R1, #12</span></div>
+                    <div class="code-line" id="c1-3" data-line="3"><span style="color:var(--syn-type);">int</span> b = <span style="color:var(--syn-num);">30</span>;   <span style="color:var(--syn-cmt);">// [0x0104] LOAD  R2, #30</span></div>
+                    <div class="code-line" id="c1-4" data-line="4"><span style="color:var(--syn-type);">int</span> c = a + b; <span style="color:var(--syn-cmt);">// [0x0108] ADD   R3, R1, R2</span></div>
+                    <div class="code-line" id="c1-5" data-line="5">              <span style="color:var(--syn-cmt);">// [0x010C] STORE [0x2008], R3</span></div>
+                </div>
+                <div class="visual-panel">
+                    <div class="cycle-pill-bar">
+                        <div class="cycle-pill" id="cp-1">① 取指 (Fetch)</div>
+                        <div class="cycle-pill" id="cp-2">② 译码 (Decode)</div>
+                        <div class="cycle-pill" id="cp-3">③ 执行 (Execute)</div>
+                        <div class="cycle-pill" id="cp-4">④ 访存/写回 (Write)</div>
+                    </div>
+                    <div class="animation-stage">
+                        <div class="cpu-grid">
+                            <div class="hw-box" id="box-cpu">
+                                <div class="hw-title"><span>中央处理器 (CPU · 控制器 + 运算器)</span><span class="lab-badge">Core</span></div>
+                                <div class="reg-row" id="r-pc"><span>PC (程序计数器)</span><span id="v-pc">0x0100</span></div>
+                                <div class="reg-row" id="r-ir"><span>IR (指令寄存器)</span><span id="v-ir">NOP</span></div>
+                                <div class="reg-row" id="r-alu"><span>ALU (算术逻辑单元)</span><span id="v-alu">待命</span></div>
+                                <div class="reg-row" id="r-r1"><span>通用寄存器 R1</span><span id="v-r1">0</span></div>
+                                <div class="reg-row" id="r-r2"><span>通用寄存器 R2</span><span id="v-r2">0</span></div>
+                                <div class="reg-row" id="r-r3"><span>通用寄存器 R3</span><span id="v-r3">0</span></div>
+                            </div>
+                            <div class="hw-box" id="box-mem">
+                                <div class="hw-title"><span>主存储器 (RAM · 指令与数据同存)</span><span class="lab-kp-tag">Memory</span></div>
+                                <div class="mem-slot" id="m-1"><span>0x0100 [指令]</span><span>LOAD R1, #12</span></div>
+                                <div class="mem-slot" id="m-2"><span>0x0104 [指令]</span><span>LOAD R2, #30</span></div>
+                                <div class="mem-slot" id="m-3"><span>0x0108 [指令]</span><span>ADD R3, R1, R2</span></div>
+                                <div class="mem-slot" id="m-4"><span>0x010C [指令]</span><span>STORE [0x2008], R3</span></div>
+                                <div class="mem-slot" id="m-5"><span>0x2008 [数据 c]</span><span id="v-mc">0</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="console" id="con-1">&gt; 点击“下一步”观察 CPU 如何从内存按地址取指、译码并驱动 ALU 执行加法。</div>
+                    <div class="controls">
+                        <button class="ctrl-btn" onclick="cpuSim.reset()">重置</button>
+                        <button class="ctrl-btn" id="btn1-prev" onclick="cpuSim.prev()" disabled>上一步</button>
+                        <button class="ctrl-btn primary" id="btn1-next" onclick="cpuSim.next()">下一步</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="tab2" class="tab-content">
+            <div class="workspace">
+                <div class="code-panel">
+                    <div class="code-line active" data-line="1"><span style="color:var(--syn-cmt);">// 冯·诺依曼架构五大部件数据流转</span></div>
+                    <div class="code-line" data-line="2"><span style="color:var(--syn-type);">int</span> x;</div>
+                    <div class="code-line" data-line="3">std::cin &gt;&gt; x;         <span style="color:var(--syn-cmt);">// 输入设备 → 存储器</span></div>
+                    <div class="code-line" data-line="4"><span style="color:var(--syn-type);">int</span> y = x * <span style="color:var(--syn-num);">2</span> + <span style="color:var(--syn-num);">5</span>;     <span style="color:var(--syn-cmt);">// 存储器 ↔ 运算器(ALU)</span></div>
+                    <div class="code-line" data-line="5">std::cout &lt;&lt; y;        <span style="color:var(--syn-cmt);">// 存储器 → 输出设备</span></div>
+                </div>
+                <div class="visual-panel">
+                    <div class="info-header">
+                        <div class="info-item"><span class="info-label">当前激活部件</span><span class="info-value" id="vn-part">全部就绪</span></div>
+                        <div class="info-item"><span class="info-label">总线信号流向</span><span class="info-value" id="vn-bus">等待触发</span></div>
+                    </div>
+                    <div class="animation-stage">
+                        <div class="resp-grid-3" style="text-align:center;">
+                            <div class="hw-box" id="vn-in"><div style="font-weight:800; color:var(--primary);">1. 输入设备</div><div style="font-size:12px; color:var(--text-muted); margin-top:6px;">键盘/传感器采集原始二进制流</div></div>
+                            <div class="hw-box" id="vn-mem"><div style="font-weight:800; color:var(--purple);">2. 存储器 (内存)</div><div style="font-size:12px; color:var(--text-muted); margin-top:6px;">核心枢纽：统一保存指令与数据</div></div>
+                            <div class="hw-box" id="vn-out"><div style="font-weight:800; color:var(--success);">5. 输出设备</div><div style="font-size:12px; color:var(--text-muted); margin-top:6px;">显示器/终端呈现计算结果</div></div>
+                            <div class="hw-box" id="vn-cu" style="grid-column:span 1;"><div style="font-weight:800; color:var(--warning);">3. 控制器 (CU)</div><div style="font-size:12px; color:var(--text-muted); margin-top:6px;">解析指令并发出控制电位信号</div></div>
+                            <div class="hw-box" id="vn-alu" style="grid-column:span 2;"><div style="font-weight:800; color:var(--danger);">4. 运算器 (ALU)</div><div style="font-size:12px; color:var(--text-muted); margin-top:6px;">执行算术加减乘除与按位逻辑运算，结果写回寄存器/内存</div></div>
+                        </div>
+                    </div>
+                    <div class="console" id="con-2">&gt; 点击下方按钮，分步追踪一条输入加工输出程序在五大硬件部件之间的流转。</div>
+                    <div class="controls">
+                        <button class="ctrl-btn" onclick="vnStep(1)">① 输入设备读入</button>
+                        <button class="ctrl-btn" onclick="vnStep(2)">② 控制器取指译码</button>
+                        <button class="ctrl-btn" onclick="vnStep(3)">③ 运算器算术求值</button>
+                        <button class="ctrl-btn primary" onclick="vnStep(4)">④ 输出设备显示</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    <section class="lab-quiz-card">
+        <div class="quiz-head">
+            <span class="quiz-badge">随堂交互检验</span>
+            <strong class="quiz-q">CPU 执行指令时，哪一个寄存器始终保存下一条待取指令的内存地址？</strong>
+        </div>
+        <div class="quiz-opts"><button class="quiz-opt" onclick="checkLabQuiz(this, False)">A. 指令寄存器 (IR)</button>
+<button class="quiz-opt" onclick="checkLabQuiz(this, True)">B. 程序计数器 (PC / RIP)</button>
+<button class="quiz-opt" onclick="checkLabQuiz(this, False)">C. 算术逻辑单元 (ALU)</button></div>
+        <div class="quiz-fb" id="lab-quiz-fb" data-exp="PC（x86_64 下称 RIP）专门保存下一条待执行指令的地址，每取完一条指令自动递增或由跳转指令改写。"></div>
+    </section>
+    
+    <section class="encyclopedia">
+        <div class="concept-card"><h4>存储程序原理</h4><p>程序指令与待处理数据均以二进制编码形式共同存放在同一主存储器中，CPU 按地址顺序自动取指执行。</p></div>
+<div class="concept-card"><h4>程序计数器 (PC)</h4><p>PC 始终保存下一条待执行指令的内存地址。每取完一条 4 字节指令，PC 自动加 4（或由跳转指令改写）。</p></div>
+<div class="concept-card"><h4>指令寄存器 (IR)</h4><p>锁存当前刚从内存中取出的机器指令，交给译码器拆解出“操作码（做什么）”与“操作数（对谁做）”。</p></div>
+<div class="concept-card"><h4>算术逻辑单元 (ALU)</h4><p>CPU 的计算心脏，接收通用寄存器送来的源操作数，在一个时钟周期内完成加法、移位或逻辑比较。</p></div>
+    </section>
+</div>
+<script>
+
+    function switchTab(id, btn) {
+        document.querySelectorAll('.tab-content').forEach(e => e.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(e => e.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        btn.classList.add('active');
+    }
+    const cpuSteps = [
+        { line:0, cp:0, pc:'0x0100', ir:'NOP', alu:'待命', r1:0, r2:0, r3:0, mc:0, hiReg:[], hiMem:[], msg:'> 初始状态：PC 指向首条指令地址 0x0100。' },
+        { line:2, cp:1, pc:'0x0104', ir:'LOAD R1, #12', alu:'待命', r1:0, r2:0, r3:0, mc:0, hiReg:['r-pc','r-ir'], hiMem:['m-1'], msg:'> [取指 & 译码] 从 0x0100 读取指令 LOAD R1, #12 送入 IR，PC 自动递增至 0x0104。' },
+        { line:2, cp:4, pc:'0x0104', ir:'LOAD R1, #12', alu:'立即数传送', r1:12, r2:0, r3:0, mc:0, hiReg:['r-r1'], hiMem:['m-1'], msg:'> [执行 & 写回] 将立即数 12 写入通用寄存器 R1（对应变量 a = 12）。' },
+        { line:3, cp:1, pc:'0x0108', ir:'LOAD R2, #30', alu:'立即数传送', r1:12, r2:30, r3:0, mc:0, hiReg:['r-pc','r-ir','r-r2'], hiMem:['m-2'], msg:'> [第2条指令] 从 0x0104 取指 LOAD R2, #30 并执行，寄存器 R2 写入 30（对应 b = 30）。' },
+        { line:4, cp:2, pc:'0x010C', ir:'ADD R3, R1, R2', alu:'准备加法: R1(12)+R2(30)', r1:12, r2:30, r3:0, mc:0, hiReg:['r-ir','r-alu'], hiMem:['m-3'], msg:'> [第3条取指 & 译码] 读取 0x0108 处的 ADD 指令，控制器通知 ALU 读取 R1 与 R2。' },
+        { line:4, cp:3, pc:'0x010C', ir:'ADD R3, R1, R2', alu:'12 + 30 = 42', r1:12, r2:30, r3:42, mc:0, hiReg:['r-alu','r-r3'], hiMem:['m-3'], msg:'> [ALU 执行] 运算器完成 12 + 30 = 42，并将结果写回目的寄存器 R3。' },
+        { line:5, cp:4, pc:'0x0110', ir:'STORE [0x2008], R3', alu:'访存写回', r1:12, r2:30, r3:42, mc:42, hiReg:['r-r3'], hiMem:['m-4','m-5'], msg:'> [访存写回] 执行 STORE 指令，将 R3 中的 42 经数据总线写回内存地址 0x2008（变量 c）。' }
+    ];
+    const cpuSim = {
+        step: 0,
+        render() {
+            const s = cpuSteps[this.step];
+            document.querySelectorAll('#code-1 .code-line').forEach(e => e.classList.remove('active'));
+            if (s.line) document.getElementById('c1-' + s.line).classList.add('active');
+            for (let i=1; i<=4; i++) {
+                document.getElementById('cp-' + i).classList.toggle('on', s.cp === i);
+            }
+            document.getElementById('v-pc').innerText = s.pc;
+            document.getElementById('v-ir').innerText = s.ir;
+            document.getElementById('v-alu').innerText = s.alu;
+            document.getElementById('v-r1').innerText = s.r1;
+            document.getElementById('v-r2').innerText = s.r2;
+            document.getElementById('v-r3').innerText = s.r3;
+            document.getElementById('v-mc').innerText = s.mc;
+            document.querySelectorAll('.reg-row, .mem-slot').forEach(e => e.classList.remove('hi', 'hi-green'));
+            s.hiReg.forEach(id => document.getElementById(id).classList.add('hi'));
+            s.hiMem.forEach(id => document.getElementById(id).classList.add(id==='m-5'?'hi-green':'hi'));
+            document.getElementById('con-1').innerText = s.msg;
+            document.getElementById('btn1-prev').disabled = this.step === 0;
+            document.getElementById('btn1-next').disabled = this.step === cpuSteps.length - 1;
+        },
+        next() { if (this.step < cpuSteps.length - 1) { this.step++; this.render(); } },
+        prev() { if (this.step > 0) { this.step--; this.render(); } },
+        reset() { this.step = 0; this.render(); }
+    };
+    function vnStep(n) {
+        ['vn-in','vn-mem','vn-out','vn-cu','vn-alu'].forEach(id => document.getElementById(id).classList.remove('active-hw'));
+        if (n === 1) {
+            document.getElementById('vn-in').classList.add('active-hw');
+            document.getElementById('vn-mem').classList.add('active-hw');
+            document.getElementById('vn-part').innerText = '输入设备 → 存储器';
+            document.getElementById('vn-bus').innerText = '数据总线写入 RAM';
+            document.getElementById('con-2').innerText = '> [阶段 1] 键盘输入的数字经过 I/O 接口转换为二进制补码，存入主存储器变量 x 的地址单元。';
+        } else if (n === 2) {
+            document.getElementById('vn-cu').classList.add('active-hw');
+            document.getElementById('vn-mem').classList.add('active-hw');
+            document.getElementById('vn-part').innerText = '存储器 → 控制器 (CU)';
+            document.getElementById('vn-bus').innerText = '指令总线取指译码';
+            document.getElementById('con-2').innerText = '> [阶段 2] 控制器根据 PC 地址从存储器取出乘加指令，译码后向运算器和寄存器发出控制信号。';
+        } else if (n === 3) {
+            document.getElementById('vn-alu').classList.add('active-hw');
+            document.getElementById('vn-mem').classList.add('active-hw');
+            document.getElementById('vn-part').innerText = '运算器 (ALU) ↔ 存储器';
+            document.getElementById('vn-bus').innerText = '算术运算写回结果';
+            document.getElementById('con-2').innerText = '> [阶段 3] 运算器 (ALU) 读取 x 的值完成 x * 2 + 5 计算，并将结果写回主存储器变量 y。';
+        } else if (n === 4) {
+            document.getElementById('vn-mem').classList.add('active-hw');
+            document.getElementById('vn-out').classList.add('active-hw');
+            document.getElementById('vn-part').innerText = '存储器 → 输出设备';
+            document.getElementById('vn-bus').innerText = '字符流送达屏幕终端';
+            document.getElementById('con-2').innerText = '> [阶段 4] 存储器中的结果 y 经输出缓冲区送往显示器终端，完成“输入—存储—加工—输出”闭环。';
+        }
+    }
+    cpuSim.render();
+    
+
+    function checkLabQuiz(btn, isRight) {
+        const card = btn.closest('.lab-quiz-card');
+        card.querySelectorAll('.quiz-opt').forEach(b => b.classList.remove('right', 'wrong'));
+        btn.classList.add(isRight ? 'right' : 'wrong');
+        const fb = document.getElementById('lab-quiz-fb');
+        fb.className = 'quiz-fb ' + (isRight ? 'ok' : 'err');
+        fb.innerText = (isRight ? '✅ 回答正确！' : '❌ 再想一想：') + fb.dataset.exp;
+    }
+    
+</script>
+</body>
+</html>
