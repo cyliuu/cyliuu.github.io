@@ -77,6 +77,14 @@ python3 tools/sync-course.py "/你的/V1.02视觉样稿/dist" \
 
 没有内容变化时无需提交或重新部署。同步后仍应执行构建与必要的页面检查。
 
+### 更新智能座舱系统应用开发课程门户
+
+课程门户位于 [source/courses/smart-cockpit/](source/courses/smart-cockpit/)，当前发布 V1.03，按静态资源原样发布。课程首页与课堂门户共用 `portal.css` 和 `portal.js`，`assets/task-01-03/` 保存课堂任务中的硬件辨认图片，站内引用均为相对路径。
+
+页面由「数字教材/智能座舱系统应用开发/V1.03视觉样稿」的 `build.mjs` 从备课材料生成，发布只取生成后的 `dist/`；样稿目录只读，任何内容修改须先重新生成 `dist/`，再执行发布。
+
+同步与全量校验使用个人博客根目录的 `发布工具/publish.py`，`--target` 与 `--build-target` 均为 `courses/smart-cockpit`，线上地址为 https://cyliuu.github.io/courses/smart-cockpit/ 。具体命令见个人博客根目录 README。
+
 ## 发布流程
 
 源代码维护在 `hexo` 分支。仅修改 README、docs 或 tools 不触发部署，必要时可在 Actions 页面手动运行。构建与部署使用独立任务，复用 npm 下载缓存；部署失败时只重试 Deploy，复用已验证的构建产物。涉及网站内容的推送后，[GitHub Actions](https://github.com/cyliuu/cyliuu.github.io/actions) 自动安装依赖、构建并部署至 GitHub Pages。
