@@ -9,6 +9,16 @@ const projectRoles = [
   '集成仿真后端与 CLI、GUI 前端',
 ];
 
+const projectGuideDescriptions = {
+  2: '从车辆信息命名到批量验证，建立仿真系统的信息交互流程。',
+  3: '从启动自检到驾驶主循环，完成模式选择与控制流程调试。',
+  4: '从传感器数据采集到障碍物解析，搭建仿真系统的感知融合模块。',
+  5: '从自适应巡航实现到决策逻辑封装，构建可复用的驾驶决策模块。',
+  6: '从车辆对象设计到智能指针管理，封装车辆状态与操作接口。',
+  7: '从障碍物建模到传感器复用，优化感知计算并分离仿真与渲染。',
+  8: '从自动驾驶后端集成到 CLI 和 GUI 前端，完成可交互的仿真系统。',
+};
+
 const learningPhases = [
   { title: '程序设计基础', range: '项目 1–3', projects: [1, 2, 3] },
   { title: '结构化程序', range: '项目 4–5', projects: [4, 5] },
@@ -222,10 +232,9 @@ function renderHomeEntries() {
   const sample = document.querySelector('#task');
   for (const project of courseProjects) {
     const isFirst = project.number === 1;
-    const description = project.number === 2
-      ? '从车辆信息命名到批量验证，建立仿真系统的信息交互流程。'
-      : projectRoles[project.number - 1] + '。';
-    const section = isFirst ? document.querySelector('#project') : renderProjectGuide(project, description);
+    const section = isFirst
+      ? document.querySelector('#project')
+      : renderProjectGuide(project, projectGuideDescriptions[project.number]);
     if (!isFirst) otherProjects.append(section);
     if (project.materials) section.append(projectOverview(project));
     const tasks = mapNode('div', 'map-task-list');

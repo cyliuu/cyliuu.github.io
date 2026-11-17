@@ -1,1 +1,264 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>智能座舱系统应用开发 | Cyliuu's Learning Blog</title><style>body{margin:0;background:#f4f6f1;color:#203f40;font-family:system-ui,sans-serif;line-height:1.8}main{max-width:900px;margin:auto;padding:48px 24px}a{color:#23736a}header{padding:40px;background:#e5eee6;border-radius:20px;margin:24px 0}h1{font-size:clamp(26px,5vw,40px)}article{padding:24px;background:white;border-radius:12px;margin:16px 0}</style></head><body><main><a href="/courses/">← 返回我的课程</a><header><p>CYLIUU / COURSE</p><h1>智能座舱系统应用开发</h1></header><article><h2>课程门户准备中</h2><p>完整的课程网站尚未接入，此处为入口预览。</p></article><p><a href="/">返回 Cyliuu's Learning Blog</a></p></main></body></html>
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f4f7fa">
+<title>课程首页 · 智能座舱系统应用开发</title>
+<link rel="stylesheet" href="portal.css">
+<script defer src="portal.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#main">跳到正文</a>
+<div id="top"></div>
+<div class="site-header-slot">
+<header class="site-header">
+  <div class="shell header-inner">
+    <a class="brand" href="index.html#home"><span class="brand-mark">智能座舱系统应用开发</span><span class="brand-title">课程门户</span></a>
+    <button class="site-menu-toggle" type="button" aria-controls="site-navigation" aria-expanded="false" hidden>课程导航</button>
+    <nav id="site-navigation" aria-label="课程导航" class="site-nav">
+      <a href="index.html#home" aria-current="location">课程首页</a>
+      <a href="index.html#project-map">项目地图</a>
+      <a href="index.html#project">任务门户</a>
+      <a href="classroom.html">课堂门户</a>
+    </nav>
+  </div>
+</header>
+</div>
+<main class="shell" id="main">
+  <section class="hero" id="home" aria-labelledby="hero-title">
+    <div class="hero-copy">
+      <p class="eyebrow">SMART COCKPIT</p>
+      <h1 id="hero-title">智能座舱系统<br>应用开发</h1>
+      <p>从驾乘场景与需求调研走到人机交互开发，在台架和实车任务中完成集成与验证。</p>
+      <div class="hero-actions"><a class="button primary" href="#project-map">查看项目地图 ↓</a><a class="button" href="classroom.html">进入课堂 ↗</a></div>
+    </div>
+    <div class="cockpit" aria-hidden="true">
+      <div class="cockpit-screen">
+        <div class="console-top"><span>HMI / COCKPIT</span><span class="console-dots"><i></i><i></i><i></i></span></div>
+        <div class="console-main">
+          <div class="dial"><div class="dial-ring"></div><div class="dial-center"><span>座舱</span><small>HMI</small></div></div>
+          <div class="console-modules"><span><i></i>信息娱乐</span><span><i></i>语音交互</span><span><i></i>手势交互</span><span><i></i>智能车控</span><span><i></i>驾驶监控</span></div>
+        </div>
+        <div class="console-bars"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="project-map" id="project-map" aria-labelledby="map-title">
+    <div class="map-head">
+      <h2 id="map-title">项目地图</h2>
+      <div class="map-switch" role="group" aria-label="地图视图">
+        <button type="button" aria-controls="system-map" aria-pressed="true">系统关系</button>
+        <button type="button" aria-controls="learning-map" aria-pressed="false">学习路线</button>
+      </div>
+    </div>
+    <div class="cockpit-map" id="system-map" role="region" aria-label="座舱系统关系">
+    <div class="map-plan"><a class="system-node" id="project-01" href="#tasks-project-01">
+    <span class="project-number">01</span>
+    <span class="system-node-copy"><strong>智能座舱方案策划与分析</strong><span>场景设计 · 功能需求 · 技术方案</span></span>
+    <span class="map-open" aria-hidden="true">↓</span>
+  </a></div>
+    <div class="map-hub">
+      <div class="hub-display" aria-hidden="true">
+        <i class="hub-gauge"></i>
+        <span class="hub-widgets"><i></i><i></i><i></i></span>
+      </div>
+      <strong>智能座舱系统</strong>
+    </div>
+    <ul class="map-modules"><li><a class="system-node" id="project-02" href="#tasks-project-02">
+    <span class="project-number">02</span>
+    <span class="system-node-copy"><strong>信息娱乐系统设计与开发</strong><span>抬头显示 · 触控 · OTA</span></span>
+    <span class="map-open" aria-hidden="true">↓</span>
+  </a></li><li><a class="system-node" id="project-03" href="#tasks-project-03">
+    <span class="project-number">03</span>
+    <span class="system-node-copy"><strong>语音交互系统设计与开发</strong><span>语音录制 · 特征提取 · 语音识别</span></span>
+    <span class="map-open" aria-hidden="true">↓</span>
+  </a></li><li><a class="system-node" id="project-04" href="#tasks-project-04">
+    <span class="project-number">04</span>
+    <span class="system-node-copy"><strong>手势交互系统设计与开发</strong><span>ISP · 摄像头标定 · 手势识别</span></span>
+    <span class="map-open" aria-hidden="true">↓</span>
+  </a></li><li><a class="system-node" id="project-05" href="#tasks-project-05">
+    <span class="project-number">05</span>
+    <span class="system-node-copy"><strong>智能车控系统设计与开发</strong><span>座椅控制 · 人脸迎宾</span></span>
+    <span class="map-open" aria-hidden="true">↓</span>
+  </a></li><li><a class="system-node" id="project-06" href="#tasks-project-06">
+    <span class="project-number">06</span>
+    <span class="system-node-copy"><strong>驾驶监控系统设计与开发</strong><span>数据标注 · 疲劳检测 · 危险动作识别</span></span>
+    <span class="map-open" aria-hidden="true">↓</span>
+  </a></li></ul>
+  </div>
+    <ol class="project-flow" id="learning-map" aria-label="项目学习顺序" hidden><li class="map-stop">
+    <a class="map-project-link" href="#tasks-project-01">
+      <span class="project-number">01</span>
+      <strong>智能座舱方案策划与分析</strong>
+      <span class="map-open" aria-hidden="true">↓</span>
+    </a>
+  </li>
+<li class="map-stop">
+    <a class="map-project-link" href="#tasks-project-02">
+      <span class="project-number">02</span>
+      <strong>信息娱乐系统设计与开发</strong>
+      <span class="map-open" aria-hidden="true">↓</span>
+    </a>
+  </li>
+<li class="map-stop">
+    <a class="map-project-link" href="#tasks-project-03">
+      <span class="project-number">03</span>
+      <strong>语音交互系统设计与开发</strong>
+      <span class="map-open" aria-hidden="true">↓</span>
+    </a>
+  </li>
+<li class="map-stop">
+    <a class="map-project-link" href="#tasks-project-04">
+      <span class="project-number">04</span>
+      <strong>手势交互系统设计与开发</strong>
+      <span class="map-open" aria-hidden="true">↓</span>
+    </a>
+  </li>
+<li class="map-stop">
+    <a class="map-project-link" href="#tasks-project-05">
+      <span class="project-number">05</span>
+      <strong>智能车控系统设计与开发</strong>
+      <span class="map-open" aria-hidden="true">↓</span>
+    </a>
+  </li>
+<li class="map-stop">
+    <a class="map-project-link" href="#tasks-project-06">
+      <span class="project-number">06</span>
+      <strong>驾驶监控系统设计与开发</strong>
+      <span class="map-open" aria-hidden="true">↓</span>
+    </a>
+  </li></ol>
+  </section>
+
+  <section class="task-portal" id="project" aria-labelledby="task-portal-title">
+  <div class="map-head"><h2 id="task-portal-title">项目任务</h2></div>
+  <nav class="route" aria-label="任务项目目录"><a href="#tasks-project-01" class="route-link"><span>01</span>方案策划<small aria-hidden="true">↘</small></a><a href="#tasks-project-02" class="route-link"><span>02</span>信息娱乐<small aria-hidden="true">↘</small></a><a href="#tasks-project-03" class="route-link"><span>03</span>语音交互<small aria-hidden="true">↘</small></a><a href="#tasks-project-04" class="route-link"><span>04</span>手势交互<small aria-hidden="true">↘</small></a><a href="#tasks-project-05" class="route-link"><span>05</span>智能车控<small aria-hidden="true">↘</small></a><a href="#tasks-project-06" class="route-link"><span>06</span>驾驶监控<small aria-hidden="true">↘</small></a></nav>
+  <div class="map-projects"><section class="task-project" id="tasks-project-01" aria-labelledby="tasks-project-01-title">
+    <header class="project-head"><span class="project-number">01</span><div><p class="eyebrow">项目 1</p><h3 id="tasks-project-01-title">智能座舱方案策划与分析</h3><p>从出行场景和驾乘需求出发，认识座舱子系统，比较技术方案。</p></div></header>
+    <ol class="map-tasks">
+      <li class="map-task">
+        <div class="task-name"><span>任务 1.1</span><a href="classroom.html#task-01-01">智能座舱初识 <small aria-hidden="true">↗</small></a></div>
+        <div class="stage-labels"><span>环节</span><a href="classroom.html#task-01-01-stage-1">智能座舱初识</a></div>
+      </li>
+<li class="map-task">
+        <div class="task-name"><span>任务 1.2</span><a href="classroom.html#task-01-02">智能座舱出行场景设计 <small aria-hidden="true">↗</small></a></div>
+        <div class="stage-labels"><span>环节</span><a href="classroom.html#task-01-02-stage-1">智能座舱出行场景设计</a></div>
+      </li>
+<li class="map-task">
+        <div class="task-name"><span>任务 1.3</span><a href="classroom.html#task-01-03">智能座舱技术方案分析 <small aria-hidden="true">↗</small></a></div>
+        <div class="stage-labels"><span>环节</span><a href="classroom.html#task-01-03-stage-1">智能座舱技术方案分析</a></div>
+      </li>
+    </ol>
+  </section>
+<section class="task-project" id="tasks-project-02" aria-labelledby="tasks-project-02-title">
+    <header class="project-head"><span class="project-number">02</span><div><p class="eyebrow">项目 2</p><h3 id="tasks-project-02-title">信息娱乐系统设计与开发</h3><p>围绕抬头显示、触控和远程控制开展调研、装调与应用优化。</p></div></header>
+    <ol class="map-tasks">
+      <li class="map-task">
+        <div class="task-name"><span>任务 2.1</span><a href="classroom.html#task-02-01">抬头显示系统装调与测试 <small aria-hidden="true">↗</small></a></div>
+        <div class="stage-labels"><span>环节</span><a href="classroom.html#task-02-01-stage-1">抬头显示系统调研与分析</a><a href="classroom.html#task-02-02-stage-1">抬头显示系统装调与测试</a></div>
+      </li>
+<li class="map-task">
+        <div class="task-name"><span>任务 2.2</span><a href="classroom.html#task-02-03">触控交互系统装调与测试 <small aria-hidden="true">↗</small></a></div>
+        <div class="stage-labels"><span>环节</span><a href="classroom.html#task-02-03-stage-1">触控交互系统调研与分析</a><a href="classroom.html#task-02-04-stage-1">触控交互系统装调与测试</a></div>
+      </li>
+<li class="map-task">
+        <div class="task-name"><span>任务 2.3</span><a href="classroom.html#task-02-05">OTA与远程控制系统测试 <small aria-hidden="true">↗</small></a></div>
+        <div class="stage-labels"><span>环节</span><a href="classroom.html#task-02-05-stage-1">OTA与远程控制系统调研与分析</a><a href="classroom.html#task-02-06-stage-1">OTA与远程控制系统测试</a></div>
+      </li>
+<li class="map-task">
+        <div class="task-name"><span>任务 2.4</span><a href="classroom.html#task-02-07">信息娱乐应用集成与优化 <small aria-hidden="true">↗</small></a></div>
+        <div class="stage-labels"><span>环节</span><a href="classroom.html#task-02-07-stage-1">信息娱乐应用集成与优化</a></div>
+      </li>
+    </ol>
+  </section>
+<section class="task-project" id="tasks-project-03" aria-labelledby="tasks-project-03-title">
+    <header class="project-head"><span class="project-number">03</span><div><p class="eyebrow">项目 3</p><h3 id="tasks-project-03-title">语音交互系统设计与开发</h3><p>搭建语音开发环境，从录制和特征提取走到语音识别与车辆控制。</p></div></header>
+    <ol class="map-tasks">
+      <li class="map-task">
+        <div class="task-name"><span>任务 3.1</span><a href="classroom.html#task-03-01">语音交互系统装调与测试 <small aria-hidden="true">↗</small></a></div>
+        <div class="stage-labels"><span>环节</span><a href="classroom.html#task-03-01-stage-1">语音交互系统调研与分析</a><a href="classroom.html#task-03-02-stage-1">语音交互系统装调与测试</a></div>
+      </li>
+<li class="map-task">
+        <div class="task-name"><span>任务 3.2</span><a href="classroom.html#task-03-03">语音开发环境搭建与安装 <small aria-hidden="true">↗</small></a></div>
+        <div class="stage-labels"><span>环节</span><a href="classroom.html#task-03-03-stage-1">语音开发环境调研与分析</a><a href="classroom.html#task-03-03-stage-2">语音开发环境搭建与验证</a></div>
+      </li>
+<li class="map-task">
+        <div class="task-name"><span>任务 3.3</span><a href="classroom.html#task-03-04">语音交互应用设计与开发 <small aria-hidden="true">↗</small></a></div>
+        <div class="stage-labels"><span>环节</span><a href="classroom.html#task-03-04-stage-1">语音交互应用架构与设计</a><a href="classroom.html#task-03-04-stage-2">语音数据特征分析与提取</a><a href="classroom.html#task-03-04-stage-3">语音识别功能开发与验证</a></div>
+      </li>
+<li class="map-task">
+        <div class="task-name"><span>任务 3.4</span><a href="classroom.html#task-03-05">语音交互应用集成与优化 <small aria-hidden="true">↗</small></a></div>
+        <div class="stage-labels"><span>环节</span><a href="classroom.html#task-03-05-stage-1">语音交互应用集成与优化</a></div>
+      </li>
+    </ol>
+  </section>
+<section class="task-project" id="tasks-project-04" aria-labelledby="tasks-project-04-title">
+    <header class="project-head"><span class="project-number">04</span><div><p class="eyebrow">项目 4</p><h3 id="tasks-project-04-title">手势交互系统设计与开发</h3><p>用 OpenCV 观察图像，验证 ISP 与摄像头标定，再开发手势交互。</p></div></header>
+    <ol class="map-tasks">
+      <li class="map-task">
+        <div class="task-name"><span>任务 4.1</span><a href="classroom.html#task-04-01">手势交互系统装调与测试 <small aria-hidden="true">↗</small></a></div>
+        <div class="stage-labels"><span>环节</span><a href="classroom.html#task-04-01-stage-1">手势交互系统调研与分析</a><a href="classroom.html#task-04-02-stage-1">手势交互系统装调与测试</a></div>
+      </li>
+<li class="map-task">
+        <div class="task-name"><span>任务 4.2</span><a href="classroom.html#task-04-03">视觉开发环境搭建与安装 <small aria-hidden="true">↗</small></a></div>
+        <div class="stage-labels"><span>环节</span><a href="classroom.html#task-04-03-stage-1">图像数据的理解与分析</a><a href="classroom.html#task-04-03-stage-2">视觉任务的分类与调研</a><a href="classroom.html#task-04-03-stage-3">OpenCV 安装与验证</a><a href="classroom.html#task-04-03-stage-4">OpenCV 基本使用</a></div>
+      </li>
+<li class="map-task">
+        <div class="task-name"><span>任务 4.3</span><a href="classroom.html#task-04-04">手势交互应用设计与开发 <small aria-hidden="true">↗</small></a></div>
+        <div class="stage-labels"><span>环节</span><a href="classroom.html#task-04-04-stage-1">车载ISP应用设计与开发</a><a href="classroom.html#task-04-04-stage-2">图像标定应用设计与开发</a><a href="classroom.html#task-04-04-stage-3">手势交互应用架构与设计</a><a href="classroom.html#task-04-04-stage-4">手势数据特征分析与提取</a><a href="classroom.html#task-04-04-stage-5">手势识别功能开发与验证</a></div>
+      </li>
+<li class="map-task">
+        <div class="task-name"><span>任务 4.4</span><a href="classroom.html#task-04-05">手势交互应用集成与优化 <small aria-hidden="true">↗</small></a></div>
+        <div class="stage-labels"><span>环节</span><a href="classroom.html#task-04-05-stage-1">手势交互应用集成与优化</a></div>
+      </li>
+    </ol>
+  </section>
+<section class="task-project" id="tasks-project-05" aria-labelledby="tasks-project-05-title">
+    <header class="project-head"><span class="project-number">05</span><div><p class="eyebrow">项目 5</p><h3 id="tasks-project-05-title">智能车控系统设计与开发</h3><p>理解座椅通信协议，完成人脸识别和迎宾场景联调。</p></div></header>
+    <ol class="map-tasks">
+      <li class="map-task">
+        <div class="task-name"><span>任务 5.1</span><a href="classroom.html#task-05-01">人脸迎宾系统装调与测试 <small aria-hidden="true">↗</small></a></div>
+        <div class="stage-labels"><span>环节</span><a href="classroom.html#task-05-01-stage-1">智能座椅系统调研与分析</a><a href="classroom.html#task-05-02-stage-1">人脸迎宾系统调研与分析</a><a href="classroom.html#task-05-03-stage-1">人脸迎宾系统装调与测试</a></div>
+      </li>
+<li class="map-task">
+        <div class="task-name"><span>任务 5.2</span><a href="classroom.html#task-05-04">智能座椅应用设计与开发 <small aria-hidden="true">↗</small></a></div>
+        <div class="stage-labels"><span>环节</span><a href="classroom.html#task-05-04-stage-1">智能座椅应用设计与开发</a></div>
+      </li>
+<li class="map-task">
+        <div class="task-name"><span>任务 5.3</span><a href="classroom.html#task-05-05">人脸识别应用设计与开发 <small aria-hidden="true">↗</small></a></div>
+        <div class="stage-labels"><span>环节</span><a href="classroom.html#task-05-05-stage-1">人脸识别应用架构与设计</a><a href="classroom.html#task-05-05-stage-2">人脸数据特征分析与提取</a><a href="classroom.html#task-05-05-stage-3">人脸识别功能开发与验证</a></div>
+      </li>
+<li class="map-task">
+        <div class="task-name"><span>任务 5.4</span><a href="classroom.html#task-05-06">人脸迎宾应用集成与优化 <small aria-hidden="true">↗</small></a></div>
+        <div class="stage-labels"><span>环节</span><a href="classroom.html#task-05-06-stage-1">人脸迎宾应用集成与优化</a></div>
+      </li>
+    </ol>
+  </section>
+<section class="task-project" id="tasks-project-06" aria-labelledby="tasks-project-06-title">
+    <header class="project-head"><span class="project-number">06</span><div><p class="eyebrow">项目 6</p><h3 id="tasks-project-06-title">驾驶监控系统设计与开发</h3><p>开展数据采集与标注，开发疲劳检测和危险动作识别功能。</p></div></header>
+    <ol class="map-tasks">
+      <li class="map-task">
+        <div class="task-name"><span>任务 6.1</span><a href="classroom.html#task-06-01">驾驶监控系统装调与测试 <small aria-hidden="true">↗</small></a></div>
+        <div class="stage-labels"><span>环节</span><a href="classroom.html#task-06-01-stage-1">驾驶监控系统调研与分析</a><a href="classroom.html#task-06-02-stage-1">驾驶监控系统装调与测试</a></div>
+      </li>
+<li class="map-task">
+        <div class="task-name"><span>任务 6.2</span><a href="classroom.html#task-06-03">驾驶监控数据采集与标注 <small aria-hidden="true">↗</small></a></div>
+        <div class="stage-labels"><span>环节</span><a href="classroom.html#task-06-03-stage-1">驾驶监控数据采集与标注</a></div>
+      </li>
+<li class="map-task">
+        <div class="task-name"><span>任务 6.3</span><a href="classroom.html#task-06-04">驾驶监控应用设计与开发 <small aria-hidden="true">↗</small></a></div>
+        <div class="stage-labels"><span>环节</span><a href="classroom.html#task-06-04-stage-1">驾驶监控应用架构与设计</a><a href="classroom.html#task-06-04-stage-2">疲劳状态特征分析与提取</a><a href="classroom.html#task-06-04-stage-3">疲劳检测功能开发与验证</a><a href="classroom.html#task-06-04-stage-4">危险行为特征分析与提取</a><a href="classroom.html#task-06-04-stage-5">危险动作识别功能开发与验证</a></div>
+      </li>
+<li class="map-task">
+        <div class="task-name"><span>任务 6.4</span><a href="classroom.html#task-06-05">驾驶监控应用集成与优化 <small aria-hidden="true">↗</small></a></div>
+        <div class="stage-labels"><span>环节</span><a href="classroom.html#task-06-05-stage-1">驾驶监控应用集成与优化</a></div>
+      </li>
+    </ol>
+  </section></div>
+</section>
+</main>
+<footer class="shell footer"><span>智能座舱系统应用开发</span><a href="#top">返回顶部 ↑</a></footer>
+</body>
+</html>

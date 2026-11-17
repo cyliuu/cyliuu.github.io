@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Copy a course dist into the blog; never edit the original or V1.01 archive."""
+"""Copy a course dist into the blog; never edit the original or version archives."""
 import argparse
 import hashlib
 import json
@@ -9,11 +9,25 @@ from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
 parser = argparse.ArgumentParser(description=__doc__)
-parser.add_argument('dist', type=Path, help='V1.02 visual draft dist directory')
+parser.add_argument('dist', type=Path, help='Source website dist directory for the intended release')
 parser.add_argument('--check', action='store_true', help='Report changes without writing')
+parser.add_argument('--target', type=Path, required=True, help='Explicit destination directory')
+parser.add_argument('--preserve', action='append', default=[], help='Relative path to protect; repeat as needed')
+parser.add_argument('--delete-obsolete', action='store_true', help='Delete destination files absent from source, except protected paths')
 args = parser.parse_args()
 src = args.dist.expanduser().resolve(strict=True)
-dst = Path(__file__).resolve().parents[1] / 'source/courses/cpp'
+dst = args.target.expanduser().absolute()
+if dst.is_symlink() or any(p.is_symlink() for p in dst.parents):
+    parser.error('Destination must not use symbolic links')
+dst = dst.resolve(strict=True)
+protected = []
+for name in args.preserve:
+    path = Path(name)
+    if path.is_absolute() or not path.parts or '..' in path.parts or path == Path('.'):
+        parser.error('Protected paths must be nonempty relative paths without ..')
+    protected.append(path.as_posix().rstrip('/'))
+def is_protected(name):
+    return any(name == p or name.startswith(p + '/') for p in protected)
 if not (src / 'index.html').is_file() or not dst.is_dir():
     parser.error('Source index.html or destination course directory is missing')
 if src == dst or src in dst.parents or dst in src.parents:
@@ -30,8 +44,8 @@ def inventory(folder, ancestors=()):
         rel = p.relative_to(src)
         if p.name == '.DS_Store':
             continue
-        if rel.parts[0] == 'V1.01':
-            raise ValueError('Source must not contain reserved V1.01 archive')
+        if is_protected(rel.as_posix()):
+            raise ValueError('Source overlaps a protected path: ' + rel.as_posix())
         resolved[str(p.resolve(strict=True))] = rel.as_posix()
         if p.is_dir():
             inventory(p, ancestors + (real,))
@@ -104,6 +118,16 @@ def digest(path):
     with path.open('rb') as stream:
         return hashlib.file_digest(stream, 'sha256').digest()
 
+# Fail before writing if any destination ancestor is a link or conflicts with a directory.
+for rel in files:
+    target = dst / rel
+    for parent in target.parents:
+        if parent == dst:
+            break
+        if parent.is_symlink() or (parent.exists() and not parent.is_dir()):
+            raise ValueError('Unsafe destination ancestor: ' + str(parent))
+    if target.is_dir():
+        raise ValueError('Destination directory conflicts with a source file: ' + str(target))
 changed = []
 for rel, origin in files.items():
     target = dst / rel
@@ -113,9 +137,13 @@ for rel, origin in files.items():
         same = (target.read_bytes() == data) if data is not None else (digest(target) == digest(origin))
     if not same:
         changed.append(rel)
+protected_conflicts = [p for p in protected if p in files or any(p.startswith(n + '/') for n in files)]
+if protected_conflicts:
+    raise ValueError('Source would overwrite protected paths: ' + repr(protected_conflicts))
 
-obsolete = [p for p in dst.rglob('*') if p.is_file() and p.relative_to(dst).parts[0] != 'V1.01'
-            and p.relative_to(dst).as_posix() not in files]
+obsolete = [p for p in dst.rglob('*') if (p.is_file() or p.is_symlink())
+            and not is_protected(p.relative_to(dst).as_posix())
+            and p.relative_to(dst).as_posix() not in files] if args.delete_obsolete else []
 for rel in changed:
     print('UPDATE', rel)
 for p in obsolete:
@@ -137,6 +165,6 @@ if not args.check:
         assert dst.resolve() in p.absolute().parents
         p.unlink()
     for p in sorted(dst.rglob('*'), key=lambda p: len(p.parts), reverse=True):
-        if p.is_dir() and p.relative_to(dst).parts[0] != 'V1.01' and not any(p.iterdir()):
+        if args.delete_obsolete and p.is_dir() and not p.is_symlink() and not is_protected(p.relative_to(dst).as_posix()) and not any(p.iterdir()):
             p.rmdir()
 print(f'{len(files)} source files; {len(changed)} updates; {len(obsolete)} removals' + (' (dry run)' if args.check else ''))

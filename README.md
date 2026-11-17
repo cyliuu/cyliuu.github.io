@@ -53,16 +53,26 @@ npm run server
 
 网站保存的是课程资源副本，原始文件的修改不会自动同步。该课程目录按静态资源原样发布，保留原有页面设计与交互。
 
-使用 [增量同步脚本](tools/sync-course.py) 可一次完成资源复制、本机引用转换和过期文件清理，V1.01 归档不会被修改。需要 Python 3.11 或更高版本：
+使用 [增量同步脚本](tools/sync-course.py) 可完成资源复制、本机引用转换与按内容比对；只有显式传入 `--delete-obsolete` 才清理过期文件，`--preserve V1.01` 保护归档。需要 Python 3.11 或更高版本，且目标目录必须显式指定：
 
 ```sh
 # 先预检，不修改任何文件
-python3 tools/sync-course.py "/你的/V1.02视觉样稿/dist" --check
+python3 tools/sync-course.py "/你的/V1.02视觉样稿/dist" --check \
+  --target source/courses/cpp --preserve V1.01
 # 确认后同步，仅写入内容变化的文件
-python3 tools/sync-course.py "/你的/V1.02视觉样稿/dist"
+python3 tools/sync-course.py "/你的/V1.02视觉样稿/dist" \
+  --target source/courses/cpp --preserve V1.01
 ```
 
 没有内容变化时无需提交或重新部署。同步后仍应执行构建与必要的页面检查。
+
+### 更新智能座舱系统应用开发课程门户
+
+课程门户位于 [source/courses/smart-cockpit/](source/courses/smart-cockpit/)，当前发布 V1.03，按静态资源原样发布。课程首页与课堂门户共用 `portal.css` 和 `portal.js`，`assets/task-01-03/` 保存课堂任务中的硬件辨认图片，站内引用均为相对路径。
+
+页面由「数字教材/智能座舱系统应用开发/V1.03视觉样稿」的 `build.mjs` 从备课材料生成，发布只取生成后的 `dist/`；样稿目录只读，任何内容修改须先重新生成 `dist/`，再执行发布。
+
+同步与全量校验使用个人博客根目录的 `发布工具/publish.py`，`--target` 与 `--build-target` 均为 `courses/smart-cockpit`，线上地址为 https://cyliuu.github.io/courses/smart-cockpit/ 。具体命令见个人博客根目录 README。
 
 ## 发布流程
 

@@ -4,6 +4,7 @@ const readingPreview = document.querySelector('#reading-preview');
 const readingSamples = document.querySelector('#reading-samples')?.content;
 const tasksById = new Map();
 const readingsById = new Map();
+const knowledgeById = new Map();
 const notesById = {
   'v-002': {knowledge: 'k-004', label: '思政故事 2 · 冯·诺依曼的远见'},
   'm-twos-complement': {knowledge: 'k-007', label: '机制 · 补码表示'},
@@ -16,7 +17,10 @@ for (const project of courseProjects) {
     tasksById.set(task.id, entry);
     for (const lessonCase of task.cases) {
       readingsById.set(lessonCase.id, entry);
-      for (const knowledge of lessonCase.knowledge) readingsById.set(knowledge.id, entry);
+      for (const knowledge of lessonCase.knowledge) {
+        readingsById.set(knowledge.id, entry);
+        knowledgeById.set(knowledge.id, knowledge);
+      }
     }
   }
 }
@@ -346,9 +350,8 @@ function renderProjectGuide(project, description) {
   }
   let task = project.tasks.find((item) => item.id === saved?.task) || project.tasks[0];
   let lessonCase = task.cases.find((item) => item.id === saved?.lessonCase) || task.cases[0];
-  // Some consecutive cases share a task-level knowledge section after the last case.
-  const availableKnowledge = () => lessonCase.knowledge.length ? lessonCase.knowledge
-    : [...new Map(task.cases.flatMap((item) => item.knowledge).map((item) => [item.id, item])).values()];
+  // The guide follows the teaching maps. The reading page follows textbook order.
+  const availableKnowledge = () => lessonCase.guideKnowledge?.map((id) => knowledgeById.get(id)) ?? lessonCase.knowledge;
   let knowledge = availableKnowledge().find((item) => item.id === saved?.knowledge) || availableKnowledge()[0];
 
   function renderSelection() {

@@ -27,7 +27,7 @@
         <a href="reading.html" aria-current="page">案例门户</a>
         <a href="classroom.html">课堂门户</a>
       </nav>
-      <span class="review-label">自动驾驶仿真系统项目V1.02</span>
+      <span class="review-label">自动驾驶仿真系统项目</span>
     </div>
   </header>
   <nav class="project-directory reader-directory" id="reader-directory" aria-label="案例页项目与任务悬浮目录" hidden>
@@ -6731,7 +6731,7 @@ int main() {
 }
 </code></pre></figure></div><a class="row-action case-download" href="downloads/materials/c-ext-h1/arial.ttf" download="arial.ttf">下载 arial.ttf ↓</a></div>
 <div class="case-result"><h3>运行效果</h3><p class="case-source-caption">运行需配置与工程兼容的 SFML 图形库，图形结果见下方效果示意。</p><p>当程序被成功编译并运行后，你将看到一个独立的图形窗口。窗口背景为深灰色，内部左侧有一个绿色的圆形，右侧有一个红色的方形，左上角显示着白色的状态文字。你可以通过点击窗口的关闭按钮来结束程序。现象分析：程序成功创建了一个图形窗口，这是 GUI 应用的载体；<code>sf::CircleShape</code> 和 <code>sf::RectangleShape</code> 对象被成功创建、设置属性并绘制到窗口上，展示了 <code>SFML</code> 绘制基本图形的能力；<code>sf::Text</code> 对象成功加载了字体并显示了字符串，证明了文本渲染功能正常；<code>while (window.isOpen())</code> 循环和事件处理确保了程序能够响应用户的操作（关闭窗口），而不是一闪而过。</p>
-<blockquote class="case-tip">[提示] 运行此代码前需正确配置 SFML 库。配套字体文件已放在案例目录中，CMake 构建时通过 <code>FONT_FILE_PATH</code> 注入其绝对路径。</blockquote></div></div></article>
+<blockquote class="case-tip">[提示] 运行此代码前需正确配置 SFML 库。配套字体文件已放在案例目录中，CMake 构建时通过 <code>FONT_FILE_PATH</code> 注入其绝对路径。 本例随附的 Arial 字体缺少所需的中文字形，运行时中文状态可能显示为方框。要正常显示中文，需加载支持中文的字体，并将状态文字以 Unicode 字符串传给 SFML。</blockquote></div></div></article>
 <article id="c-ext-h2" class="case-article" data-reading-sample="c-ext-h2" data-generated-case="true" aria-labelledby="c-ext-h2-title">
 <header class="case-intro"><div class="case-overview"><div class="case-title"><p class="eyebrow">拓展案例 H2</p><h2 id="c-ext-h2-title">SFML转向灯动画实现</h2></div><div class="case-background"><h3 class="case-subhead">案例背景</h3>
 <p>图形仿真要让使用者看出车辆何时开启转向灯。车身的位置应保持稳定，改变的只是车灯状态。把正常、左灯亮和右灯亮画在同一张雪碧图上，程序就能按时间切换显示区域。本案例通过循环亮灭演示如何在静态车辆画面上表达状态变化。</p>
